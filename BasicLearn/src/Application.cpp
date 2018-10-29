@@ -22,6 +22,8 @@
 #include "imgui/imgui_impl_opengl3.h"
 #include "imgui/imgui_impl_glfw.h"
 
+#include "tests/TestClearColor.h"
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
 
@@ -168,65 +170,83 @@ int main()
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		bool show_demo_window = true;
-		bool show_another_window = false;
-		ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		test::Test* currentTest = nullptr;
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		currentTest = testMenu;
+
+		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 
 
-		// 渲染循环
 		while (!glfwWindowShouldClose(window))
 		{
-			// 输入
+			#pragma region mvp matrices
+			//bool show_demo_window = true;
+			//bool show_another_window = false;
+			//ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+			//static float fovy = 45.0f;
+			//static float aspect = (float)SCR_WIDTH / (float)SCR_HEIGHT;
+			//static float zNear = 0.1f;
+			//static float zFar = 100.0f;
+
+			//ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+			//ImGui::SliderFloat("fovy", &fovy, 0.0f, 360.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+			//ImGui::SliderFloat("aspect", &aspect, -10.0f, 10.0f);
+			//ImGui::SliderFloat("zNear", &zNear, -10.0f, 100.0f);
+			//ImGui::SliderFloat("zFar", &zFar, -10.0f, 1000.0f);
+
+			//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			//ImGui::End();
+
+			//glm::mat4 view(1.0f);
+			//glm::mat4 projection(1.0f);
+			//view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+			//projection = glm::perspective(fovy, aspect, zNear, zFar);
+			//for (int i = 0; i < 10; i++)
+			//{
+			//	renderer.Draw(va, shader, 36);
+			//	glm::mat4 model(1.0f);
+			//	model = glm::translate(model, cubePositions[i]);
+			//	model = glm::rotate(model, 20.0f * (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
+			//	glm::mat4 mvp = projection * view * model;
+
+			//	shader.SetUniformMatrix4fv("u_mvp", mvp);
+			//}
+#pragma endregion
 			processInput(window);
-
-			// 渲染指令
 			renderer.Clear();
-
-
 
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-			static float fovy = 45.0f;
-			static float aspect = (float)SCR_WIDTH / (float)SCR_HEIGHT;
-			static float zNear = 0.1f;
-			static float zFar = 100.0f;
-
-			ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
-
-			ImGui::SliderFloat("fovy", &fovy, 0.0f, 360.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
-			ImGui::SliderFloat("aspect", &aspect, -10.0f, 10.0f);
-			ImGui::SliderFloat("zNear", &zNear, -10.0f, 100.0f);
-			ImGui::SliderFloat("zFar", &zFar, -10.0f, 1000.0f);
-
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-			ImGui::End();
-
-
-			glm::mat4 view(1.0f);
-			glm::mat4 projection(1.0f);
-			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-			projection = glm::perspective(fovy, aspect, zNear, zFar);
-			for (int i = 0; i < 10; i++)
+			if (currentTest)
 			{
-				renderer.Draw(va, shader, 36);
-				glm::mat4 model(1.0f);
-				model = glm::translate(model, cubePositions[i]);
-				model = glm::rotate(model, 20.0f * (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-				glm::mat4 mvp = projection * view * model;
+				currentTest->OnUpdate(0.0f);
+				currentTest->OnRender();
 
-				shader.SetUniformMatrix4fv("u_mvp", mvp);
+				ImGui::Begin("Test");
+				if (currentTest != testMenu && ImGui::Button("<-"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
 			}
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-
-			// 检查并调用时间，交换缓冲
 			glfwPollEvents();
 			glfwSwapBuffers(window);
+		}
+
+		delete currentTest;
+		if (currentTest != testMenu)
+		{
+			delete testMenu;
 		}
 	}
 
@@ -234,7 +254,6 @@ int main()
 	ImGui_ImplGlfw_Shutdown();
 	ImGui::DestroyContext();
 
-	// 正确清理并释放掉所有资源
 	glfwTerminate();
 
 	return 0;
