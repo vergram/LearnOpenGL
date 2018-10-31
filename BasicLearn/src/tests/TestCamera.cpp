@@ -1,4 +1,4 @@
-#include "TestTexture.h"
+#include "TestCamera.h"
 
 #include "Renderer.h"
 #include "imgui/imgui.h"
@@ -11,7 +11,13 @@
 
 namespace test{
 
-	TestTexture::TestTexture()
+	TestCamera::TestCamera()
+		:m_target(glm::vec3(0.0f, 0.0f, 0.0f)),
+		m_position(glm::vec3(0.0f, 3.0f, 3.0f)),
+		m_up(glm::vec3(0.0f, 1.0f, 0.0f)),
+		m_projection(glm::perspective(45.0f, 1.3f, 0.1f, 100.0f)),
+		m_radius(3.0f),
+		m_rotation(0)
 	{
 		float vertices[] = {
 			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -81,32 +87,30 @@ namespace test{
 
 	}
 
-	TestTexture::~TestTexture()
+	TestCamera::~TestCamera()
 	{}
 
-	void TestTexture::OnUpdate(float delaTime)
+	void TestCamera::OnUpdate(float delaTime)
 	{}
 
-	void TestTexture::OnRender()
+	void TestCamera::OnRender()
 	{
 		Renderer renderer;
+		m_position.x = m_radius * glm::sin(glm::radians(m_rotation));
+		m_position.z = m_radius * glm::cos(glm::radians(m_rotation));
 
-		glm::mat4 model(1.0f);
-		glm::mat4 view(1.0f);
-		glm::mat4 projection(1.0f);
-		model = glm::rotate(model, 20.0f, glm::vec3(0.5f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(45.0f, 1.3f, 0.1f, 100.0f);
-		glm::mat4 mvp = projection * view * model;
+		glm::mat4 camera = glm::lookAt(m_position, m_target, m_up);
+		glm::mat4 mvp = m_projection * camera;
 
 		renderer.Draw(*m_VAO, *m_Shader, 36);
 
 		m_Shader->SetUniformMatrix4fv("u_mvp", mvp);
 	}
 
-	void TestTexture::OnImGuiRender()
+	void TestCamera::OnImGuiRender()
 	{
-
+		ImGui::DragFloat("roation", &m_rotation);
+		ImGui::DragFloat("radius", &m_radius);
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 	}
