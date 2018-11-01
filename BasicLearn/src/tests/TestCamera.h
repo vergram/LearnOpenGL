@@ -25,13 +25,13 @@ namespace test {
 		std::unique_ptr<Shader> m_Shader;
 		std::vector<std::unique_ptr<Texture>> m_Textures;
 
-		glm::vec3 m_target;
+		glm::vec3 m_forward;
 		glm::vec3 m_position;
 		glm::vec3 m_up;
 		glm::mat4 m_projection;
 		
-		float m_radius;
-		float m_rotation;
+		float m_Yaw;
+		float m_Pitch;
 	};
 
 }
