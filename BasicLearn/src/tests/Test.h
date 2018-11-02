@@ -3,17 +3,20 @@
 #include <vector>
 #include <functional>
 
+#include "Camera.h"
+
 namespace test {
 
 	class Test
 	{
 	public:
-		Test() {}
+		Test(){}
 		virtual ~Test() {}
 
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
 		virtual void OnImGuiRender() {}
+
 	};
 
 	class TestMenu: public test::Test

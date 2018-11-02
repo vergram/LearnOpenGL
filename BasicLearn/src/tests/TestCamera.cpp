@@ -1,13 +1,13 @@
 #include "TestCamera.h"
 
+#include "VertexBufferLayout.h"
 #include "Renderer.h"
+
 #include "imgui/imgui.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-
-#include "VertexBufferLayout.h"
 
 const float vertices[] = {
 			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
@@ -66,17 +66,13 @@ const glm::vec3 cubePositions[] = {
 			glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+float yaw, pitch;
+
 namespace test{
 
 	TestCamera::TestCamera()
-		:m_forward(glm::vec3(0.0f, 0.0f, -1.0f)),
-		m_position(glm::vec3(0.0f, 0.0f, 1.0f)),
-		m_up(glm::vec3(0.0f, 1.0f, 0.0f)),
-		m_projection(glm::perspective(45.0f, 1.3f, 0.1f, 100.0f)),
-		m_Yaw(0),
-		m_Pitch(0)
 	{
-
+		m_Camera = new Camera();
 		m_VAO = std::make_unique<VertexArray>();
 		m_Shader = std::make_unique<Shader>("res/shader/Basic.shader");
 		m_VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
@@ -111,12 +107,6 @@ namespace test{
 	{
 		Renderer renderer;
 
-		m_forward.y = glm::sin(glm::radians(m_Pitch));
-		m_forward.z = -(glm::cos(glm::radians(m_Pitch)) * glm::cos(glm::radians(m_Yaw)));
-		m_forward.x = glm::cos(glm::radians(m_Pitch)) * glm::sin(glm::radians(m_Yaw));
-
-		glm::mat4 view = glm::lookAt(m_position, m_position + m_forward, m_up);
-
 		for (int i = 0; i < 10; i++)
 		{
 			float angle = i * 20.0f;
@@ -124,7 +114,7 @@ namespace test{
 			model = glm::translate(model, cubePositions[i]);
 			model = glm::rotate(model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
 
-			glm::mat4 mvp = m_projection * view * model;
+			glm::mat4 mvp = m_Camera->GetViewMatrix() * model;
 			renderer.Draw(*m_VAO, *m_Shader, 36);
 			m_Shader->SetUniformMatrix4fv("u_mvp", mvp);
 		}
@@ -133,14 +123,32 @@ namespace test{
 
 	void TestCamera::OnImGuiRender()
 	{
-		ImGui::SliderFloat("horizontial", &m_position.x, -10.0f, 10.0f);
-		ImGui::SliderFloat("vertical", &m_position.y, -10.0f, 10.0f);
-		ImGui::SliderFloat("forward", &m_position.z, -10.0f, 10.0f);
-		ImGui::SliderFloat("Yaw", &m_Yaw, -90.0f, 90.0f);
-		ImGui::SliderFloat("Pitch", &m_Pitch, -90.0f, 90.0f);
+		if (ImGui::Button("W"))
+		{
+			m_Camera->MoveCameraPosition(Camera_Movement::FORWARD, 1.0f);
+		}
+		if (ImGui::Button("S"))
+		{
+			m_Camera->MoveCameraPosition(Camera_Movement::BACKWARD, 1.0f);
+		}
+		if (ImGui::Button("A"))
+		{
+			m_Camera->MoveCameraPosition(Camera_Movement::LEFT, 1.0f);
+		}
+		if (ImGui::Button("D"))
+		{
+			m_Camera->MoveCameraPosition(Camera_Movement::RIGHT, 1.0f);
+		}
+
+		ImGui::SliderFloat("Yaw", &yaw, -90.0f, 90.0f);
+		ImGui::SliderFloat("Pitch", &pitch, -90.0f, 90.0f);
+
+		m_Camera->SetYaw(yaw);
+		m_Camera->SetPitch(pitch);
 
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 	}
+
 
 }

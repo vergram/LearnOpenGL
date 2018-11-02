@@ -5,6 +5,8 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
+
 #include <vector>
 
 namespace test {
@@ -25,13 +27,8 @@ namespace test {
 		std::unique_ptr<Shader> m_Shader;
 		std::vector<std::unique_ptr<Texture>> m_Textures;
 
-		glm::vec3 m_forward;
-		glm::vec3 m_position;
-		glm::vec3 m_up;
-		glm::mat4 m_projection;
-		
-		float m_Yaw;
-		float m_Pitch;
+		Camera* m_Camera;
+
 	};
 
 }

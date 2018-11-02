@@ -20,13 +20,14 @@
 #include "Shader.h"
 #include "Renderer.h"
 #include "Texture.h"
+#include "Camera.h"
 
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture.h"
 #include "tests/TestCamera.h"
 
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
+void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 
 const int SCR_HEIGHT = 600;
 const int SCR_WIDTH = 800;
@@ -138,3 +139,5 @@ void processInput(GLFWwindow *window)
 		glfwSetWindowShouldClose(window, true);
 	}
 }
+
+
