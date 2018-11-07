@@ -19,13 +19,18 @@ public:
 	Camera();
 	~Camera();
 
-	glm::mat4 GetViewMatrix() const;
+	glm::mat4 GetProjectViewMatrix() const;
+
+	float m_Yaw;
+	float m_Pitch;
+	float m_Fov;
 
 	void MoveCameraPosition(Camera_Movement direction, float deltaTime);
 	void MoveCameraDirection(float xOffset, float yOffset, bool constrainPitch = true);
 	void ZoomCameraView(float offset);
 	void SetYaw(float yaw);
 	void SetPitch(float pitch);
+	void SetFov(float fov);
 private:
 	glm::vec3 m_Forward;
 	glm::vec3 m_Position;
@@ -33,10 +38,6 @@ private:
 	glm::vec3 m_Up;
 	glm::vec3 m_Right;
 	glm::mat4 m_Projection;
-
-	float m_Yaw;
-	float m_Pitch;
-	float m_Fov;
 
 	void updateCameraVectors();
 };

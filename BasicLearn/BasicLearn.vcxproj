@@ -148,6 +148,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestCamera.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
+    <ClCompile Include="src\tests\TestLight.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -162,6 +163,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
+    <None Include="res\shader\Cube.shader" />
+    <None Include="res\shader\Light.shader" />
     <None Include="src\vendor\glm\core\func_common.inl" />
     <None Include="src\vendor\glm\core\func_exponential.inl" />
     <None Include="src\vendor\glm\core\func_geometric.inl" />
@@ -274,6 +277,7 @@
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestCamera.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
+    <ClInclude Include="src\tests\TestLight.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
     <ClInclude Include="src\vendor\glm\core\func_common.hpp" />
     <ClInclude Include="src\vendor\glm\core\func_exponential.hpp" />

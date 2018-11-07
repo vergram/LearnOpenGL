@@ -25,6 +25,7 @@
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture.h"
 #include "tests/TestCamera.h"
+#include "tests/TestLight.h"
 
 void processInput(GLFWwindow *window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -79,6 +80,7 @@ int main()
 		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		testMenu->RegisterTest<test::TestTexture>("Texture");
 		testMenu->RegisterTest<test::TestCamera>("Camera");
+		testMenu->RegisterTest<test::TestLight>("Light");
 
 		while (!glfwWindowShouldClose(window))
 		{

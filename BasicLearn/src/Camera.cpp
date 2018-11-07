@@ -12,7 +12,8 @@ Camera::Camera()
 	m_Right(glm::vec3(1.0f, 0.0f, 0.0f)),
 	m_Projection(glm::perspective(45.0f, 1.3f, 0.1f, 100.0f)),
 	m_Yaw(0),
-	m_Pitch(0)
+	m_Pitch(0),
+	m_Fov(45.0f)
 {
 	updateCameraVectors();
 }
@@ -20,7 +21,7 @@ Camera::Camera()
 Camera::~Camera()
 {}
 
-glm::mat4 Camera::GetViewMatrix() const
+glm::mat4 Camera::GetProjectViewMatrix() const
 {
 	return m_Projection * glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
 }
@@ -83,6 +84,12 @@ void Camera::ZoomCameraView(float offset)
 	m_Projection = glm::perspective(m_Fov, 1.3f, 0.1f, 100.0f);
 }
 
+void Camera::SetFov(float fov)
+{
+	m_Fov = fov;
+	m_Projection = glm::perspective(m_Fov, 1.3f, 0.1f, 100.0f);
+}
+
 void Camera::SetYaw(float yaw)
 {
 	m_Yaw = yaw;
@@ -98,7 +105,7 @@ void Camera::SetPitch(float pitch)
 void Camera::updateCameraVectors()
 {
 	m_Forward.y = glm::sin(glm::radians(m_Pitch));
-	m_Forward.z = glm::cos(glm::radians(m_Pitch)) * glm::cos(glm::radians(m_Yaw));
+	m_Forward.z = -(glm::cos(glm::radians(m_Pitch)) * glm::cos(glm::radians(m_Yaw)));
 	m_Forward.x = glm::cos(glm::radians(m_Pitch)) * glm::sin(glm::radians(m_Yaw));
 
 	// need normalize here because we need a unit direction vector to caculate the position movement
