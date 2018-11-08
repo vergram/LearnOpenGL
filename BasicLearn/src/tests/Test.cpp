@@ -14,7 +14,7 @@ namespace test {
 		{
 			if (ImGui::Button(test.first.c_str()))
 			{
-				m_CurrentTest = test.second(); // 加括号是因为是一个函数，要执行它
+				m_CurrentTest = test.second(); 
 			}
 		}
 	}

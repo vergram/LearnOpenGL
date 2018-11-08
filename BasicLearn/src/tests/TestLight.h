@@ -21,11 +21,11 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
-		std::unique_ptr<VertexBuffer> m_CubeVBO;
+		std::unique_ptr<VertexBuffer> m_VBO;
+
 		std::unique_ptr<VertexArray> m_CubeVAO;
 		std::unique_ptr<Shader> m_CubeShader;
 
-		std::unique_ptr<VertexBuffer> m_LightVBO;
 		std::unique_ptr<VertexArray> m_LightVAO;
 		std::unique_ptr<Shader> m_LightShader;
 	};

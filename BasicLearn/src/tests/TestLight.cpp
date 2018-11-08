@@ -9,73 +9,72 @@
 
 #include "VertexBufferLayout.h"
 
-static glm::vec3 lightPos(1.2f, 1.0f, -2.0f);
+static glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 static const float vertices[] = {
-			-0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			-0.5f,  0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-			-0.5f, -0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-			-0.5f, -0.5f,  0.5f,
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
 
-			-0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f, -0.5f,
-			-0.5f, -0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-		     0.5f,  0.5f,  0.5f,
-		     0.5f,  0.5f, -0.5f,
-		     0.5f, -0.5f, -0.5f,
-		     0.5f, -0.5f, -0.5f,
-		     0.5f, -0.5f,  0.5f,
-		     0.5f,  0.5f,  0.5f,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-			-0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f, -0.5f,
-			 0.5f, -0.5f,  0.5f,
-			 0.5f, -0.5f,  0.5f,
-			-0.5f, -0.5f,  0.5f,
-			-0.5f, -0.5f, -0.5f,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-			-0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f, -0.5f,
-			 0.5f,  0.5f,  0.5f,
-			 0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f,  0.5f,
-			-0.5f,  0.5f, -0.5f,
-		};
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+};
 
 namespace test{
 
 	TestLight::TestLight()
 	{
+		m_VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
+		VertexBufferLayout layout;
+		layout.Push<float>(3);
+		layout.Push<float>(3);
+		m_LightVAO = std::make_unique<VertexArray>();
+		m_LightShader = std::make_unique<Shader>("res/shader/Light.shader");
+
+		m_LightVAO->AddBuffer(*m_VBO, layout);
+		m_LightShader->Bind();
 
 		m_CubeVAO = std::make_unique<VertexArray>();
 		m_CubeShader = std::make_unique<Shader>("res/shader/Cube.shader");
-		m_CubeVBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
-		VertexBufferLayout layout1;
-		layout1.Push<float>(3);
-		m_CubeVAO->AddBuffer(*m_CubeVBO, layout1);
+		
+		m_CubeVAO->AddBuffer(*m_VBO, layout);
 		m_CubeShader->Bind();
 
-
-		m_LightVAO = std::make_unique<VertexArray>();
-		m_LightShader = std::make_unique<Shader>("res/shader/Light.shader");
-		m_LightVBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
-		VertexBufferLayout layout;
-		layout.Push<float>(3);
-		m_LightVAO->AddBuffer(*m_LightVBO, layout);
-		m_LightShader->Bind();
 	}
 
 	TestLight::~TestLight()
@@ -88,15 +87,17 @@ namespace test{
 	{
 		Renderer renderer;
 
-		glm::mat4 model(1.0f);
-		model = glm::translate(model, lightPos);
-		model = glm::scale(model, glm::vec3(0.2f));
+		glm::mat4 light_model(1.0f);
+		light_model = glm::translate(light_model, lightPos);
+		light_model = glm::scale(light_model, glm::vec3(0.2f));
 
-		glm::mat4 mvp_Cube{ m_Camera.GetProjectViewMatrix() };
-		glm::mat4 mvp_Light{ m_Camera.GetProjectViewMatrix() * model };
+		glm::mat4 mvp_Light{ m_Camera.GetProjectViewMatrix() * light_model };
+		glm::mat4 cube_model(1.0f);
 
 		renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
-		m_CubeShader->SetUniformMatrix4fv("u_mvp", mvp_Cube);
+		m_CubeShader->SetUniform3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
+		m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
+		m_CubeShader->SetUniformMatrix4fv("u_ViewProjection", m_Camera.GetProjectViewMatrix());
 		m_CubeShader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
 		m_CubeShader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
 
