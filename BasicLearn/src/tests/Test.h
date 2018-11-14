@@ -32,18 +32,23 @@ namespace test {
 			{
 				m_Camera.MoveCameraPosition(Camera_Movement::RIGHT, 1.0f);
 			}
-			if (ImGui::SliderFloat("Yaw", &m_Camera.m_Yaw, -90.0f, 90.0f))
+			if (ImGui::Button("Left"))
 			{
-				m_Camera.SetYaw(m_Camera.m_Yaw);
+				m_Camera.MoveCameraDirection(-20.0, 0, true);
 			}
-			if (ImGui::SliderFloat("Pitch", &m_Camera.m_Pitch, -90.0f, 90.0f))
+			if (ImGui::Button("Right"))
 			{
-				m_Camera.SetPitch(m_Camera.m_Pitch);
+				m_Camera.MoveCameraDirection(20.0, 0, true);
 			}
-			if (ImGui::SliderFloat("Zoom", &m_Camera.m_Fov, 0.0f, 90.0f))
+			if (ImGui::Button("UP"))
 			{
-				m_Camera.SetFov(m_Camera.m_Fov);
+				m_Camera.MoveCameraDirection(0, 20.0, true);
 			}
+			if (ImGui::Button("Down"))
+			{
+				m_Camera.MoveCameraDirection(0, -20.0f, true);
+			}
+
 
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		}

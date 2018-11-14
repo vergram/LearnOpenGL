@@ -30,3 +30,7 @@
 *.exe
 *.out
 *.app
+/BasicLearn/src/Input.cpp
+/BasicLearn/src/Input.h
+/BasicLearn/src/Window.h
+/BasicLearn/src/Window.cpp

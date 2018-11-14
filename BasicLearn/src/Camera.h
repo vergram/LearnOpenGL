@@ -12,6 +12,8 @@ enum Camera_Movement
 
 const float Speed = 1.0f;
 const float MouseSensitivity = 0.1f;
+const float YAW = -90.0f;
+const float PITCH = 0.0f;
 
 class Camera
 {
@@ -20,7 +22,7 @@ public:
 	~Camera();
 
 	glm::mat4 GetProjectViewMatrix() const;
-
+	glm::vec3 GetPosition() const;
 	float m_Yaw;
 	float m_Pitch;
 	float m_Fov;
@@ -28,9 +30,8 @@ public:
 	void MoveCameraPosition(Camera_Movement direction, float deltaTime);
 	void MoveCameraDirection(float xOffset, float yOffset, bool constrainPitch = true);
 	void ZoomCameraView(float offset);
-	void SetYaw(float yaw);
-	void SetPitch(float pitch);
-	void SetFov(float fov);
+
+
 private:
 	glm::vec3 m_Forward;
 	glm::vec3 m_Position;

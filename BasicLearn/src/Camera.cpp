@@ -6,13 +6,11 @@
 
 Camera::Camera()
 	:m_Forward(glm::vec3(0.0f, 0.0f, -1.0f)),
-	m_Position(glm::vec3(0.0f, 0.0f, 1.0f)),
+	m_Position(glm::vec3(0.0f, 0.0f, 0.0f)),
 	m_WorldUp(glm::vec3(0.0f, 1.0f, 0.0f)),
-	m_Up(glm::vec3(0.0f, 1.0f, 0.0f)),
-	m_Right(glm::vec3(1.0f, 0.0f, 0.0f)),
 	m_Projection(glm::perspective(45.0f, 1.3f, 0.1f, 100.0f)),
-	m_Yaw(0),
-	m_Pitch(0),
+	m_Yaw(YAW),
+	m_Pitch(PITCH),
 	m_Fov(45.0f)
 {
 	updateCameraVectors();
@@ -24,6 +22,11 @@ Camera::~Camera()
 glm::mat4 Camera::GetProjectViewMatrix() const
 {
 	return m_Projection * glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
+}
+
+glm::vec3 Camera::GetPosition() const
+{
+	return m_Position;
 }
 
 void Camera::MoveCameraPosition(Camera_Movement direction, float deltaTime)
@@ -84,33 +87,15 @@ void Camera::ZoomCameraView(float offset)
 	m_Projection = glm::perspective(m_Fov, 1.3f, 0.1f, 100.0f);
 }
 
-void Camera::SetFov(float fov)
-{
-	m_Fov = fov;
-	m_Projection = glm::perspective(m_Fov, 1.3f, 0.1f, 100.0f);
-}
-
-void Camera::SetYaw(float yaw)
-{
-	m_Yaw = yaw;
-	updateCameraVectors();
-}
-
-void Camera::SetPitch(float pitch)
-{
-	m_Pitch = pitch;
-	updateCameraVectors();
-}
-
 void Camera::updateCameraVectors()
 {
+	m_Forward.x = glm::cos(glm::radians(m_Pitch)) * glm::cos(glm::radians(m_Yaw));
 	m_Forward.y = glm::sin(glm::radians(m_Pitch));
-	m_Forward.z = -(glm::cos(glm::radians(m_Pitch)) * glm::cos(glm::radians(m_Yaw)));
-	m_Forward.x = glm::cos(glm::radians(m_Pitch)) * glm::sin(glm::radians(m_Yaw));
+	m_Forward.z = glm::cos(glm::radians(m_Pitch)) * glm::sin(glm::radians(m_Yaw));
 
 	// need normalize here because we need a unit direction vector to caculate the position movement
 	m_Forward = glm::normalize(m_Forward);
 
-	m_Right = glm::cross(m_Forward, m_WorldUp);
-	m_Up = glm::cross(m_Right, m_Forward);
+	m_Right = glm::normalize(glm::cross(m_Forward, m_WorldUp));
+	m_Up = glm::normalize(glm::cross(m_Right, m_Forward));
 }

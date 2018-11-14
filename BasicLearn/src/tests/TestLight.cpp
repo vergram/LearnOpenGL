@@ -95,6 +95,7 @@ namespace test{
 		glm::mat4 cube_model(1.0f);
 
 		renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
+		m_CubeShader->SetUniform3f("viewPos", m_Camera.GetPosition());
 		m_CubeShader->SetUniform3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
 		m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
 		m_CubeShader->SetUniformMatrix4fv("u_ViewProjection", m_Camera.GetProjectViewMatrix());
