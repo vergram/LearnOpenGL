@@ -21,6 +21,7 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
+		Camera m_Camera;
 		std::unique_ptr<VertexBuffer> m_VBO;
 
 		std::unique_ptr<VertexArray> m_CubeVAO;

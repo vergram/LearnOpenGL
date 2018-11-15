@@ -1,5 +1,6 @@
 #include "TestLight.h"
 
+#include "Window.h"
 #include "Renderer.h"
 #include "imgui/imgui.h"
 
@@ -57,8 +58,11 @@ static const float vertices[] = {
 
 namespace test{
 
-	TestLight::TestLight()
+	TestLight::TestLight():m_Camera()
 	{
+		// tell GLFW to capture our mouse
+		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 		m_VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
@@ -80,8 +84,39 @@ namespace test{
 	TestLight::~TestLight()
 	{}
 
-	void TestLight::OnUpdate(float delaTime)
-	{}
+	void TestLight::OnUpdate(float deltaTime)
+	{
+		if (Input::currentKeys[KeyBoard::ESC])
+		{
+			glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			Input::currentKeys[KeyBoard::ESC] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::W])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::FORWARD, deltaTime);
+			Input::currentKeys[KeyBoard::W] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::A])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::LEFT, deltaTime);
+			Input::currentKeys[KeyBoard::A] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::S])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::BACKWARD, deltaTime);
+			Input::currentKeys[KeyBoard::S] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::D])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::RIGHT, deltaTime);
+			Input::currentKeys[KeyBoard::D] = 0;
+		}
+		m_Camera.MoveCameraDirection(Input::MouseMovementX, Input::MouseMovementY);
+		Input::MouseMovementX = 0;
+		Input::MouseMovementY = 0;
+		m_Camera.ZoomCameraView(Input::MouseSrollOffset);
+		Input::MouseSrollOffset = 0;
+	}
 
 	void TestLight::OnRender()
 	{
@@ -94,13 +129,26 @@ namespace test{
 		glm::mat4 mvp_Light{ m_Camera.GetProjectViewMatrix() * light_model };
 		glm::mat4 cube_model(1.0f);
 
+		glm::vec3 lightColor;
+		lightColor.x = glm::sin(glfwGetTime() * 2.0f);
+		lightColor.y = glm::sin(glfwGetTime() * 0.7f);
+		lightColor.z = glm::sin(glfwGetTime() * 1.3f);
+
+		glm::vec3 ambientColor = 0.2f * lightColor;
+		glm::vec3 diffuseColor = 0.5f * lightColor;
+
 		renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
-		m_CubeShader->SetUniform3f("viewPos", m_Camera.GetPosition());
-		m_CubeShader->SetUniform3f("lightPos", lightPos.x, lightPos.y, lightPos.z);
 		m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
 		m_CubeShader->SetUniformMatrix4fv("u_ViewProjection", m_Camera.GetProjectViewMatrix());
-		m_CubeShader->SetUniform3f("lightColor", 1.0f, 1.0f, 1.0f);
-		m_CubeShader->SetUniform3f("objectColor", 1.0f, 0.5f, 0.31f);
+		m_CubeShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		m_CubeShader->SetUniform3f("light.position", lightPos.x, lightPos.y, lightPos.z);
+		m_CubeShader->SetUniform3f("light.ambient", 0.1f, 0.1f, 0.1f);
+		m_CubeShader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f);
+		m_CubeShader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+		m_CubeShader->SetUniform3f("material.ambient", ambientColor);
+		m_CubeShader->SetUniform3f("material.diffuse", diffuseColor);
+		m_CubeShader->SetUniform3f("material.specular", 0.5f, 0.5f, 0.5f);
+		m_CubeShader->SetUniform1f("material.shininess", 32.0f);
 
 		renderer.Draw(*m_LightVAO, *m_LightShader, 36);
 		m_LightShader->SetUniformMatrix4fv("u_mvp", mvp_Light);
@@ -108,7 +156,7 @@ namespace test{
 
 	void TestLight::OnImGuiRender()
 	{
-		Test::OnImGuiRender();
+
 	}
 
 }

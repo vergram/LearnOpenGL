@@ -10,7 +10,7 @@ enum Camera_Movement
 	RIGHT
 };
 
-const float Speed = 1.0f;
+const float Speed = 2.0f;
 const float MouseSensitivity = 0.1f;
 const float YAW = -90.0f;
 const float PITCH = 0.0f;
@@ -23,9 +23,6 @@ public:
 
 	glm::mat4 GetProjectViewMatrix() const;
 	glm::vec3 GetPosition() const;
-	float m_Yaw;
-	float m_Pitch;
-	float m_Fov;
 
 	void MoveCameraPosition(Camera_Movement direction, float deltaTime);
 	void MoveCameraDirection(float xOffset, float yOffset, bool constrainPitch = true);
@@ -33,6 +30,9 @@ public:
 
 
 private:
+	float m_Yaw;
+	float m_Pitch;
+	float m_Fov;
 	glm::vec3 m_Forward;
 	glm::vec3 m_Position;
 	glm::vec3 m_WorldUp;

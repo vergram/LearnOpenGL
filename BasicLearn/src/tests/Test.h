@@ -4,57 +4,20 @@
 #include <functional>
 #include "imgui/imgui.h"
 #include "Camera.h"
+#include "Input.h"
 
 namespace test {
 
 	class Test
 	{
 	public:
-		Test():m_Camera(){}
+		Test(){}
 		virtual ~Test() {}
 
 		virtual void OnUpdate(float deltaTime) {}
 		virtual void OnRender() {}
-		virtual void OnImGuiRender() {
-			if (ImGui::Button("W"))
-			{
-				m_Camera.MoveCameraPosition(Camera_Movement::FORWARD, 1.0f);
-			}
-			if (ImGui::Button("S"))
-			{
-				m_Camera.MoveCameraPosition(Camera_Movement::BACKWARD, 1.0f);
-			}
-			if (ImGui::Button("A"))
-			{
-				m_Camera.MoveCameraPosition(Camera_Movement::LEFT, 1.0f);
-			}
-			if (ImGui::Button("D"))
-			{
-				m_Camera.MoveCameraPosition(Camera_Movement::RIGHT, 1.0f);
-			}
-			if (ImGui::Button("Left"))
-			{
-				m_Camera.MoveCameraDirection(-20.0, 0, true);
-			}
-			if (ImGui::Button("Right"))
-			{
-				m_Camera.MoveCameraDirection(20.0, 0, true);
-			}
-			if (ImGui::Button("UP"))
-			{
-				m_Camera.MoveCameraDirection(0, 20.0, true);
-			}
-			if (ImGui::Button("Down"))
-			{
-				m_Camera.MoveCameraDirection(0, -20.0f, true);
-			}
-
-
-			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-		}
+		virtual void OnImGuiRender() {}
 		
-	protected:
-		Camera m_Camera;
 	};
 
 	class TestMenu: public test::Test

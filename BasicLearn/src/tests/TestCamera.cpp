@@ -68,7 +68,7 @@ static const glm::vec3 cubePositions[] = {
 
 namespace test{
 
-	TestCamera::TestCamera()
+	TestCamera::TestCamera():m_Camera()
 	{
 		m_VAO = std::make_unique<VertexArray>();
 		m_Shader = std::make_unique<Shader>("res/shader/Basic.shader");

@@ -21,17 +21,38 @@
 #include "Renderer.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Input.h"
+#include "Window.h"
 
 #include "tests/TestClearColor.h"
 #include "tests/TestTexture.h"
 #include "tests/TestCamera.h"
 #include "tests/TestLight.h"
 
-void processInput(GLFWwindow *window);
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void processInput(GLFWwindow *window);
 
 const int SCR_HEIGHT = 600;
 const int SCR_WIDTH = 800;
+
+// timing
+float deltaTime = 0.0f;	// time between current frame and last frame
+float lastFrame = 0.0f;
+// camera
+float lastX = SCR_WIDTH / 2.0f;
+float lastY = SCR_HEIGHT / 2.0f;
+bool firstMouse = true;
+
+// Input
+float Input::MouseMovementX = 0.0f;
+float Input::MouseMovementY = 0.0f;
+float Input::MouseSrollOffset = 0.0f;
+std::vector<int> Input::currentKeys(5, 0);
+
+GLFWwindow* Window::window = NULL;
 
 const char* glsl_version = "#version 130";
 
@@ -43,15 +64,17 @@ int main()
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
-	if (window == NULL)
+	Window::window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
+	if (Window::window == NULL)
 	{
 		std::cout << "Fail to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
-	glfwMakeContextCurrent(window);
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwMakeContextCurrent(Window::window);
+	glfwSetFramebufferSizeCallback(Window::window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(Window::window, mouse_callback);
+	glfwSetScrollCallback(Window::window, scroll_callback);
 
 	// 在调用任何的 GL 函数前初始化 GLAD，给 GLAD 传入用来加载操作系统相关的 OpenGL 函数指针地址的函数。
 	// GLFW 中获取函数指针地址的函数是 glfwGetProcAddress，所以我们就传入它，他根据我们编译的系统定义了正确的函数
@@ -70,7 +93,7 @@ int main()
 		Renderer renderer;
 
 		ImGui::CreateContext();
-		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplGlfw_InitForOpenGL(Window::window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
 		test::Test* currentTest = nullptr;
@@ -82,9 +105,15 @@ int main()
 		testMenu->RegisterTest<test::TestCamera>("Camera");
 		testMenu->RegisterTest<test::TestLight>("Light");
 
-		while (!glfwWindowShouldClose(window))
+		while (!glfwWindowShouldClose(Window::window))
 		{
-			processInput(window);
+			// per-frame time logic
+			// --------------------
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			processInput(Window::window);
 			renderer.Clear();
 
 			ImGui_ImplOpenGL3_NewFrame();
@@ -93,7 +122,7 @@ int main()
 
 			if (currentTest)
 			{
-				currentTest->OnUpdate(0.0f);
+				currentTest->OnUpdate(deltaTime);
 				currentTest->OnRender();
 
 				ImGui::Begin("Test");
@@ -110,7 +139,7 @@ int main()
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			glfwPollEvents();
-			glfwSwapBuffers(window);
+			glfwSwapBuffers(Window::window);
 		}
 
 		delete currentTest;
@@ -137,9 +166,42 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-	{
-		glfwSetWindowShouldClose(window, true);
-	}
+		Input::currentKeys[KeyBoard::ESC] = 1;
+	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+		Input::currentKeys[KeyBoard::W] = 1;
+	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+		Input::currentKeys[KeyBoard::S] = 1;
+	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+		Input::currentKeys[KeyBoard::A] = 1;
+	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+		Input::currentKeys[KeyBoard::D] = 1;
 }
 
+// glfw: whenever the mouse moves, this callback is called
+// -------------------------------------------------------
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	if (firstMouse)
+	{
+		lastX = xpos;
+		lastY = ypos;
+		firstMouse = false;
+	}
 
+	float xoffset = xpos - lastX;
+	float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+	lastX = xpos;
+	lastY = ypos;
+
+	Input::MouseMovementX = xoffset;
+	Input::MouseMovementY = yoffset;
+
+}
+
+// glfw: whenever the mouse scroll wheel scrolls, this callback is called
+// ----------------------------------------------------------------------
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+	Input::MouseSrollOffset = yoffset;
+}
