@@ -416,6 +416,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\awesomeface.png" />
+    <Image Include="res\image\container2.png" />
+    <Image Include="res\image\container2_specular.png" />
     <Image Include="res\image\wall.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

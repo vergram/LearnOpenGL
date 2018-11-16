@@ -77,8 +77,6 @@ namespace test{
 
 		m_Shader->SetUniform1i("u_Texture0", 0);
 		m_Shader->SetUniform1i("u_Texture1", 1);
-
-
 	}
 
 	TestTexture::~TestTexture()

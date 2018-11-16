@@ -13,52 +13,56 @@
 static glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 static const float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+	// positions          // normals           // texture coords
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,  0.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,  1.0f, 1.0f,
+	-0.5f,  0.5f,  0.5f,   0.0f,  0.0f, 1.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f,   0.0f,  0.0f, 1.0f,  0.0f, 0.0f,
 
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 };
 
 namespace test{
 
-	TestLight::TestLight():m_Camera()
+	TestLight::TestLight()
+		:m_Camera(),
+		m_WoodTexture("res/image/container2.png"),
+		m_SteelTexture("res/image/container2_specular.png")
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -67,6 +71,7 @@ namespace test{
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
 		layout.Push<float>(3);
+		layout.Push<float>(2);
 		m_LightVAO = std::make_unique<VertexArray>();
 		m_LightShader = std::make_unique<Shader>("res/shader/Light.shader");
 
@@ -78,7 +83,8 @@ namespace test{
 		
 		m_CubeVAO->AddBuffer(*m_VBO, layout);
 		m_CubeShader->Bind();
-
+		m_WoodTexture.Bind();
+		m_SteelTexture.Bind(1);
 	}
 
 	TestLight::~TestLight()
@@ -122,20 +128,7 @@ namespace test{
 	{
 		Renderer renderer;
 
-		glm::mat4 light_model(1.0f);
-		light_model = glm::translate(light_model, lightPos);
-		light_model = glm::scale(light_model, glm::vec3(0.2f));
-
-		glm::mat4 mvp_Light{ m_Camera.GetProjectViewMatrix() * light_model };
 		glm::mat4 cube_model(1.0f);
-
-		glm::vec3 lightColor;
-		lightColor.x = glm::sin(glfwGetTime() * 2.0f);
-		lightColor.y = glm::sin(glfwGetTime() * 0.7f);
-		lightColor.z = glm::sin(glfwGetTime() * 1.3f);
-
-		glm::vec3 ambientColor = 0.2f * lightColor;
-		glm::vec3 diffuseColor = 0.5f * lightColor;
 
 		renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
 		m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
@@ -145,10 +138,14 @@ namespace test{
 		m_CubeShader->SetUniform3f("light.ambient", 0.1f, 0.1f, 0.1f);
 		m_CubeShader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f);
 		m_CubeShader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
-		m_CubeShader->SetUniform3f("material.ambient", ambientColor);
-		m_CubeShader->SetUniform3f("material.diffuse", diffuseColor);
-		m_CubeShader->SetUniform3f("material.specular", 0.5f, 0.5f, 0.5f);
+		m_CubeShader->SetUniform1i("material.diffuse", 0);  // Âþ·´ÉäÌùÍ¼
+		m_CubeShader->SetUniform1i("material.specular", 1); // ¾µÃæ·´ÉäÌùÍ¼
 		m_CubeShader->SetUniform1f("material.shininess", 32.0f);
+
+		glm::mat4 light_model(1.0f);
+		light_model = glm::translate(light_model, lightPos);
+		light_model = glm::scale(light_model, glm::vec3(0.2f));
+		glm::mat4 mvp_Light{ m_Camera.GetProjectViewMatrix() * light_model };
 
 		renderer.Draw(*m_LightVAO, *m_LightShader, 36);
 		m_LightShader->SetUniformMatrix4fv("u_mvp", mvp_Light);
