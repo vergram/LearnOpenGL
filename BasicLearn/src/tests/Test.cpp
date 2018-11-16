@@ -1,5 +1,8 @@
 #include "Test.h"
 #include "imgui/imgui.h"
+#include "Input.h"
+#include "Window.h"
+
 
 namespace test {
 
@@ -16,6 +19,15 @@ namespace test {
 			{
 				m_CurrentTest = test.second(); 
 			}
+		}
+	}
+
+	void TestMenu::OnUpdate(float deltaTime)
+	{
+		if (Input::currentKeys[KeyBoard::ESC])
+		{
+			glfwSetWindowShouldClose(Window::window, true);
+			Input::currentKeys[KeyBoard::ESC] = 0;
 		}
 	}
 

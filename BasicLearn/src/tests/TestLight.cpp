@@ -2,6 +2,7 @@
 
 #include "Window.h"
 #include "Renderer.h"
+#include "Input.h"
 #include "imgui/imgui.h"
 
 #include <glm/glm.hpp>
@@ -62,7 +63,8 @@ namespace test{
 	TestLight::TestLight()
 		:m_Camera(),
 		m_WoodTexture("res/image/container2.png"),
-		m_SteelTexture("res/image/container2_specular.png")
+		m_SteelTexture("res/image/container2_specular.png"), 
+		m_EmissionTexture("res/image/matrix.jpg")
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -83,8 +85,9 @@ namespace test{
 		
 		m_CubeVAO->AddBuffer(*m_VBO, layout);
 		m_CubeShader->Bind();
-		m_WoodTexture.Bind();
+		m_WoodTexture.Bind(0);
 		m_SteelTexture.Bind(1);
+		m_EmissionTexture.Bind(2);
 	}
 
 	TestLight::~TestLight()
@@ -130,16 +133,26 @@ namespace test{
 
 		glm::mat4 cube_model(1.0f);
 
+		// Exercise for Light
+		//glm::vec3 ambientLight(1.0f, 1.0f, 1.0f);
+		//glm::vec3 diffuseLight(1.0f, 1.0f, 1.0f);
+		//glm::vec3 specularLight(1.0f, 1.0f, 1.0f);
+
+		//ambientLight *= glm::sin(glfwGetTime() * 0.1f);
+		//diffuseLight *= glm::sin(glfwGetTime() * 0.3f);
+		//specularLight *= glm::sin(glfwGetTime() * 0.5f);
+
 		renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
 		m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
 		m_CubeShader->SetUniformMatrix4fv("u_ViewProjection", m_Camera.GetProjectViewMatrix());
 		m_CubeShader->SetUniform3f("viewPos", m_Camera.GetPosition());
 		m_CubeShader->SetUniform3f("light.position", lightPos.x, lightPos.y, lightPos.z);
-		m_CubeShader->SetUniform3f("light.ambient", 0.1f, 0.1f, 0.1f);
+		m_CubeShader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
 		m_CubeShader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f);
 		m_CubeShader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
 		m_CubeShader->SetUniform1i("material.diffuse", 0);  // Âþ·´ÉäÌùÍ¼
 		m_CubeShader->SetUniform1i("material.specular", 1); // ¾µÃæ·´ÉäÌùÍ¼
+		m_CubeShader->SetUniform1i("emission", 2);          // ·¢¹âÌùÍ¼
 		m_CubeShader->SetUniform1f("material.shininess", 32.0f);
 
 		glm::mat4 light_model(1.0f);
@@ -153,7 +166,7 @@ namespace test{
 
 	void TestLight::OnImGuiRender()
 	{
-
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 	}
 
 }

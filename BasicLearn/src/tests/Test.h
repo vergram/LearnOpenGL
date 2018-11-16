@@ -3,8 +3,6 @@
 #include <vector>
 #include <functional>
 #include "imgui/imgui.h"
-#include "Camera.h"
-#include "Input.h"
 
 namespace test {
 
@@ -26,6 +24,7 @@ namespace test {
 		TestMenu(Test*& currentTestPointer);
 
 		void OnImGuiRender() override;
+		void OnUpdate(float deltaTime) override;
 
 		template<typename T>
 		void RegisterTest(const std::string& testName)

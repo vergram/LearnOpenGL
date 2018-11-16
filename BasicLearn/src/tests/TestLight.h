@@ -24,6 +24,7 @@ namespace test {
 		Camera m_Camera;
 		Texture m_WoodTexture;
 		Texture m_SteelTexture;
+		Texture m_EmissionTexture;
 		std::unique_ptr<VertexBuffer> m_VBO;
 
 		std::unique_ptr<VertexArray> m_CubeVAO;
