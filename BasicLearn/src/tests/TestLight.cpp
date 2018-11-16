@@ -11,7 +11,7 @@
 
 #include "VertexBufferLayout.h"
 
-static glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
+static const glm::vec3 lightPos(1.2f, 1.0f, 2.0f);
 
 static const float vertices[] = {
 	// positions          // normals           // texture coords
@@ -58,6 +58,19 @@ static const float vertices[] = {
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 };
 
+static const glm::vec3 cubePositions[] = {
+			glm::vec3(0.0f,  0.0f,  0.0f),
+			glm::vec3(2.0f,  5.0f, -15.0f),
+			glm::vec3(-1.5f, -2.2f, -2.5f),
+			glm::vec3(-3.8f, -2.0f, -12.3f),
+			glm::vec3(2.4f, -0.4f, -3.5f),
+			glm::vec3(-1.7f,  3.0f, -7.5f),
+			glm::vec3(1.3f, -2.0f, -2.5f),
+			glm::vec3(1.5f,  2.0f, -2.5f),
+			glm::vec3(1.5f,  0.2f, -1.5f),
+			glm::vec3(-1.3f,  1.0f, -1.5f)
+};
+
 namespace test{
 
 	TestLight::TestLight()
@@ -88,6 +101,21 @@ namespace test{
 		m_WoodTexture.Bind(0);
 		m_SteelTexture.Bind(1);
 		m_EmissionTexture.Bind(2);
+
+		// set up unchanger uniforms
+		m_CubeShader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
+		m_CubeShader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f);
+		m_CubeShader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
+		//m_CubeShader->SetUniform3f("light.direction", -0.2f, -1.0f, -0.3f);                      // 方向光
+		m_CubeShader->SetUniform3f("light.position", lightPos.x, lightPos.y, lightPos.z);        // 点光源
+		m_CubeShader->SetUniform1f("light.constant", 1.0f);
+		m_CubeShader->SetUniform1f("light.liner", 0.09f);
+		m_CubeShader->SetUniform1f("light.quadratic", 0.032f);
+
+		m_CubeShader->SetUniform1i("material.diffuse", 0);										 // 漫反射贴图
+		m_CubeShader->SetUniform1i("material.specular", 1);										 // 镜面反射贴图
+		//m_CubeShader->SetUniform1i("emission", 2);											   // 发光贴图
+		m_CubeShader->SetUniform1f("material.shininess", 32.0f);
 	}
 
 	TestLight::~TestLight()
@@ -131,30 +159,29 @@ namespace test{
 	{
 		Renderer renderer;
 
-		glm::mat4 cube_model(1.0f);
-
 		// Exercise for Light
 		//glm::vec3 ambientLight(1.0f, 1.0f, 1.0f);
 		//glm::vec3 diffuseLight(1.0f, 1.0f, 1.0f);
 		//glm::vec3 specularLight(1.0f, 1.0f, 1.0f);
-
 		//ambientLight *= glm::sin(glfwGetTime() * 0.1f);
 		//diffuseLight *= glm::sin(glfwGetTime() * 0.3f);
 		//specularLight *= glm::sin(glfwGetTime() * 0.5f);
 
-		renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
-		m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
-		m_CubeShader->SetUniformMatrix4fv("u_ViewProjection", m_Camera.GetProjectViewMatrix());
-		m_CubeShader->SetUniform3f("viewPos", m_Camera.GetPosition());
-		m_CubeShader->SetUniform3f("light.position", lightPos.x, lightPos.y, lightPos.z);
-		m_CubeShader->SetUniform3f("light.ambient", 0.2f, 0.2f, 0.2f);
-		m_CubeShader->SetUniform3f("light.diffuse", 0.5f, 0.5f, 0.5f);
-		m_CubeShader->SetUniform3f("light.specular", 1.0f, 1.0f, 1.0f);
-		m_CubeShader->SetUniform1i("material.diffuse", 0);  // 漫反射贴图
-		m_CubeShader->SetUniform1i("material.specular", 1); // 镜面反射贴图
-		m_CubeShader->SetUniform1i("emission", 2);          // 发光贴图
-		m_CubeShader->SetUniform1f("material.shininess", 32.0f);
+		for(int i = 0; i < 10; i++)
+		{
+			glm::mat4 cube_model(1.0f);
+			cube_model = glm::translate(cube_model, cubePositions[i]);
+			float angle = 20.0f * i;
+			cube_model = glm::rotate(cube_model, angle, glm::vec3(1.0f, 0.3f, 0.5f));
 
+			renderer.Draw(*m_CubeVAO, *m_CubeShader, 36);
+
+			m_CubeShader->SetUniformMatrix4fv("u_ViewProjection", m_Camera.GetProjectViewMatrix());
+			m_CubeShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+			m_CubeShader->SetUniformMatrix4fv("u_Model", cube_model);
+		}
+
+		// Lamp Object
 		glm::mat4 light_model(1.0f);
 		light_model = glm::translate(light_model, lightPos);
 		light_model = glm::scale(light_model, glm::vec3(0.2f));
