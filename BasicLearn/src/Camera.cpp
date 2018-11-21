@@ -29,6 +29,11 @@ glm::vec3 Camera::GetPosition() const
 	return m_Position;
 }
 
+glm::vec3 Camera::GetForward() const
+{
+	return m_Forward;
+}
+
 void Camera::MoveCameraPosition(Camera_Movement direction, float deltaTime)
 {
 	float movement = Speed * deltaTime;
