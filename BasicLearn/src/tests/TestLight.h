@@ -30,8 +30,8 @@ namespace test {
 		std::unique_ptr<VertexArray> m_CubeVAO;
 		std::unique_ptr<Shader> m_CubeShader;
 
-		std::unique_ptr<VertexArray> m_LightVAO;
-		std::unique_ptr<Shader> m_LightShader;
+		std::unique_ptr<VertexArray> m_LampVAO;
+		std::unique_ptr<Shader> m_LampShader;
 	};
 
 }
