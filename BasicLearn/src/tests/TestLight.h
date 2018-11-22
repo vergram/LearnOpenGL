@@ -4,7 +4,7 @@
 #include "VertexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
-#include "Texture.h"
+#include "Texture2D.h"
 #include "Camera.h"
 #include <vector>
 
@@ -22,9 +22,9 @@ namespace test {
 
 	private:
 		Camera m_Camera;
-		Texture m_WoodTexture;
-		Texture m_SteelTexture;
-		Texture m_EmissionTexture;
+		Texture2D m_WoodTexture;
+		Texture2D m_SteelTexture;
+		Texture2D m_EmissionTexture;
 		std::unique_ptr<VertexBuffer> m_VBO;
 
 		std::unique_ptr<VertexArray> m_CubeVAO;

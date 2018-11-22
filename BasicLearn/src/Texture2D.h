@@ -2,7 +2,7 @@
 
 #include <string>
 
-class Texture
+class Texture2D
 {
 private:
 	unsigned int m_RendererID;
@@ -10,8 +10,8 @@ private:
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, m_BPP;
 public:
-	Texture(const std::string& path);
-	~Texture();
+	Texture2D(const std::string& path);
+	~Texture2D();
 
 	void Bind(unsigned int slot = 0) const;
 	void Unbind() const;

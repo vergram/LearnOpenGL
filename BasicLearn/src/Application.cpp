@@ -19,7 +19,7 @@
 #include "IndexBuffer.h"
 #include "Shader.h"
 #include "Renderer.h"
-#include "Texture.h"
+#include "Texture2D.h"
 #include "Camera.h"
 #include "Input.h"
 #include "Window.h"

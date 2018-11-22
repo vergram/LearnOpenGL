@@ -1,10 +1,10 @@
-#include "Texture.h"
+#include "Texture2D.h"
 #include "Renderer.h"
 #include "stb_image/stb_image.h"
 
 #include <iostream>
 
-Texture::Texture(const std::string & path)
+Texture2D::Texture2D(const std::string & path)
 	: m_RendererID(0), m_FilePath(path), m_LocalBuffer(nullptr), 
 	m_Width(0), m_Height(0), m_BPP(0)
 {
@@ -28,18 +28,18 @@ Texture::Texture(const std::string & path)
 	}
 }
 
-Texture::~Texture()
+Texture2D::~Texture2D()
 {
 	GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
-void Texture::Bind(unsigned int slot) const
+void Texture2D::Bind(unsigned int slot) const
 {
 	GLCall(glActiveTexture(GL_TEXTURE0 + slot));
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
 }
 
-void Texture::Unbind() const
+void Texture2D::Unbind() const
 {
 	GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 }

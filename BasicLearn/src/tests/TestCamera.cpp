@@ -80,8 +80,8 @@ namespace test{
 
 		m_Shader->Bind();
 
-		m_Textures.push_back(std::make_unique<Texture>("res/image/wall.jpg"));
-		m_Textures.push_back(std::make_unique<Texture>("res/image/awesomeface.png"));
+		m_Textures.push_back(std::make_unique<Texture2D>("res/image/wall.jpg"));
+		m_Textures.push_back(std::make_unique<Texture2D>("res/image/awesomeface.png"));
 
 		for (int i = 0; i < m_Textures.size(); i++)
 		{
