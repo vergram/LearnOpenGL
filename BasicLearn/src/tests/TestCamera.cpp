@@ -2,6 +2,8 @@
 
 #include "VertexBufferLayout.h"
 #include "Renderer.h"
+#include "Input.h"
+#include "Window.h"
 
 #include "imgui/imgui.h"
 
@@ -70,6 +72,9 @@ namespace test{
 
 	TestCamera::TestCamera():m_Camera()
 	{
+		// tell GLFW to capture our mouse
+		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 		m_VAO = std::make_unique<VertexArray>();
 		m_Shader = std::make_unique<Shader>("res/shader/Basic.shader");
 		m_VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
@@ -97,8 +102,39 @@ namespace test{
 	TestCamera::~TestCamera()
 	{}
 
-	void TestCamera::OnUpdate(float delaTime)
-	{}
+	void TestCamera::OnUpdate(float deltaTime)
+	{
+		if (Input::currentKeys[KeyBoard::ESC])
+		{
+			glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			Input::currentKeys[KeyBoard::ESC] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::W])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::FORWARD, deltaTime);
+			Input::currentKeys[KeyBoard::W] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::A])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::LEFT, deltaTime);
+			Input::currentKeys[KeyBoard::A] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::S])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::BACKWARD, deltaTime);
+			Input::currentKeys[KeyBoard::S] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::D])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::RIGHT, deltaTime);
+			Input::currentKeys[KeyBoard::D] = 0;
+		}
+		m_Camera.MoveCameraDirection(Input::MouseMovementX, Input::MouseMovementY);
+		Input::MouseMovementX = 0;
+		Input::MouseMovementY = 0;
+		m_Camera.ZoomCameraView(Input::MouseSrollOffset);
+		Input::MouseSrollOffset = 0;
+	}
 
 	void TestCamera::OnRender()
 	{

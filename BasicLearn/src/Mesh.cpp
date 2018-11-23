@@ -12,7 +12,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std:
 	setupMesh();
 }
 
-void Mesh::Draw(Shader shader)
+void Mesh::Draw(Shader& shader)
 {
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
@@ -30,7 +30,7 @@ void Mesh::Draw(Shader shader)
 			number = std::to_string(specularNr++);
 		}
 
-		shader.SetUniform1i(("material." + name + number).c_str(), i);
+		shader.SetUniform1i((/*"material." + */name + number).c_str(), i);
 		GLCall(glBindTexture(GL_TEXTURE_2D, textures[i].id));
 	}
 	GLCall(glActiveTexture(GL_TEXTURE0));

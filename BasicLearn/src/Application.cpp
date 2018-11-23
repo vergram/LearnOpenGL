@@ -28,6 +28,7 @@
 #include "tests/TestTexture.h"
 #include "tests/TestCamera.h"
 #include "tests/TestLight.h"
+#include "tests/TestModel.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -104,6 +105,7 @@ int main()
 		testMenu->RegisterTest<test::TestTexture>("Texture");
 		testMenu->RegisterTest<test::TestCamera>("Camera");
 		testMenu->RegisterTest<test::TestLight>("Light");
+		testMenu->RegisterTest<test::TestModel>("Model");
 
 		while (!glfwWindowShouldClose(Window::window))
 		{

@@ -151,7 +151,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\glfw-3.2.1\glad\src\glad.c" />
-    <ClCompile Include="Model.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Shader.cpp" />
@@ -162,6 +162,7 @@
     <ClCompile Include="src\tests\TestCamera.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestLight.cpp" />
+    <ClCompile Include="src\tests\TestModel.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\vendor\imgui\imgui.cpp" />
@@ -176,9 +177,12 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\models\nanosuit\nanosuit.blend" />
+    <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Cube.shader" />
     <None Include="res\shader\Light.shader" />
+    <None Include="res\shader\Model.shader" />
     <None Include="src\vendor\glm\core\func_common.inl" />
     <None Include="src\vendor\glm\core\func_exponential.inl" />
     <None Include="src\vendor\glm\core\func_geometric.inl" />
@@ -284,7 +288,7 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Model.h" />
+    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\Camera.h" />
@@ -295,6 +299,7 @@
     <ClInclude Include="src\tests\TestCamera.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestLight.h" />
+    <ClInclude Include="src\tests\TestModel.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
     <ClInclude Include="src\vendor\glm\core\func_common.hpp" />
     <ClInclude Include="src\vendor\glm\core\func_exponential.hpp" />
@@ -436,6 +441,26 @@
     <Image Include="res\image\lighting_maps_specular_color.png" />
     <Image Include="res\image\matrix.jpg" />
     <Image Include="res\image\wall.jpg" />
+    <Image Include="res\models\nanosuit\arm_dif.png" />
+    <Image Include="res\models\nanosuit\arm_showroom_ddn.png" />
+    <Image Include="res\models\nanosuit\arm_showroom_spec.png" />
+    <Image Include="res\models\nanosuit\body_dif.png" />
+    <Image Include="res\models\nanosuit\body_showroom_ddn.png" />
+    <Image Include="res\models\nanosuit\body_showroom_spec.png" />
+    <Image Include="res\models\nanosuit\glass_ddn.png" />
+    <Image Include="res\models\nanosuit\glass_dif.png" />
+    <Image Include="res\models\nanosuit\hand_dif.png" />
+    <Image Include="res\models\nanosuit\hand_showroom_ddn.png" />
+    <Image Include="res\models\nanosuit\hand_showroom_spec.png" />
+    <Image Include="res\models\nanosuit\helmet_diff.png" />
+    <Image Include="res\models\nanosuit\helmet_showroom_ddn.png" />
+    <Image Include="res\models\nanosuit\helmet_showroom_spec.png" />
+    <Image Include="res\models\nanosuit\leg_dif.png" />
+    <Image Include="res\models\nanosuit\leg_showroom_ddn.png" />
+    <Image Include="res\models\nanosuit\leg_showroom_spec.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="res\models\nanosuit\LICENSE.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
