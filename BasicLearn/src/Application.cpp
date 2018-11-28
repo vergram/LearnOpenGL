@@ -29,6 +29,7 @@
 #include "tests/TestCamera.h"
 #include "tests/TestLight.h"
 #include "tests/TestModel.h"
+#include "tests/TestDepth.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -106,6 +107,7 @@ int main()
 		testMenu->RegisterTest<test::TestCamera>("Camera");
 		testMenu->RegisterTest<test::TestLight>("Light");
 		testMenu->RegisterTest<test::TestModel>("Model");
+		testMenu->RegisterTest<test::TestDepth>("DepthTest");
 
 		while (!glfwWindowShouldClose(Window::window))
 		{
@@ -206,4 +208,5 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos)
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
 	Input::MouseSrollOffset = yoffset;
+	std::cout << "scrolling mouse and yoffset = " << yoffset << std::endl;
 }

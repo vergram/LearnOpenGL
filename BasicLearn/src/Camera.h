@@ -22,6 +22,8 @@ public:
 	~Camera();
 
 	glm::mat4 GetProjectViewMatrix() const;
+	glm::mat4 GetViewMatrix() const;
+	glm::mat4 GetProjectionMatrix() const;
 	glm::vec3 GetPosition() const;
 	glm::vec3 GetForward() const;
 

@@ -24,6 +24,16 @@ glm::mat4 Camera::GetProjectViewMatrix() const
 	return m_Projection * glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
 }
 
+glm::mat4 Camera::GetViewMatrix() const
+{
+	return glm::lookAt(m_Position, m_Position + m_Forward, m_Up);
+}
+
+glm::mat4 Camera::GetProjectionMatrix() const
+{
+	return m_Projection;
+}
+
 glm::vec3 Camera::GetPosition() const
 {
 	return m_Position;

@@ -90,6 +90,9 @@
     <ClCompile Include="src\tests\TestModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestDepth.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -527,6 +530,9 @@
     <ClInclude Include="src\tests\TestModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestDepth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -844,6 +850,7 @@
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Model.shader" />
+    <None Include="res\shader\DepthTest.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
@@ -913,6 +920,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\models\nanosuit\leg_showroom_spec.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\image\marble.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\image\metal.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

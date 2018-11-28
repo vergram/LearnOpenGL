@@ -161,6 +161,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestCamera.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
+    <ClCompile Include="src\tests\TestDepth.cpp" />
     <ClCompile Include="src\tests\TestLight.cpp" />
     <ClCompile Include="src\tests\TestModel.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
@@ -181,6 +182,7 @@
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Cube.shader" />
+    <None Include="res\shader\DepthTest.shader" />
     <None Include="res\shader\Light.shader" />
     <None Include="res\shader\Model.shader" />
     <None Include="src\vendor\glm\core\func_common.inl" />
@@ -298,6 +300,7 @@
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestCamera.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
+    <ClInclude Include="src\tests\TestDepth.h" />
     <ClInclude Include="src\tests\TestLight.h" />
     <ClInclude Include="src\tests\TestModel.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
@@ -439,7 +442,9 @@
     <Image Include="res\image\container2.png" />
     <Image Include="res\image\container2_specular.png" />
     <Image Include="res\image\lighting_maps_specular_color.png" />
+    <Image Include="res\image\marble.jpg" />
     <Image Include="res\image\matrix.jpg" />
+    <Image Include="res\image\metal.png" />
     <Image Include="res\image\wall.jpg" />
     <Image Include="res\models\nanosuit\arm_dif.png" />
     <Image Include="res\models\nanosuit\arm_showroom_ddn.png" />
