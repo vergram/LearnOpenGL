@@ -851,6 +851,7 @@
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Model.shader" />
     <None Include="res\shader\DepthTest.shader" />
+    <None Include="res\shader\StencilTest.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

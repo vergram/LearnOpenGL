@@ -27,7 +27,7 @@ Renderer::~Renderer()
 void Renderer::Clear() const
 {
 	GLCall(glClearColor(0.9f, 0.9f, 0.9f, 1.0f));       // 设置清空屏幕所用的颜色
-	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));               // 清空颜色
+	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT));               // 清空颜色
 }
 
 void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)

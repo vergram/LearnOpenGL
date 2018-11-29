@@ -27,6 +27,7 @@ namespace test {
 		std::unique_ptr<VertexBuffer> m_PlaneVBO;
 		std::unique_ptr<VertexArray> m_PlaneVAO;
 		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Shader> m_SingleColorShader;
 		Texture2D m_CubeTexture;
 		Texture2D m_PlaneTexture;
 
