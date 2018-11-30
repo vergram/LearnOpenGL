@@ -26,10 +26,15 @@ namespace test {
 		std::unique_ptr<VertexArray> m_CubeVAO;
 		std::unique_ptr<VertexBuffer> m_PlaneVBO;
 		std::unique_ptr<VertexArray> m_PlaneVAO;
+		std::unique_ptr<VertexBuffer> m_GrassVBO;
+		std::unique_ptr<VertexArray> m_GrassVAO;
+
 		std::unique_ptr<Shader> m_Shader;
+		std::unique_ptr<Shader> m_TransparentShader;
 		std::unique_ptr<Shader> m_SingleColorShader;
 		Texture2D m_CubeTexture;
 		Texture2D m_PlaneTexture;
+		Texture2D m_TransparentTexture;
 
 	};
 

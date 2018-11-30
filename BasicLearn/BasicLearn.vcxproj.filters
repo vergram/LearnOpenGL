@@ -852,6 +852,7 @@
     <None Include="res\shader\Model.shader" />
     <None Include="res\shader\DepthTest.shader" />
     <None Include="res\shader\StencilTest.shader" />
+    <None Include="res\shader\Blend.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
@@ -927,6 +928,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\image\metal.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\image\grass.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\image\window.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

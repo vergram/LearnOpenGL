@@ -181,6 +181,7 @@
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Basic.shader" />
+    <None Include="res\shader\Blend.shader" />
     <None Include="res\shader\Cube.shader" />
     <None Include="res\shader\DepthTest.shader" />
     <None Include="res\shader\Light.shader" />
@@ -442,11 +443,13 @@
     <Image Include="res\image\awesomeface.png" />
     <Image Include="res\image\container2.png" />
     <Image Include="res\image\container2_specular.png" />
+    <Image Include="res\image\grass.png" />
     <Image Include="res\image\lighting_maps_specular_color.png" />
     <Image Include="res\image\marble.jpg" />
     <Image Include="res\image\matrix.jpg" />
     <Image Include="res\image\metal.png" />
     <Image Include="res\image\wall.jpg" />
+    <Image Include="res\image\window.png" />
     <Image Include="res\models\nanosuit\arm_dif.png" />
     <Image Include="res\models\nanosuit\arm_showroom_ddn.png" />
     <Image Include="res\models\nanosuit\arm_showroom_spec.png" />
