@@ -28,48 +28,49 @@ namespace test{
 		GLCall(glDepthFunc(GL_LESS));
 
 		float cubeVertices[] = {
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
+			// Back face
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, // bottom-right         
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right
+			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // bottom-left
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+			// Front face
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+			 0.5f,  0.5f,  0.5f,  1.0f, 1.0f, // top-right
+			-0.5f,  0.5f,  0.5f,  0.0f, 1.0f, // top-left
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left
+			// Left face
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+			-0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-left
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-left
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+			-0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-right
+			// Right face
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right         
+			 0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // bottom-right
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // top-left
+			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-left     
+			// Bottom face
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+			 0.5f, -0.5f, -0.5f,  1.0f, 1.0f, // top-left
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, // bottom-left
+			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, // bottom-right
+			-0.5f, -0.5f, -0.5f,  0.0f, 1.0f, // top-right
+			// Top face
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			 0.5f,  0.5f, -0.5f,  1.0f, 1.0f, // top-right     
+			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, // bottom-right
+			-0.5f,  0.5f, -0.5f,  0.0f, 1.0f, // top-left
+			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f  // bottom-left        
+		};
 		float planeVertices[] = {
 			// positions          // texture Coords (note we set these higher than 1 (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
 			 5.0f, -0.5f,  5.0f,  1.0f, 0.0f,
@@ -129,6 +130,8 @@ namespace test{
 		m_Shader->SetUniformMatrix4fv("view", view);
 		m_Shader->SetUniformMatrix4fv("projection", projection);
 
+		GLCall(glEnable(GL_CULL_FACE));
+		
 		// draw plane
 		m_PlaneTexture.Bind();
 		m_Shader->SetUniformMatrix4fv("model", glm::mat4(1.0f));
@@ -140,6 +143,8 @@ namespace test{
 		GLCall(glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE));        // if pass stencil test set stencil buffer to ref value
 		GLCall(glStencilMask(0xff));                                 // enable writing to the stencil buffer
 
+		//GLCall(glEnable(GL_CULL_FACE));
+
 		m_CubeTexture.Bind();
 		glm::mat4 cubeModel1(1.0f);
 		cubeModel1 = glm::translate(cubeModel1, glm::vec3(-1.0f, 0.01f, -1.0f));
@@ -150,6 +155,8 @@ namespace test{
 		cubeModel2 = glm::translate(cubeModel2, glm::vec3(2.0f, 0.01f, 0.0f));
 		m_Shader->SetUniformMatrix4fv("model", cubeModel2);
 		renderer.Draw(*m_CubeVAO, *m_Shader, 36);
+
+		//GLCall(glDisable(GL_CULL_FACE));
 
 		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xff));                 // all the pixels outside the original cube will pass the test 
 		GLCall(glStencilMask(0x00));                                 // disable writing the stencil buffer
@@ -200,6 +207,9 @@ namespace test{
 			renderer.Draw(*m_GrassVAO, *m_TransparentShader, 6);
 		}
 		#pragma endregion 
+
+		GLCall(glDisable(GL_CULL_FACE));
+
 	}
 
 	TestDepth::~TestDepth()
