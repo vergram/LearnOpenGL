@@ -93,6 +93,9 @@
     <ClCompile Include="src\tests\TestDepth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestFrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -533,6 +536,9 @@
     <ClInclude Include="src\tests\TestDepth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestFrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -845,14 +851,15 @@
     <None Include="src\vendor\glm\gtx\wrap.inl">
       <Filter>Header Files</Filter>
     </None>
-    <None Include="res\shader\Light.shader" />
-    <None Include="res\shader\Cube.shader" />
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Model.shader" />
     <None Include="res\shader\DepthTest.shader" />
-    <None Include="res\shader\StencilTest.shader" />
     <None Include="res\shader\Blend.shader" />
+    <None Include="res\shader\Lighting.shader" />
+    <None Include="res\shader\Lamp.shader" />
+    <None Include="res\shader\SingleColor.shader" />
+    <None Include="res\shader\Post_Processing.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

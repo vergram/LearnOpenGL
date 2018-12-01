@@ -1,4 +1,4 @@
-#include "TestDepth.h"
+#include "TestFrameBuffer.h"
 
 #include "VertexBufferLayout.h"
 #include "Renderer.h"
@@ -12,10 +12,11 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <map>
+#include <iostream>
 
-namespace test{
+namespace test {
 
-	TestDepth::TestDepth()
+	TestFrameBuffer::TestFrameBuffer()
 		:m_Camera(),
 		m_CubeTexture("res/image/marble.jpg"),
 		m_PlaneTexture("res/image/metal.png"),
@@ -26,7 +27,7 @@ namespace test{
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 		GLCall(glDepthFunc(GL_LESS));
-
+		
 		float cubeVertices[] = {
 			// Back face
 			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, // Bottom-left
@@ -76,7 +77,7 @@ namespace test{
 			 5.0f, -0.5f,  5.0f,  1.0f, 0.0f,
 			-5.0f, -0.5f,  5.0f,  0.0f, 0.0f,
 			-5.0f, -0.5f, -5.0f,  0.0f, 1.0f,
-					   
+
 			 5.0f, -0.5f,  5.0f,  1.0f, 0.0f,
 			-5.0f, -0.5f, -5.0f,  0.0f, 1.0f,
 			 5.0f, -0.5f, -5.0f,  1.0f, 1.0f
@@ -91,17 +92,65 @@ namespace test{
 			1.0f, -0.5f,  0.0f,  0.0f,  0.0f,
 			1.0f,  0.5f,  0.0f,  0.0f,  1.0f
 		};
+		float quadVertices[] = {
+			// positions   // texCoords
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			-1.0f, -1.0f,  0.0f, 0.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f,
+
+			-1.0f,  1.0f,  0.0f, 1.0f,
+			 1.0f, -1.0f,  1.0f, 0.0f,
+			 1.0f,  1.0f,  1.0f, 1.0f
+		};
+
+		#pragma region framebuffer init
+		// generate framebuffer
+		GLCall(glGenFramebuffers(1, &m_fbo));
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+
+		// add a color buffer for the framebuffer
+		GLCall(glGenTextures(1, &m_TexColorBuffer));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_TexColorBuffer));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexColorBuffer, 0));
+
+		// add depth and stencil Render buffer object for the framebuffer
+		GLCall(glGenRenderbuffers(1, &m_rbo));
+		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_rbo));
+		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600));
+		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, 0));
+		GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo));
+
+		// check is the framebuffer complete
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "ERROR:: FRAMEBUFFER is NOT COMPLETE." << std::endl;
+		}
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		#pragma endregion
+
+		m_QuadVAO = std::make_unique<VertexArray>();
+		m_QuadVBO = std::make_unique<VertexBuffer>(quadVertices, sizeof(quadVertices));
+
+		VertexBufferLayout texLayout;
+		texLayout.Push<float>(2);
+		texLayout.Push<float>(2);
+		m_QuadVAO->AddBuffer(*m_QuadVBO, texLayout);
 
 		m_SingleColorShader = std::make_unique<Shader>("res/shader/SingleColor.shader");
-		m_Shader = std::make_unique<Shader>("res/shader/DepthTest.shader");
+		m_SceneShader = std::make_unique<Shader>("res/shader/DepthTest.shader");
 		m_TransparentShader = std::make_unique<Shader>("res/shader/Blend.shader");
+		m_QuadShader = std::make_unique<Shader>("res/shader/Post_Processing.shader");
 
 		m_CubeVAO = std::make_unique<VertexArray>();
 		m_CubeVBO = std::make_unique<VertexBuffer>(cubeVertices, sizeof(cubeVertices));
 
 		m_PlaneVAO = std::make_unique<VertexArray>();
 		m_PlaneVBO = std::make_unique<VertexBuffer>(planeVertices, sizeof(planeVertices));
-
+		
 		m_GrassVAO = std::make_unique<VertexArray>();
 		m_GrassVBO = std::make_unique<VertexBuffer>(grassVertices, sizeof(grassVertices));
 
@@ -112,73 +161,43 @@ namespace test{
 		m_PlaneVAO->AddBuffer(*m_PlaneVBO, layout);
 		m_GrassVAO->AddBuffer(*m_GrassVBO, layout);
 
-		m_Shader->Bind();
-		m_Shader->SetUniform1i("texture0", 0);
-
-		m_TransparentShader->Bind();
-		m_TransparentShader->SetUniform1i("texture0", 0);
 	}
 
-	void TestDepth::OnRender()
+	void TestFrameBuffer::OnRender()
 	{
 		Renderer renderer;
 
 		glm::mat4 view = m_Camera.GetViewMatrix();
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
-		m_Shader->Bind();
-		m_Shader->SetUniformMatrix4fv("view", view);
-		m_Shader->SetUniformMatrix4fv("projection", projection);
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+		GLCall(glClearColor(0.1f, 0.1f, 0.1f, 0.1f));
+		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
+		GLCall(glEnable(GL_DEPTH_TEST));
 
-		GLCall(glEnable(GL_CULL_FACE));
-		
+		#pragma region draw scene
+		m_SceneShader->Bind();
+		m_SceneShader->SetUniformMatrix4fv("view", view);
+		m_SceneShader->SetUniformMatrix4fv("projection", projection);
+
 		// draw plane
 		m_PlaneTexture.Bind();
-		m_Shader->SetUniformMatrix4fv("model", glm::mat4(1.0f));
-		renderer.Draw(*m_PlaneVAO, *m_Shader, 6);
+		m_SceneShader->SetUniformMatrix4fv("model", glm::mat4(1.0f));
+		renderer.Draw(*m_PlaneVAO, *m_SceneShader, 6);
 
-		//GLCall(glStencilMask(0x00));                               // do not allow writing the stencil buffer because we dont want the plane influence our cube outlining
-		GLCall(glEnable(GL_STENCIL_TEST));                           // enable stencil test
-		GLCall(glStencilFunc(GL_ALWAYS, 1, 0xff));                   // set every pixels in cube pass the stencil test
-		GLCall(glStencilOp(GL_KEEP, GL_REPLACE, GL_REPLACE));        // if pass stencil test set stencil buffer to ref value
-		GLCall(glStencilMask(0xff));                                 // enable writing to the stencil buffer
-
-		//GLCall(glEnable(GL_CULL_FACE));
-
+		// draw cube
 		m_CubeTexture.Bind();
 		glm::mat4 cubeModel1(1.0f);
 		cubeModel1 = glm::translate(cubeModel1, glm::vec3(-1.0f, 0.01f, -1.0f));
-		m_Shader->SetUniformMatrix4fv("model", cubeModel1);
-		renderer.Draw(*m_CubeVAO, *m_Shader, 36);
+		m_SceneShader->SetUniformMatrix4fv("model", cubeModel1);
+		renderer.Draw(*m_CubeVAO, *m_SceneShader, 36);
 
 		glm::mat4 cubeModel2(1.0f);
 		cubeModel2 = glm::translate(cubeModel2, glm::vec3(2.0f, 0.01f, 0.0f));
-		m_Shader->SetUniformMatrix4fv("model", cubeModel2);
-		renderer.Draw(*m_CubeVAO, *m_Shader, 36);
+		m_SceneShader->SetUniformMatrix4fv("model", cubeModel2);
+		renderer.Draw(*m_CubeVAO, *m_SceneShader, 36);
 
-		//GLCall(glDisable(GL_CULL_FACE));
-
-		GLCall(glStencilFunc(GL_NOTEQUAL, 1, 0xff));                 // all the pixels outside the original cube will pass the test 
-		GLCall(glStencilMask(0x00));                                 // disable writing the stencil buffer
-		GLCall(glDisable(GL_DEPTH_TEST));                            // we want the outlining wont cover by depth test
-
-		m_SingleColorShader->Bind();
-		m_SingleColorShader->SetUniformMatrix4fv("view", view);
-		m_SingleColorShader->SetUniformMatrix4fv("projection", projection);
-		
-		cubeModel1 = glm::scale(cubeModel1, glm::vec3(1.1f));
-		m_SingleColorShader->SetUniformMatrix4fv("model", cubeModel1);
-		renderer.Draw(*m_CubeVAO, *m_SingleColorShader, 36);
-
-		cubeModel2 = glm::scale(cubeModel2, glm::vec3(1.1f));
-		m_SingleColorShader->SetUniformMatrix4fv("model", cubeModel2);
-		renderer.Draw(*m_CubeVAO, *m_SingleColorShader, 36);
-
-		GLCall(glEnable(GL_DEPTH_TEST));                             // reenable depth test
-		GLCall(glStencilMask(0xff));                                 // for we need to clear stencil buffer every frame
-		GLCall(glDisable(GL_STENCIL_TEST));                          // disable stencil test or imgui wont work fine
-
-		#pragma region transparent texture
+		// draw transparent texture
 		std::vector<glm::vec3> windows{
 		glm::vec3(-1.5f, 0.0f, -0.48f),
 		glm::vec3( 1.5f, 0.0f,  0.51f),
@@ -208,15 +227,19 @@ namespace test{
 		}
 		#pragma endregion 
 
-		GLCall(glDisable(GL_CULL_FACE));
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		GLCall(glDisable(GL_DEPTH_TEST));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_TexColorBuffer));
+
+		renderer.Draw(*m_QuadVAO, *m_QuadShader, 6);
+
 
 	}
 
-	TestDepth::~TestDepth()
-	{
-	}
+	TestFrameBuffer::~TestFrameBuffer()
+	{}
 
-	void TestDepth::OnUpdate(float deltaTime)
+	void TestFrameBuffer::OnUpdate(float deltaTime)
 	{
 		if (Input::currentKeys[KeyBoard::ESC])
 		{

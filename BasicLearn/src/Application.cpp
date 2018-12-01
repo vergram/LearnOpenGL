@@ -30,6 +30,7 @@
 #include "tests/TestLight.h"
 #include "tests/TestModel.h"
 #include "tests/TestDepth.h"
+#include "tests/TestFrameBuffer.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -108,7 +109,8 @@ int main()
 		testMenu->RegisterTest<test::TestLight>("Light");
 		testMenu->RegisterTest<test::TestModel>("Model");
 		testMenu->RegisterTest<test::TestDepth>("DepthTest");
-
+		testMenu->RegisterTest<test::TestFrameBuffer>("FrameBuffer");
+		
 		while (!glfwWindowShouldClose(Window::window))
 		{
 			// per-frame time logic

@@ -94,13 +94,13 @@ namespace test{
 		layout.Push<float>(3);
 		layout.Push<float>(2);
 		m_LampVAO = std::make_unique<VertexArray>();
-		m_LampShader = std::make_unique<Shader>("res/shader/Light.shader");
+		m_LampShader = std::make_unique<Shader>("res/shader/Lamp.shader");
 
 		m_LampVAO->AddBuffer(*m_VBO, layout);
 		m_LampShader->Bind();
 
 		m_CubeVAO = std::make_unique<VertexArray>();
-		m_CubeShader = std::make_unique<Shader>("res/shader/Cube.shader");
+		m_CubeShader = std::make_unique<Shader>("res/shader/Lighting.shader");
 		
 		m_CubeVAO->AddBuffer(*m_VBO, layout);
 		m_CubeShader->Bind();
