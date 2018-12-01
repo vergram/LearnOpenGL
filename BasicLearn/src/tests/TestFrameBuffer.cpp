@@ -18,7 +18,7 @@ namespace test {
 
 	TestFrameBuffer::TestFrameBuffer()
 		:m_Camera(),
-		m_CubeTexture("res/image/marble.jpg"),
+		m_CubeTexture("res/image/container.jpg"),
 		m_PlaneTexture("res/image/metal.png"),
 		m_TransparentTexture("res/image/window.png")
 	{
