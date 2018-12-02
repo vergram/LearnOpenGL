@@ -24,9 +24,6 @@ namespace test {
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		GLCall(glEnable(GL_BLEND));
-		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
-		GLCall(glDepthFunc(GL_LESS));
 		
 		float cubeVertices[] = {
 			// Back face
@@ -114,6 +111,8 @@ namespace test {
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexColorBuffer, 0));
 
@@ -174,6 +173,9 @@ namespace test {
 		GLCall(glClearColor(0.1f, 0.1f, 0.1f, 0.1f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		GLCall(glEnable(GL_DEPTH_TEST));
+		GLCall(glDepthFunc(GL_LESS));
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA));
 
 		#pragma region draw scene
 		m_SceneShader->Bind();
@@ -228,6 +230,7 @@ namespace test {
 		#pragma endregion 
 
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		GLCall(glDisable(GL_BLEND));
 		GLCall(glDisable(GL_DEPTH_TEST));
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_TexColorBuffer));
 
