@@ -31,6 +31,7 @@
 #include "tests/TestModel.h"
 #include "tests/TestDepth.h"
 #include "tests/TestFrameBuffer.h"
+#include "tests/TestCubemap.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -103,13 +104,14 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
-		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
-		testMenu->RegisterTest<test::TestTexture>("Texture");
-		testMenu->RegisterTest<test::TestCamera>("Camera");
-		testMenu->RegisterTest<test::TestLight>("Light");
-		testMenu->RegisterTest<test::TestModel>("Model");
-		testMenu->RegisterTest<test::TestDepth>("DepthTest");
+		testMenu->RegisterTest<test::TestCubemap>("Skybox");
 		testMenu->RegisterTest<test::TestFrameBuffer>("FrameBuffer");
+		testMenu->RegisterTest<test::TestDepth>("DepthTest");
+		testMenu->RegisterTest<test::TestModel>("Model");
+		testMenu->RegisterTest<test::TestLight>("Light");
+		testMenu->RegisterTest<test::TestCamera>("Camera");
+		testMenu->RegisterTest<test::TestTexture>("Texture");
+		testMenu->RegisterTest<test::TestClearColor>("Clear Color");
 		
 		while (!glfwWindowShouldClose(Window::window))
 		{
