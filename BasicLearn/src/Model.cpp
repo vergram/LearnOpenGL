@@ -139,6 +139,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial * material, aiTextur
 			texture.type = typeName;
 			texture.path = str;
 			textures.push_back(texture);
+			m_Textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
 		}
 	}
 

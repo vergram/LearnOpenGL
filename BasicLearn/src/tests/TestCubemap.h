@@ -25,12 +25,16 @@ namespace test {
 	private:
 		Camera m_Camera;
 		std::unique_ptr<Model> m_Model;
+		std::unique_ptr<TextureCube> m_SkyboxTexture;
+
 		std::unique_ptr<Shader> m_NanosuitShader;
 		std::unique_ptr<Shader> m_SkyboxShader;
-		std::unique_ptr<TextureCube> m_SkyboxTexture;
+		std::unique_ptr<Shader> m_CubeShader;
 
 		std::unique_ptr<VertexArray> m_SkyboxVAO;
 		std::unique_ptr<VertexBuffer> m_SkyboxVBO;
+		std::unique_ptr<VertexArray> m_CubeVAO;
+		std::unique_ptr<VertexBuffer> m_CubeVBO;
 
 	};
 
