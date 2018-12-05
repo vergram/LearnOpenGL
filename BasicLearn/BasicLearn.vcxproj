@@ -185,6 +185,8 @@
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Blend.shader" />
+    <None Include="res\shader\Envmap.shader" />
+    <None Include="res\shader\EnvmapModel.shader" />
     <None Include="res\shader\Lighting.shader" />
     <None Include="res\shader\DepthTest.shader" />
     <None Include="res\shader\Lamp.shader" />
@@ -449,6 +451,7 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\awesomeface.png" />
+    <Image Include="res\image\container.jpg" />
     <Image Include="res\image\container2.png" />
     <Image Include="res\image\container2_specular.png" />
     <Image Include="res\image\grass.png" />

@@ -873,6 +873,8 @@
     <None Include="res\shader\SingleColor.shader" />
     <None Include="res\shader\Post_Processing.shader" />
     <None Include="res\shader\Skybox.shader" />
+    <None Include="res\shader\Envmap.shader" />
+    <None Include="res\shader\EnvmapModel.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
@@ -954,6 +956,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="res\image\window.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="res\image\container.jpg">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

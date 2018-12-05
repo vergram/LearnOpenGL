@@ -63,7 +63,6 @@ namespace test{
 			-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  
 			-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  
 		};
-    
 		float skyboxVertices[] = {
 			// positions          
 			-1.0f,  1.0f, -1.0f,
@@ -128,11 +127,11 @@ namespace test{
 		layout.Push<float>(3);
 		m_CubeVAO->AddBuffer(*m_CubeVBO, layout);
 
-		m_Model = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj");
+		m_Model = std::make_unique<Model>("res/models/nanosuit_reflection/nanosuit.obj");
 		m_SkyboxTexture = std::make_unique<TextureCube>(skyboxFacePaths);
 
 		m_SkyboxShader = std::make_unique<Shader>("res/shader/Skybox.shader");
-		m_NanosuitShader = std::make_unique<Shader>("res/shader/Model.shader");
+		m_NanosuitShader = std::make_unique<Shader>("res/shader/EnvmapModel.shader");
 		m_CubeShader = std::make_unique<Shader>("res/shader/Envmap.shader");
 		
 	}
@@ -144,16 +143,23 @@ namespace test{
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
 		GLCall(glDepthFunc(GL_LESS));
-		//m_NanosuitShader->Bind();
-		//glm::mat4 model(1.0f);
-		//model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
-		//m_NanosuitShader->SetUniformMatrix4fv("model", model);
-		//m_NanosuitShader->SetUniformMatrix4fv("projectionView", m_Camera.GetProjectViewMatrix());
-		//m_Model->Draw(*m_NanosuitShader);
+		m_NanosuitShader->Bind();
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+		model = glm::rotate(model, 180.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		m_NanosuitShader->SetUniformMatrix4fv("model", model);
+		m_NanosuitShader->SetUniformMatrix4fv("view", view);
+		m_NanosuitShader->SetUniformMatrix4fv("projection", projection);
+		m_NanosuitShader->SetUniform3f("cameraPos", m_Camera.GetPosition());
+		m_NanosuitShader->SetUniform1i("envmap", 3);
+		m_SkyboxTexture->Bind(3);            // the nanosuit model we loaded have 3 ACTIVE texture unit, so we set the skybox as the 4th texture unit
+		m_Model->Draw(*m_NanosuitShader);
 
 		m_CubeShader->Bind();
-		m_CubeShader->SetUniformMatrix4fv("model", glm::mat4(1.0f));
+		glm::mat4 modelCube(1.0f);
+		modelCube = glm::translate(modelCube, glm::vec3(0.0f, 0.0f, 4.0f));
+		m_CubeShader->SetUniformMatrix4fv("model", modelCube);
 		m_CubeShader->SetUniformMatrix4fv("view", view);
 		m_CubeShader->SetUniformMatrix4fv("projection", projection);
 		m_CubeShader->SetUniform3f("cameraPos", m_Camera.GetPosition());
