@@ -32,6 +32,7 @@
 #include "tests/TestDepth.h"
 #include "tests/TestFrameBuffer.h"
 #include "tests/TestCubemap.h"
+#include "tests/TestAdvanceGLSL.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -104,6 +105,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestAdvanceGLSL>("UniformBufferObject");
 		testMenu->RegisterTest<test::TestCubemap>("Skybox");
 		testMenu->RegisterTest<test::TestFrameBuffer>("FrameBuffer");
 		testMenu->RegisterTest<test::TestDepth>("DepthTest");

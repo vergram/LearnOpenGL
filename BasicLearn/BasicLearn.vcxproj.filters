@@ -102,6 +102,9 @@
     <ClCompile Include="src\TextureCube.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestAdvanceGLSL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -551,6 +554,9 @@
     <ClInclude Include="src\TextureCube.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestAdvanceGLSL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -875,6 +881,10 @@
     <None Include="res\shader\Skybox.shader" />
     <None Include="res\shader\Envmap.shader" />
     <None Include="res\shader\EnvmapModel.shader" />
+    <None Include="res\shader\UboSingleColorB.shader" />
+    <None Include="res\shader\UboSingleColorG.shader" />
+    <None Include="res\shader\UboSingleColorR.shader" />
+    <None Include="res\shader\UboSingleColorY.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
