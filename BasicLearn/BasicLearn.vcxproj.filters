@@ -892,6 +892,8 @@
     <None Include="res\shader\UboSingleColorR.shader" />
     <None Include="res\shader\UboSingleColorY.shader" />
     <None Include="res\shader\GeoSingleColor.shader" />
+    <None Include="res\shader\GeoExplodeModel.shader" />
+    <None Include="res\shader\GeoNormalVisualize.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

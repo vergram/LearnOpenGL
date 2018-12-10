@@ -189,6 +189,8 @@
     <None Include="res\shader\Blend.shader" />
     <None Include="res\shader\Envmap.shader" />
     <None Include="res\shader\EnvmapModel.shader" />
+    <None Include="res\shader\GeoExplodeModel.shader" />
+    <None Include="res\shader\GeoNormalVisualize.shader" />
     <None Include="res\shader\GeoSingleColor.shader" />
     <None Include="res\shader\Lighting.shader" />
     <None Include="res\shader\DepthTest.shader" />

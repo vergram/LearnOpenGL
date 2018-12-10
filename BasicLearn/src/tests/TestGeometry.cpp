@@ -12,7 +12,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-
 namespace test{
 
 	TestGeometry::TestGeometry():m_Camera()
@@ -20,28 +19,34 @@ namespace test{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		float points[] = {
-			-0.5f,  0.5f, 1.0f, 0.0f, 0.0f, // 左上
-			 0.5f,  0.5f, 0.0f, 1.0f, 0.0f, // 右上
-			 0.5f, -0.5f, 0.0f, 0.0f, 1.0f, // 右下
-			-0.5f, -0.5f, 1.0f, 1.0f, 0.0f  // 左下
-		};
-		m_VAO = std::make_unique<VertexArray>();
-		m_VBO = std::make_unique<VertexBuffer>(points, sizeof(points));
-		VertexBufferLayout layout;
-		layout.Push<float>(2);
-		layout.Push<float>(3);
-		m_VAO->AddBuffer(*m_VBO, layout);
-		m_VAO->Bind();
-
-		m_Shader = std::make_unique<Shader>("res/shader/GeoSingleColor.shader");
+		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj");
+		m_ModelShader = std::make_unique<Shader>("res/shader/Model.shader");
+		m_NormalVisualizeShader = std::make_unique<Shader>("res/shader/GeoNormalVisualize.shader");
 	}
 
 	void TestGeometry::OnRender()
 	{
-		m_VAO->Bind();
-		m_Shader->Bind();
-		GLCall(glDrawArrays(GL_POINTS, 0, 4));
+		glm::mat4 model(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		glm::mat4 view = m_Camera.GetViewMatrix();
+		glm::mat4 projection = m_Camera.GetProjectionMatrix();
+
+		#pragma region model 
+		m_ModelShader->Bind();
+		m_ModelShader->SetUniformMatrix4fv("model", model);
+		m_ModelShader->SetUniformMatrix4fv("view", view);
+		m_ModelShader->SetUniformMatrix4fv("projection", projection);
+
+		m_Nanosuit->Draw(*m_ModelShader);
+		#pragma endregion 
+
+		m_NormalVisualizeShader->Bind();
+		m_NormalVisualizeShader->SetUniformMatrix4fv("model", model);
+		m_NormalVisualizeShader->SetUniformMatrix4fv("view", view);
+		m_NormalVisualizeShader->SetUniformMatrix4fv("projection", projection);
+
+		m_Nanosuit->Draw(*m_NormalVisualizeShader);
 	}
 	
 	TestGeometry::~TestGeometry()

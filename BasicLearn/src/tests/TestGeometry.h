@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Texture2D.h"
 #include "Camera.h"
+#include "Model.h"
 
 #include <vector>
 
@@ -22,10 +23,9 @@ namespace test {
 
 	private:
 		Camera m_Camera;
-		std::unique_ptr<VertexBuffer> m_VBO;
-		std::unique_ptr<VertexArray> m_VAO;
-		std::unique_ptr<Shader> m_Shader;
-
+		std::unique_ptr<Model> m_Nanosuit;
+		std::unique_ptr<Shader> m_ModelShader;
+		std::unique_ptr<Shader> m_NormalVisualizeShader;
 	};
 
 }

@@ -67,7 +67,9 @@ namespace test{
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
 		m_shader.SetUniformMatrix4fv("model", model);
-		m_shader.SetUniformMatrix4fv("projectionView", m_Camera.GetProjectViewMatrix());
+		m_shader.SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
+		m_shader.SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
+
 		m_Model.Draw(m_shader);
 
 	}

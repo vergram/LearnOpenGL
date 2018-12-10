@@ -16,14 +16,14 @@ out VS_OUT{
 
 out vec3 Normal;
 out vec3 Position;
-out vec2 TexCoords;
+//out vec2 TexCoords;
 
 void main()
 {
 	Normal = mat3(transpose(inverse(model))) * aNormal;
 	Position = vec3(model * vec4(aPos, 1.0f));
 	gl_Position = projection * view * model * vec4(aPos, 1.0f);
-	TexCoords = aTexCoords;
+	//TexCoords = aTexCoords;
 	vs_out.gl_Position = gl_Position;
 	vs_out.texCoords = aTexCoords;
 }
@@ -40,14 +40,14 @@ uniform sampler2D texture_diffuse1;
 
 void main()
 {
-	FragColor = vec4(texture_diffuse1, TexCoords);
+	FragColor = texture(texture_diffuse1, TexCoords);
 }
 
 
 #shader geometry
 #version 330 core
 
-layout(triganles) in;
+layout(triangles) in;
 layout(triangle_strip, max_vertices = 3) out;
 
 in VS_OUT{
@@ -55,12 +55,14 @@ in VS_OUT{
 	vec2 texCoords; 
 }gl_in[];
 
-out vec3 TexCoords;
+out vec2 TexCoords;
+
+uniform float time;
 
 vec3 GetNormal()
 {
-	vec3 a = vec3(gl_in[0].gl_Position) - vec3(gl_in.[1].gl_Position);
-	vec3 b = vec3(gl_in[1].gl_Position) - vec3(gl_in.[2].gl_Position);
+	vec3 a = vec3(gl_in[0].gl_Position) - vec3(gl_in[1].gl_Position);
+	vec3 b = vec3(gl_in[1].gl_Position) - vec3(gl_in[2].gl_Position);
 	return normalize(cross(a, b));
 }
 
