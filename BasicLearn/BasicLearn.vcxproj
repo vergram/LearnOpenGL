@@ -166,6 +166,7 @@
     <ClCompile Include="src\tests\TestDepth.cpp" />
     <ClCompile Include="src\tests\TestFrameBuffer.cpp" />
     <ClCompile Include="src\tests\TestGeometry.cpp" />
+    <ClCompile Include="src\tests\TestInstance.cpp" />
     <ClCompile Include="src\tests\TestLight.cpp" />
     <ClCompile Include="src\tests\TestModel.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
@@ -192,6 +193,7 @@
     <None Include="res\shader\GeoExplodeModel.shader" />
     <None Include="res\shader\GeoNormalVisualize.shader" />
     <None Include="res\shader\GeoSingleColor.shader" />
+    <None Include="res\shader\Instance.shader" />
     <None Include="res\shader\Lighting.shader" />
     <None Include="res\shader\DepthTest.shader" />
     <None Include="res\shader\Lamp.shader" />
@@ -323,6 +325,7 @@
     <ClInclude Include="src\tests\TestDepth.h" />
     <ClInclude Include="src\tests\TestFrameBuffer.h" />
     <ClInclude Include="src\tests\TestGeometry.h" />
+    <ClInclude Include="src\tests\TestInstance.h" />
     <ClInclude Include="src\tests\TestLight.h" />
     <ClInclude Include="src\tests\TestModel.h" />
     <ClInclude Include="src\tests\TestTexture.h" />

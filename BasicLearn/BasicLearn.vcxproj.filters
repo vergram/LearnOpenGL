@@ -108,6 +108,9 @@
     <ClCompile Include="src\tests\TestGeometry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -563,6 +566,9 @@
     <ClInclude Include="src\tests\TestGeometry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestInstance.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -894,6 +900,7 @@
     <None Include="res\shader\GeoSingleColor.shader" />
     <None Include="res\shader\GeoExplodeModel.shader" />
     <None Include="res\shader\GeoNormalVisualize.shader" />
+    <None Include="res\shader\Instance.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
