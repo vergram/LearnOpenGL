@@ -31,6 +31,7 @@ public:
 	std::vector<Texture> textures;
 
 	void Draw(Shader& shader);
+	unsigned int GetVAO() const;
 
 private:
 	unsigned int VAO, VBO, EBO;

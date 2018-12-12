@@ -45,6 +45,11 @@ void Mesh::Draw(Shader& shader)
 
 }
 
+unsigned int Mesh::GetVAO() const
+{
+	return VAO;
+}
+
 void Mesh::setupMesh()
 {
 	GLCall(glGenVertexArrays(1, &VAO));

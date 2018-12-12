@@ -20,15 +20,19 @@ namespace test {
 
 		void OnUpdate(float delaTime) override;
 		void OnRender() override;
+		void OnImGuiRender() override;
 
 	private:
 		Camera m_Camera;
-		std::unique_ptr<Model> m_Nanosuit;
-		std::unique_ptr<VertexBuffer> m_QuadVBO;
-		std::unique_ptr<VertexArray> m_VAO;
+		std::unique_ptr<Model> m_Planet;
+		std::unique_ptr<Model> m_Rock;
 
-		std::unique_ptr<Shader> m_ModelShader;
-		std::unique_ptr<Shader> m_NormalVisualizeShader;
+		std::unique_ptr<Shader> m_PlanetShader;
+		std::unique_ptr<Shader> m_InstanceRockShader;
+
+		glm::mat4 * m_ModelMatrices;
+		unsigned int m_ModelMatrixAmount;
+
 	};
 
 }
