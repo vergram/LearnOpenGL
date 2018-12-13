@@ -100,28 +100,48 @@ namespace test {
 			 1.0f,  1.0f,  1.0f, 1.0f
 		};
 
-		#pragma region framebuffer init
+		#pragma region MSAA fbo
 		// generate framebuffer
-		GLCall(glGenFramebuffers(1, &m_fbo));
-		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+		GLCall(glGenFramebuffers(1, &m_MSAAfbo));
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_MSAAfbo));
 
 		// add a color buffer for the framebuffer
-		GLCall(glGenTextures(1, &m_TexColorBuffer));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_TexColorBuffer));
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
+		GLCall(glGenTextures(1, &m_MSAATexture));
+		GLCall(glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, m_MSAATexture));
+		GLCall(glTexImage2DMultisample(GL_TEXTURE_2D_MULTISAMPLE, 4, GL_RGB, 800, 600, GL_TRUE));
+		GLCall(glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, 0));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D_MULTISAMPLE, m_MSAATexture, 0));
+
+		// add depth and stencil Render buffer object for the framebuffer
+		GLCall(glGenRenderbuffers(1, &m_rbo));
+		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_rbo));
+		GLCall(glRenderbufferStorageMultisample(GL_RENDERBUFFER, 4, GL_DEPTH24_STENCIL8, 800, 600));
+		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, 0));
+		GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo));
+
+		// check is the framebuffer complete
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "ERROR:: FRAMEBUFFER is NOT COMPLETE." << std::endl;
+		}
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+		#pragma endregion
+
+		#pragma region Intermediate fbo
+		// generate framebuffer
+		GLCall(glGenFramebuffers(1, &m_Intermediatefbo));
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_Intermediatefbo));
+
+		// add a color buffer for the framebuffer
+		GLCall(glGenTextures(1, &m_ScreenTexture));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_ScreenTexture));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));	
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_TexColorBuffer, 0));
-
-		// add depth and stencil Render buffer object for the framebuffer
-		GLCall(glGenRenderbuffers(1, &m_rbo));
-		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_rbo));
-		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600));
-		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, 0));
-		GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_rbo));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_ScreenTexture, 0));
 
 		// check is the framebuffer complete
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -169,7 +189,7 @@ namespace test {
 		glm::mat4 view = m_Camera.GetViewMatrix();
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
-		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_fbo));
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_MSAAfbo));
 		GLCall(glClearColor(0.1f, 0.1f, 0.1f, 0.1f));
 		GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 		GLCall(glEnable(GL_DEPTH_TEST));
@@ -229,10 +249,16 @@ namespace test {
 		}
 		#pragma endregion 
 
+
+		GLCall(glBindFramebuffer(GL_READ_FRAMEBUFFER, m_MSAAfbo));
+		GLCall(glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_Intermediatefbo));
+		GLCall(glBlitFramebuffer(0, 0, 800, 600, 0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST));
+
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
 		GLCall(glDisable(GL_BLEND));
 		GLCall(glDisable(GL_DEPTH_TEST));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_TexColorBuffer));
+		GLCall(glActiveTexture(GL_TEXTURE0));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_ScreenTexture));
 
 		renderer.Draw(*m_QuadVAO, *m_QuadShader, 6);
 

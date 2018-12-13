@@ -35,13 +35,16 @@ namespace test {
 		std::unique_ptr<Shader> m_TransparentShader;
 		std::unique_ptr<Shader> m_SingleColorShader;
 		std::unique_ptr<Shader> m_QuadShader;
+		
 		Texture2D m_CubeTexture;
 		Texture2D m_PlaneTexture;
 		Texture2D m_TransparentTexture;
 
-		unsigned int m_fbo;
-		unsigned int m_TexColorBuffer;
+		unsigned int m_MSAAfbo;
+		unsigned int m_MSAATexture;
 		unsigned int m_rbo;
+		unsigned int m_Intermediatefbo;
+		unsigned int m_ScreenTexture;
 
 	};
 

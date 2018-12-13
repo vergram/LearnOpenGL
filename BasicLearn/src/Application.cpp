@@ -70,6 +70,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_SAMPLES, 4);        // enable 4 * MSAA 
 
 	Window::window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "LearnOpenGL", NULL, NULL);
 	if (Window::window == NULL)
@@ -93,7 +94,7 @@ int main()
 
 	{
 		GLCall(glViewport(0, 0, 800, 600));
-
+		glEnable(GL_MULTISAMPLE);                    // make sure we enable MSAA
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 线框模式
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // 填充模式
 
