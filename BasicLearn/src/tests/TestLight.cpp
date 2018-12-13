@@ -11,7 +11,40 @@
 
 #include "VertexBufferLayout.h"
 
-static const float vertices[] = {
+
+static const glm::vec3 cubePositions[] = {
+	glm::vec3( 0.0f,  0.0f,   0.0f),
+	glm::vec3( 2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f,  -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3( 2.4f, -0.4f,  -3.5f),
+	glm::vec3(-1.7f,  3.0f,  -7.5f),
+	glm::vec3( 1.3f, -2.0f,  -2.5f),
+	glm::vec3( 1.5f,  2.0f,  -2.5f),
+	glm::vec3( 1.5f,  0.2f,  -1.5f),
+	glm::vec3(-1.3f,  1.0f,  -1.5f)
+};
+
+// positions of the point lights
+static const glm::vec3 pointLightPositions[] = {
+	glm::vec3( 0.7f,  0.2f,   2.0f),
+	glm::vec3( 2.3f, -3.3f,  -4.0f),
+	glm::vec3(-4.0f,  2.0f, -12.0f),
+	glm::vec3( 0.0f,  0.0f,  -3.0f)
+};
+
+namespace test{
+
+	TestLight::TestLight()
+		:m_Camera(),
+		m_WoodTexture("res/image/container2.png"),
+		m_SteelTexture("res/image/container2_specular.png"), 
+		m_EmissionTexture("res/image/matrix.jpg")
+	{
+		// tell GLFW to capture our mouse
+		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		float vertices[] = {
 	// positions          // normals           // texture coords
 	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f,  0.0f,
 	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f,  0.0f,
@@ -55,39 +88,6 @@ static const float vertices[] = {
 	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  0.0f,
 	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f,  1.0f
 };
-
-static const glm::vec3 cubePositions[] = {
-	glm::vec3( 0.0f,  0.0f,   0.0f),
-	glm::vec3( 2.0f,  5.0f, -15.0f),
-	glm::vec3(-1.5f, -2.2f,  -2.5f),
-	glm::vec3(-3.8f, -2.0f, -12.3f),
-	glm::vec3( 2.4f, -0.4f,  -3.5f),
-	glm::vec3(-1.7f,  3.0f,  -7.5f),
-	glm::vec3( 1.3f, -2.0f,  -2.5f),
-	glm::vec3( 1.5f,  2.0f,  -2.5f),
-	glm::vec3( 1.5f,  0.2f,  -1.5f),
-	glm::vec3(-1.3f,  1.0f,  -1.5f)
-};
-
-// positions of the point lights
-static const glm::vec3 pointLightPositions[] = {
-	glm::vec3( 0.7f,  0.2f,   2.0f),
-	glm::vec3( 2.3f, -3.3f,  -4.0f),
-	glm::vec3(-4.0f,  2.0f, -12.0f),
-	glm::vec3( 0.0f,  0.0f,  -3.0f)
-};
-
-namespace test{
-
-	TestLight::TestLight()
-		:m_Camera(),
-		m_WoodTexture("res/image/container2.png"),
-		m_SteelTexture("res/image/container2_specular.png"), 
-		m_EmissionTexture("res/image/matrix.jpg")
-	{
-		// tell GLFW to capture our mouse
-		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-
 		m_VBO = std::make_unique<VertexBuffer>(vertices, sizeof(vertices));
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
@@ -111,22 +111,22 @@ namespace test{
 		#pragma region unchange uniforms
 		// directional light
 		m_CubeShader->SetUniform3f("dirLight.direction", -0.2f, -1.0f, -0.3f);
-		m_CubeShader->SetUniform3f("dirLight.ambient", 0.5f, 0.5f, 0.5f);
-		m_CubeShader->SetUniform3f("dirLight.diffuse", 1.0f, 1.0f, 1.0f);
+		m_CubeShader->SetUniform3f("dirLight.ambient", 0.3f, 0.3f, 0.3f);
+		m_CubeShader->SetUniform3f("dirLight.diffuse", 0.6f, 0.6f, 0.6f);
 		m_CubeShader->SetUniform3f("dirLight.specular", 0.5f, 0.5f, 0.5f);
 		// point light 1
 		m_CubeShader->SetUniform3f("pointLights[0].position", pointLightPositions[0]);
 		m_CubeShader->SetUniform3f("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-		m_CubeShader->SetUniform3f("pointLights[0].diffuse", 0.5f, 0.8f, 0.5f);
-		m_CubeShader->SetUniform3f("pointLights[0].specular", 0.5f, 1.0f, 0.5f);
+		m_CubeShader->SetUniform3f("pointLights[0].diffuse", 0.5f, 0.5f, 0.5f);
+		m_CubeShader->SetUniform3f("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
 		m_CubeShader->SetUniform1f("pointLights[0].constant", 1.0f);
 		m_CubeShader->SetUniform1f("pointLights[0].linear", 0.09);
 		m_CubeShader->SetUniform1f("pointLights[0].quadratic", 0.032);
 		// point light 2
 		m_CubeShader->SetUniform3f("pointLights[1].position", pointLightPositions[1]);
 		m_CubeShader->SetUniform3f("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-		m_CubeShader->SetUniform3f("pointLights[1].diffuse", 0.5f, 0.8f, 0.5f);
-		m_CubeShader->SetUniform3f("pointLights[1].specular", 0.5f, 1.0f, 0.5f);
+		m_CubeShader->SetUniform3f("pointLights[1].diffuse", 0.5f, 0.5f, 0.5f);
+		m_CubeShader->SetUniform3f("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
 		m_CubeShader->SetUniform1f("pointLights[1].constant", 1.0f);
 		m_CubeShader->SetUniform1f("pointLights[1].linear", 0.09);
 		m_CubeShader->SetUniform1f("pointLights[1].quadratic", 0.032);
@@ -152,43 +152,6 @@ namespace test{
 		//m_CubeShader->SetUniform1i("emission", 2);											   // ·¢¹âÌùÍ¼
 		m_CubeShader->SetUniform1f("material.shininess", 32.0f);
 		#pragma endregion
-	}
-
-	TestLight::~TestLight()
-	{}
-
-	void TestLight::OnUpdate(float deltaTime)
-	{
-		if (Input::currentKeys[KeyBoard::ESC])
-		{
-			glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			Input::currentKeys[KeyBoard::ESC] = 0;
-		}
-		if (Input::currentKeys[KeyBoard::W])
-		{
-			m_Camera.MoveCameraPosition(Camera_Movement::FORWARD, deltaTime);
-			Input::currentKeys[KeyBoard::W] = 0;
-		}
-		if (Input::currentKeys[KeyBoard::A])
-		{
-			m_Camera.MoveCameraPosition(Camera_Movement::LEFT, deltaTime);
-			Input::currentKeys[KeyBoard::A] = 0;
-		}
-		if (Input::currentKeys[KeyBoard::S])
-		{
-			m_Camera.MoveCameraPosition(Camera_Movement::BACKWARD, deltaTime);
-			Input::currentKeys[KeyBoard::S] = 0;
-		}
-		if (Input::currentKeys[KeyBoard::D])
-		{
-			m_Camera.MoveCameraPosition(Camera_Movement::RIGHT, deltaTime);
-			Input::currentKeys[KeyBoard::D] = 0;
-		}
-		m_Camera.MoveCameraDirection(Input::MouseMovementX, Input::MouseMovementY);
-		Input::MouseMovementX = 0;
-		Input::MouseMovementY = 0;
-		m_Camera.ZoomCameraView(Input::MouseSrollOffset);
-		Input::MouseSrollOffset = 0;
 	}
 
 	void TestLight::OnRender()
@@ -246,6 +209,43 @@ namespace test{
 	void TestLight::OnImGuiRender()
 	{
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	}
+
+	TestLight::~TestLight()
+	{}
+
+	void TestLight::OnUpdate(float deltaTime)
+	{
+		if (Input::currentKeys[KeyBoard::ESC])
+		{
+			glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			Input::currentKeys[KeyBoard::ESC] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::W])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::FORWARD, deltaTime);
+			Input::currentKeys[KeyBoard::W] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::A])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::LEFT, deltaTime);
+			Input::currentKeys[KeyBoard::A] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::S])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::BACKWARD, deltaTime);
+			Input::currentKeys[KeyBoard::S] = 0;
+		}
+		if (Input::currentKeys[KeyBoard::D])
+		{
+			m_Camera.MoveCameraPosition(Camera_Movement::RIGHT, deltaTime);
+			Input::currentKeys[KeyBoard::D] = 0;
+		}
+		m_Camera.MoveCameraDirection(Input::MouseMovementX, Input::MouseMovementY);
+		Input::MouseMovementX = 0;
+		Input::MouseMovementY = 0;
+		m_Camera.ZoomCameraView(Input::MouseSrollOffset);
+		Input::MouseSrollOffset = 0;
 	}
 
 }

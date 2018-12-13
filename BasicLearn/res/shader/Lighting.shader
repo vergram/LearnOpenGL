@@ -85,7 +85,7 @@ uniform vec3 viewPos;
 uniform sampler2D emission;
 
 // function prototypes
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, bool blinn);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 
@@ -95,7 +95,7 @@ void main()
 	vec3 viewDir = normalize(viewPos - FragPos);
 
 	// 定向光
-	vec3 result = CalcDirLight(dirLight, normal, viewDir);
+	vec3 result = CalcDirLight(dirLight, normal, viewDir, false);
 
 	// 点光源
 	for (int i = 0; i < NR_POINT_LIGHTS; i++)
@@ -112,13 +112,23 @@ void main()
 	//vec3 emit = vec3(texture(emission, TexCoords));
 }
 
-vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
+// add blinn-Phong lighting
+vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir, bool blinn)
 {
 	vec3 lightDir = normalize(-light.direction);
 
 	float diff = max(dot(normal, lightDir), 0.0);
-	vec3 reflectDir = reflect(-lightDir, normal);
-	float spec = pow(max(dot(reflectDir, viewDir), 0.0f), material.shininess);
+	float spec = 0.0;
+	if (blinn)
+	{
+		vec3 halfwayDir = normalize(lightDir + viewDir);
+		spec = pow(max(dot(halfwayDir, normal), 0.0f), material.shininess);
+	}
+	else
+	{
+		vec3 reflectDir = reflect(-lightDir, normal);
+		spec = pow(max(dot(reflectDir, viewDir), 0.0f), material.shininess);
+	}
 
 	vec3 ambient = light.ambient * vec3(texture(material.diffuse, TexCoords));
 	vec3 diffuse = light.diffuse * diff * vec3(texture(material.diffuse, TexCoords));
