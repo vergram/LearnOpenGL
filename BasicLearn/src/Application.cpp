@@ -35,6 +35,7 @@
 #include "tests/TestAdvanceGLSL.h"
 #include "tests/TestGeometry.h"
 #include "tests/TestInstance.h"
+#include "tests/TestAdvanceLighting.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -108,6 +109,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestAdvanceLighting>("AdvanceLight");
 		testMenu->RegisterTest<test::TestInstance>("Instance");
 		testMenu->RegisterTest<test::TestGeometry>("Geometry");
 		testMenu->RegisterTest<test::TestAdvanceGLSL>("UniformBufferObject");
