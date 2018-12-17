@@ -36,21 +36,24 @@ in VS_OUT{
 out vec4 FragColor;
 
 uniform sampler2D plane;
+
+uniform vec3 lightPositions[4];
+uniform vec3 lightColors[4];
 uniform vec3 viewPos;
-uniform vec3 lightPos;
+uniform bool gamma;
 uniform bool blinn;
 
-void main()
+vec3 BlinnPhong(vec3 normal, vec3 fragPos, vec3 lightPos, vec3 lightColor)
 {
-	vec3 color = texture(plane, fs_in.TexCoords).rgb;
-	vec3 normal = normalize(fs_in.Normal);
-	vec3 lightDir = normalize(lightPos - fs_in.FragPos);
-	vec3 viewDir = normalize(viewPos - fs_in.FragPos);
-
-	vec3 ambient = 0.05 * color;
+	vec3 lightDir = normalize(lightPos - fragPos);
+	vec3 viewDir = normalize(viewPos - fragPos);
+	vec3 ambient = 0.05 * lightColor;
+	
+	float distance = length(lightPos - fragPos);
+	float attenuation = 1 / (distance * distance);
 
 	float diff = max(dot(normal, lightDir), 0);
-	vec3 diffuse = diff * color;
+	vec3 diffuse = diff * lightColor;
 
 	float spec = 0.0;
 	if (blinn)
@@ -63,7 +66,26 @@ void main()
 		vec3 reflectDir = normalize(reflect(-lightDir, normal));
 		spec = pow(max(dot(reflectDir, viewDir), 0), 8.0);
 	}
-	vec3 specular = vec3(0.5) * spec; // we assume a bright white light  
+	vec3 specular = spec * lightColor;
 
-	FragColor = vec4(ambient + diffuse + specular, 1.0f);
+	vec3 color = attenuation * (ambient + diffuse + specular);
+	return color;
+}
+
+void main()
+{
+	vec3 color = texture(plane, fs_in.TexCoords).rgb;
+	vec3 normal = normalize(fs_in.Normal);
+	
+	vec3 lighting = vec3(0.0);
+	for(int i = 0; i < 4; i++)
+	{
+		lighting += BlinnPhong(normal, fs_in.FragPos, lightPositions[i], lightColors[i]);
+	}
+	color *= lighting;
+	if (gamma)
+	{
+		color = pow(color, vec3(1.0 / 2.2));
+	}
+	FragColor = vec4(color, 1.0f);
 }

@@ -187,6 +187,7 @@
   <ItemGroup>
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
+    <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Blend.shader" />
     <None Include="res\shader\Envmap.shader" />

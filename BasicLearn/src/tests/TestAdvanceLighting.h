@@ -28,9 +28,13 @@ namespace test {
 
 		std::unique_ptr<Shader> m_Shader;
 		std::unique_ptr<Texture2D> m_woodTexture;
+		std::unique_ptr<Texture2D> m_woodTextureWithGammaCorrecetion;
 
 		bool m_blinn;
 		bool m_IsShowMouse;
+		bool m_isSRGB;
+		bool m_isGammaCorrect;
+
 	};
 
 }

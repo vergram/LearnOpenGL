@@ -104,6 +104,8 @@ namespace test{
 			glm::vec3(-0.75f, -0.75f, -5.0f),
 			glm::vec3( 0.75f, -0.75f, -5.0f)
 		};
+		GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));       // 设置清空屏幕所用的颜色
+		GLCall(glClear(GL_COLOR_BUFFER_BIT));               // 清空颜色
 
 		glm::mat4 model(1.0f);
 		model = glm::translate(model, cubePositions[0]);

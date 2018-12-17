@@ -8,8 +8,7 @@ TextureCube::TextureCube(const std::vector<std::string> & paths)
 	: m_RendererID(0), m_FilePaths(paths), m_LocalBuffer(nullptr), 
 	m_Width(0), m_Height(0), m_BPP(0)
 {
-	//stbi_set_flip_vertically_on_load(1);      // flip the image by default 
-	
+	stbi_set_flip_vertically_on_load(0);
 	GLCall(glGenTextures(1, &m_RendererID));
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_RendererID));
 	GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));

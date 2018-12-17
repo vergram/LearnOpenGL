@@ -10,7 +10,7 @@ private:
 	unsigned char* m_LocalBuffer;
 	int m_Width, m_Height, m_BPP;
 public:
-	Texture2D(const std::string& path);
+	Texture2D(const std::string& path, bool gammaCorrection = false);
 	~Texture2D();
 
 	void Bind(unsigned int slot = 0) const;
