@@ -170,6 +170,7 @@
     <ClCompile Include="src\tests\TestInstance.cpp" />
     <ClCompile Include="src\tests\TestLight.cpp" />
     <ClCompile Include="src\tests\TestModel.cpp" />
+    <ClCompile Include="src\tests\TestDepthMap.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\TextureCube.cpp" />
@@ -187,6 +188,8 @@
   <ItemGroup>
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
+    <None Include="res\shader\AdvanceBuildDepthmap.shader" />
+    <None Include="res\shader\AdvanceDebugDepthmap.shader" />
     <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Blend.shader" />
@@ -332,6 +335,7 @@
     <ClInclude Include="src\tests\TestInstance.h" />
     <ClInclude Include="src\tests\TestLight.h" />
     <ClInclude Include="src\tests\TestModel.h" />
+    <ClInclude Include="src\tests\TestDepthMap.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
     <ClInclude Include="src\TextureCube.h" />
     <ClInclude Include="src\vendor\glm\core\func_common.hpp" />

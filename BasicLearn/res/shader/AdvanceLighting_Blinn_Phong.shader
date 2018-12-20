@@ -50,7 +50,7 @@ vec3 BlinnPhong(vec3 normal, vec3 fragPos, vec3 lightPos, vec3 lightColor)
 	vec3 ambient = 0.05 * lightColor;
 	
 	float distance = length(lightPos - fragPos);
-	float attenuation = 1 / (distance * distance);
+	float attenuation = 1 / (gamma ? (distance * distance) : distance);
 
 	float diff = max(dot(normal, lightDir), 0);
 	vec3 diffuse = diff * lightColor;

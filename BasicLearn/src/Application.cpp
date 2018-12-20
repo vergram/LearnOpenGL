@@ -36,6 +36,7 @@
 #include "tests/TestGeometry.h"
 #include "tests/TestInstance.h"
 #include "tests/TestAdvanceLighting.h"
+#include "tests/TestDepthMap.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -43,8 +44,8 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 
-const int SCR_HEIGHT = 600;
 const int SCR_WIDTH = 800;
+const int SCR_HEIGHT = 600;
 
 // timing
 float deltaTime = 0.0f;	// time between current frame and last frame
@@ -94,7 +95,7 @@ int main()
 	}
 
 	{
-		GLCall(glViewport(0, 0, 800, 600));
+		GLCall(glViewport(0, 0, SCR_WIDTH, SCR_HEIGHT));
 		glEnable(GL_MULTISAMPLE);                    // make sure we enable MSAA
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // 线框模式
 		//glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // 填充模式
@@ -109,6 +110,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestDepthMap>("DepthMap");
 		testMenu->RegisterTest<test::TestAdvanceLighting>("AdvanceLight");
 		testMenu->RegisterTest<test::TestInstance>("Instance");
 		testMenu->RegisterTest<test::TestGeometry>("Geometry");
