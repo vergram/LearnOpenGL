@@ -108,6 +108,7 @@ namespace test{
 
 		m_SimpleDepthMapShader = std::make_unique<Shader>("res/shader/AdvanceBuildDepthmap.shader");
 		m_QuadShader = std::make_unique<Shader>("res/shader/AdvanceDebugDepthmap.shader");
+		m_ShadowMapShader = std::make_unique<Shader>("res/shader/AdvanceBuildShadowWithDepthmap.shader");
 
 		#pragma region DepthMap fbo
 		GLCall(glGenFramebuffers(1, &m_DepthMapFbo));
@@ -176,14 +177,48 @@ namespace test{
 			renderer.Draw(*m_CubeVAO, *m_SimpleDepthMapShader, 36);
 		}
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
 		glViewport(0, 0, 1280, 720);
+
 		// 2. draw depthmap
-		m_QuadVAO->Bind();
-		m_QuadShader->Bind();
+		//m_QuadVAO->Bind();
+		//m_QuadShader->Bind();
+		//glActiveTexture(0);
+		//glBindTexture(GL_TEXTURE_2D, m_DepthMap);
+		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+
+		m_ShadowMapShader->Bind();
 		glActiveTexture(0);
 		glBindTexture(GL_TEXTURE_2D, m_DepthMap);
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		m_ShadowMapShader->SetUniform1i("shadowMap", 0);
+		m_woodTexture->Bind(1);
+		m_ShadowMapShader->SetUniform1i("diffuseTexture", 1);
+		m_ShadowMapShader->SetUniform3f("lightPos", lightPos);
+		m_ShadowMapShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		m_ShadowMapShader->SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
+		m_ShadowMapShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
+		m_ShadowMapShader->SetUniformMatrix4fv("lightSpaceMatrix", lightSpaceMatrix);
+		{
+			glm::mat4 model;
+			m_ShadowMapShader->SetUniformMatrix4fv("model", model);
+			renderer.Draw(*m_PlaneVAO, *m_ShadowMapShader, 6);
+			model = glm::mat4();
+			model = glm::translate(model, glm::vec3(0.0f, 1.5f, 0.0));
+			model = glm::scale(model, glm::vec3(0.5f));
+			m_ShadowMapShader->SetUniformMatrix4fv("model", model);
+			renderer.Draw(*m_CubeVAO, *m_ShadowMapShader, 36);
+			model = glm::mat4();
+			model = glm::translate(model, glm::vec3(2.0f, 0.0f, 1.0));
+			model = glm::scale(model, glm::vec3(0.5f));
+			m_ShadowMapShader->SetUniformMatrix4fv("model", model);
+			renderer.Draw(*m_CubeVAO, *m_ShadowMapShader, 36);
+			model = glm::mat4();
+			model = glm::translate(model, glm::vec3(-1.0f, 0.0f, 2.0));
+			model = glm::rotate(model, glm::radians(60.0f), glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+			model = glm::scale(model, glm::vec3(0.25));
+			m_ShadowMapShader->SetUniformMatrix4fv("model", model);
+			renderer.Draw(*m_CubeVAO, *m_ShadowMapShader, 36);
+		}
+
 	}
 
 	void TestDepthMap::OnImGuiRender()

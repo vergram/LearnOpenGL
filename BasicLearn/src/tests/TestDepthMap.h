@@ -32,7 +32,7 @@ namespace test {
 
 
 		std::unique_ptr<Shader> m_SimpleDepthMapShader;
-
+		std::unique_ptr<Shader> m_ShadowMapShader;
 		std::unique_ptr<Shader> m_QuadShader;
 		std::unique_ptr<Texture2D> m_woodTexture;
 		std::unique_ptr<Texture2D> m_woodTextureWithGammaCorrecetion;

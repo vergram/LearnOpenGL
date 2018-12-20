@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -189,6 +189,7 @@
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\AdvanceBuildDepthmap.shader" />
+    <None Include="res\shader\AdvanceBuildShadowWithDepthmap.shader" />
     <None Include="res\shader\AdvanceDebugDepthmap.shader" />
     <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
     <None Include="res\shader\Basic.shader" />
