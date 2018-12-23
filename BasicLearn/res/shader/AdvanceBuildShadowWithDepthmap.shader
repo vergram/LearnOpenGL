@@ -44,15 +44,36 @@ uniform sampler2D diffuseTexture;
 uniform vec3 viewPos;
 uniform vec3 lightPos;
 
-float ShadowCaculation(vec4 fragPosLightSpace)
+float ShadowCaculation(vec4 fragPosLightSpace, vec3 lightDir, vec3 normal)
 {
 	vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;     // perform perspective divide
 	projCoords = projCoords * 0.5f + 0.5f;                             // transform to [0, 1] range
 
+	if (projCoords.z > 1.0f)                                           // things do not in the projection Matrix we set it shadow eaqual 0
+	{
+		return 0.0f;
+	}
+
 	float closestDepth = texture(shadowMap, projCoords.xy).r;          // uv also in [0, 1] range
 	float currentDepth = projCoords.z;                                 // depth in [0, 1] range
 
-	float shadow = currentDepth > closestDepth ? 1.0f : 0.0f;
+	float bais = max(0.05 * (1 - dot(lightDir, normal)), 0.005);
+
+	//float shadow = (currentDepth - bais) > closestDepth ? 1.0f : 0.0f;
+
+	//  pcf way to soft shadow
+	float shadow = 0.0f;
+	vec2 texelSize = 1.0 / textureSize(shadowMap, 0);
+	for (int x = -1; x <= 1; x++)
+	{
+		for (int y = -1; y <= 1; y++)
+		{
+			float pcfDepth = texture(shadowMap, projCoords.xy + vec2(x, y) * texelSize).r;
+			shadow += currentDepth - bais > pcfDepth ? 1.0f : 0.0f;
+		}
+	}
+	shadow /= 9.0f;               // average
+
 	return shadow;
 }
 
@@ -76,7 +97,7 @@ void main()
 
 	float distance = length(lightPos - fs_in.FragPos);
 	float attenuation = 1 / (distance * distance);
-	float shadowValue = ShadowCaculation(fs_in.FragPosLightSpace);
+	float shadowValue = ShadowCaculation(fs_in.FragPosLightSpace, lightDir, normal);
 
 	color *= (ambient + ((1.0 - shadowValue) * (diffuse + specular)));
 	
