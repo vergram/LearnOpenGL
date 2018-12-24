@@ -117,6 +117,9 @@
     <ClCompile Include="src\tests\TestDepthMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestPointShadow.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -581,6 +584,9 @@
     <ClInclude Include="src\tests\TestDepthMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestPointShadow.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -917,6 +923,9 @@
     <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
     <None Include="res\shader\AdvanceBuildDepthmap.shader" />
     <None Include="res\shader\AdvanceDebugDepthmap.shader" />
+    <None Include="res\shader\AdvanceBuildShadowWithDepthmap.shader" />
+    <None Include="res\shader\AdvanceBuildCubeDepthmap.shader" />
+    <None Include="res\shader\AdvancePointShadow.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
