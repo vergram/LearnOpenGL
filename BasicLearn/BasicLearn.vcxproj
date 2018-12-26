@@ -171,6 +171,7 @@
     <ClCompile Include="src\tests\TestLight.cpp" />
     <ClCompile Include="src\tests\TestModel.cpp" />
     <ClCompile Include="src\tests\TestDepthMap.cpp" />
+    <ClCompile Include="src\tests\TestNormalMap.cpp" />
     <ClCompile Include="src\tests\TestPointShadow.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
@@ -194,6 +195,7 @@
     <None Include="res\shader\AdvanceBuildShadowWithDepthmap.shader" />
     <None Include="res\shader\AdvanceDebugDepthmap.shader" />
     <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
+    <None Include="res\shader\AdvanceNormalMap.shader" />
     <None Include="res\shader\AdvancePointShadow.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Blend.shader" />
@@ -340,6 +342,7 @@
     <ClInclude Include="src\tests\TestLight.h" />
     <ClInclude Include="src\tests\TestModel.h" />
     <ClInclude Include="src\tests\TestDepthMap.h" />
+    <ClInclude Include="src\tests\TestNormalMap.h" />
     <ClInclude Include="src\tests\TestPointShadow.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
     <ClInclude Include="src\TextureCube.h" />
