@@ -17,6 +17,7 @@ void Mesh::Draw(Shader& shader)
 	unsigned int diffuseNr = 1;
 	unsigned int specularNr = 1;
 	unsigned int reflectionNr = 1;
+	unsigned int normalNr = 1;
 	for (unsigned int i = 0; i < textures.size(); i++)
 	{
 		GLCall(glActiveTexture(GL_TEXTURE0 + i)); // 激活相应的纹理单元
@@ -33,6 +34,10 @@ void Mesh::Draw(Shader& shader)
 		else if (name == "texture_reflection")
 		{
 			number = std::to_string(reflectionNr++);
+		}
+		else if (name == "texture_normal")
+		{
+			number = std::to_string(normalNr++);
 		}
 		shader.SetUniform1i((/*"material." + */name + number).c_str(), i);
 		GLCall(glBindTexture(GL_TEXTURE_2D, textures[i].id));
@@ -73,6 +78,8 @@ void Mesh::setupMesh()
 	// 纹理坐标
 	GLCall(glEnableVertexAttribArray(2));
 	GLCall(glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TexCoords)));
-
+	// 切线坐标
+	GLCall(glEnableVertexAttribArray(3));
+	GLCall(glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent)));
 	GLCall(glBindVertexArray(0));
 }

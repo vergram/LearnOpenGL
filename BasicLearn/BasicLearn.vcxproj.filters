@@ -933,6 +933,8 @@
     <None Include="res\shader\AdvanceBuildCubeDepthmap.shader" />
     <None Include="res\shader\AdvancePointShadow.shader" />
     <None Include="res\shader\AdvanceNormalMap.shader" />
+    <None Include="res\shader\AdvanceNormalMapModel.shader" />
+    <None Include="res\models\cyborg\cyborg.blend1" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

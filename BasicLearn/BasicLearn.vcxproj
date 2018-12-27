@@ -188,6 +188,7 @@
     <ClCompile Include="src\Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="res\models\cyborg\cyborg.blend1" />
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\AdvanceBuildCubeDepthmap.shader" />
@@ -196,6 +197,7 @@
     <None Include="res\shader\AdvanceDebugDepthmap.shader" />
     <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
     <None Include="res\shader\AdvanceNormalMap.shader" />
+    <None Include="res\shader\AdvanceNormalMapModel.shader" />
     <None Include="res\shader\AdvancePointShadow.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Blend.shader" />

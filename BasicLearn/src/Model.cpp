@@ -23,7 +23,7 @@ void Model::Draw(Shader& shader)
 void Model::loadModel(std::string path)
 {
 	Assimp::Importer importer;
-	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene *scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 	if (!scene || scene->mFlags && AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 	{
@@ -72,6 +72,12 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 		normal.z = mesh->mNormals[i].z;
 		vertex.Normal = normal;
 
+		glm::vec3 tangent;
+		tangent.x = mesh->mTangents[i].x;
+		tangent.y = mesh->mTangents[i].y;
+		tangent.z = mesh->mTangents[i].z;
+		vertex.Tangent = tangent;
+
 		// 检查纹理是否存在，我们只取第一个纹理
 		if (mesh->mTextureCoords[0])
 		{
@@ -119,6 +125,9 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 		// Reflection maps (Note that ASSIMP doesn't load reflection maps properly from wavefront objects, so we'll cheat a little by defining the reflection maps as ambient maps in the .obj file, which ASSIMP is able to load)
 		std::vector<Texture> reflectionMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflection");
 		textures.insert(textures.end(), reflectionMaps.begin(), reflectionMaps.end());
+		// Assimp's aiTextureType_NORMAL doesn't load its normal maps while aiTextureType_HEIGHT does so I often load them as aiTextureType_HEIGHT
+		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
+		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 	}
 
 	return Mesh(vertices, indices, textures);
@@ -164,7 +173,7 @@ unsigned int TextureFormFile(const char * name, const std::string & directory, b
 
 	unsigned int textureID;
 	GLCall(glGenTextures(1, &textureID));
-
+	stbi_set_flip_vertically_on_load(0);
 	int width, height, nrComponents;
 	unsigned char* data = stbi_load(filename.c_str(), &width, &height, &nrComponents, 0);
 

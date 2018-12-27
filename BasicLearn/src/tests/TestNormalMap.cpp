@@ -15,89 +15,16 @@
 
 namespace test{
 
-	TestNormalMap::TestNormalMap() :m_Camera(), m_LightPos(0.0f, 0.5f, 0.25f)
+	TestNormalMap::TestNormalMap() :m_Camera(), m_LightPos(0.5f, 1.0f, 2.0f)
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		m_IsShowMouse = false;
-		
-		VertexBufferLayout PNTLayout;
-		PNTLayout.Push<float>(3);
-		PNTLayout.Push<float>(3);
-		PNTLayout.Push<float>(2);
 
-		VertexBufferLayout PTLayout;
-		PTLayout.Push<float>(3);
-		PTLayout.Push<float>(2);
-
-		float CubeVertices[] = {
-			// back face
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 0.0f, // bottom-right         
-			 1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 1.0f, 1.0f, // top-right
-			-1.0f, -1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 0.0f, // bottom-left
-			-1.0f,  1.0f, -1.0f,  0.0f,  0.0f, -1.0f, 0.0f, 1.0f, // top-left
-			// front face
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			 1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f, 1.0f, // top-right
-			-1.0f,  1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 1.0f, // top-left
-			-1.0f, -1.0f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f, 0.0f, // bottom-left
-			// left face
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			-1.0f,  1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f, -1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f,  1.0f, -1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-right
-			// right face
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 1.0f, // top-right         
-			 1.0f, -1.0f, -1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 1.0f, // bottom-right
-			 1.0f,  1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 1.0f, 0.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  1.0f,  0.0f,  0.0f, 0.0f, 0.0f, // bottom-left     
-			// bottom face
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			 1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 1.0f, // top-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			 1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 1.0f, 0.0f, // bottom-left
-			-1.0f, -1.0f,  1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 0.0f, // bottom-right
-			-1.0f, -1.0f, -1.0f,  0.0f, -1.0f,  0.0f, 0.0f, 1.0f, // top-right
-			// top face
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			 1.0f,  1.0f , 1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			 1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 1.0f, // top-right     
-			 1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 1.0f, 0.0f, // bottom-right
-			-1.0f,  1.0f, -1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 1.0f, // top-left
-			-1.0f,  1.0f,  1.0f,  0.0f,  1.0f,  0.0f, 0.0f, 0.0f  // bottom-left        
-		};
-		m_CubeVAO = std::make_unique<VertexArray>();
-		m_CubeVBO = std::make_unique<VertexBuffer>(CubeVertices, sizeof(CubeVertices));
-		m_CubeVAO->AddBuffer(*m_CubeVBO, PNTLayout);
-
-		float planeVertices[] = {
-			// positions            // normals         // texcoords
-			 25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-			-25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-			-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-
-			 25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-			-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-			 25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
-		};
-		m_PlaneVAO = std::make_unique<VertexArray>();
-		m_PlaneVBO = std::make_unique<VertexBuffer>(planeVertices, sizeof(planeVertices));
-		m_PlaneVAO->AddBuffer(*m_PlaneVBO, PNTLayout);
-
-		m_SimpleDepthMapShader = std::make_unique<Shader>("res/shader/AdvanceBuildCubeDepthmap.shader");
-		m_ShadowMapShader = std::make_unique<Shader>("res/shader/AdvancePointShadow.shader");
+		m_NormalMapModelShader = std::make_unique<Shader>("res/shader/AdvanceNormalMapModel.shader");
 		m_QuadShader = std::make_unique<Shader>("res/shader/AdvanceNormalMap.shader");
 
-		m_BrickWall = std::make_unique<Texture2D>("res/image/brickwall.jpg");
-		m_BrickWall_Normal = std::make_unique<Texture2D>("res/image/brickwall_normal.jpg");
+		m_Model = std::make_unique<Model>("res/models/cyborg/cyborg.obj");
 
 
 		// about tangent space
@@ -106,6 +33,9 @@ namespace test{
 		// 为什么会写出这样的公式从而把位置值和纹理值关连起来？是因为E0可以通过T和B的线性组合得到，而该线性组合的系数正好可以通过纹理坐标得到，
 		// 纹理坐标的定义或生成就是在T和B方向上进行的。这里实际上只是利用了一种潜在的几何关系来得到方程，这是因为位置和纹理不是同一个概念，
 		// 因此只能在比例上获得关系，这也导致了T和B基本上不会是单位向量。
+
+		m_BrickWall = std::make_unique<Texture2D>("res/image/brickwall.jpg");
+		m_BrickWall_Normal = std::make_unique<Texture2D>("res/image/brickwall_normal.jpg");
 
 		#pragma region tangent space
 		
@@ -197,25 +127,34 @@ namespace test{
 
 		glm::mat4 model;
 		//model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, (float)glfwGetTime() * -10.0f, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
+		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glm::mat4 view = m_Camera.GetViewMatrix();
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
-		m_QuadShader->Bind();
-		// lighting
-		m_QuadShader->SetUniform3f("lightPos", m_LightPos);
-		m_QuadShader->SetUniform3f("viewPos", m_Camera.GetPosition());
-		m_QuadShader->SetUniformMatrix4fv("model", model);
-		m_QuadShader->SetUniformMatrix4fv("view", view);
-		m_QuadShader->SetUniformMatrix4fv("projection", projection);
+		//// lighting
+		//m_QuadShader->Bind();
+		//m_QuadShader->SetUniform3f("lightPos", m_LightPos);
+		//m_QuadShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		//m_QuadShader->SetUniformMatrix4fv("model", model);
+		//m_QuadShader->SetUniformMatrix4fv("view", view);
+		//m_QuadShader->SetUniformMatrix4fv("projection", projection);
 
-		// texture
-		m_BrickWall->Bind(0);
-		m_BrickWall_Normal->Bind(1);
-		m_QuadShader->SetUniform1i("diffuseTexture", 0);
-		m_QuadShader->SetUniform1i("normalMap", 1);
-		m_QuadVAO->Bind();
-		glDrawArrays(GL_TRIANGLES, 0, 6);
+		//// texture
+		//m_BrickWall->Bind(0);
+		//m_BrickWall_Normal->Bind(1);
+		//m_QuadShader->SetUniform1i("diffuseTexture", 0);
+		//m_QuadShader->SetUniform1i("normalMap", 1);
+		//m_QuadVAO->Bind();
+		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
+		m_NormalMapModelShader->Bind();
+		m_NormalMapModelShader->SetUniform3f("lightPos", m_LightPos);
+		m_NormalMapModelShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		m_NormalMapModelShader->SetUniformMatrix4fv("model", model);
+		m_NormalMapModelShader->SetUniformMatrix4fv("view", view);
+		m_NormalMapModelShader->SetUniformMatrix4fv("projection", projection);
+		m_Model->Draw(*m_NormalMapModelShader);
 
 	}
 

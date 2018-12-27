@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Texture2D.h"
 #include "Camera.h"
+#include "Model.h"
 
 #include <vector>
 
@@ -31,11 +32,13 @@ namespace test {
 		std::unique_ptr<VertexBuffer> m_QuadVBO;
 		std::unique_ptr<VertexArray> m_QuadVAO;
 
-		std::unique_ptr<Shader> m_SimpleDepthMapShader;
+		std::unique_ptr<Shader> m_NormalMapModelShader;
 		std::unique_ptr<Shader> m_ShadowMapShader;
 		std::unique_ptr<Shader> m_QuadShader;
 		std::unique_ptr<Texture2D> m_BrickWall;
 		std::unique_ptr<Texture2D> m_BrickWall_Normal;
+
+		std::unique_ptr<Model> m_Model;
 
 		glm::mat4 m_ShadowProjection;
 		glm::vec3 m_LightPos;
