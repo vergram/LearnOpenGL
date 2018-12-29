@@ -69,15 +69,64 @@ uniform float height_scale;
 vec2 ParallaxMapping(vec2 texCoords, vec3 viewDir)
 {
 	float height = texture(texture_depth1, texCoords).x;
-	vec2 offset = viewDir.xy / viewDir.z * height * height_scale;     // 除以 z 是因为观察角度和平面越陡峭，offset 就越小
-	return texCoords - offset;                                        // 相减而不是相加是因为 viewDir 取 FragPos 为原点
+	vec2 p = viewDir.xy / viewDir.z * height * height_scale;     // 除以 z 是因为观察角度和平面越陡峭，offset 就越小
+	return texCoords - p;                                        // 相减而不是相加是因为 viewDir 取 FragPos 为原点
+}
+
+// ----------------------------------------------- SteepParallaxMapping -------------------------------------------------------------
+// The main idea of this method is to divide depth of the surface into number of layers of same height.
+// Then starting from the topmost layer you have to sample the heightmap, each time shifting texture coordinates along view vector V.
+// If point is under the surface(depth of the current layer is greater than depth sampled from texture), 
+// stop the checks and use last used texture coordinates as result of Steep Parallax Mapping.
+// --------- Parallax Occlusion Mapping ------------
+// base on SteepParallaxMapping add  linearly interpolate between the depth layer after and before the collision
+// ----------------------------------------------------------------------------------------------------------------------------------
+vec2 SteepParallaxMapping(vec2 texCoords, vec3 viewDir)
+{
+	const float minLayer = 8.0;
+	const float maxLayer = 32.0;
+	float layerNums = mix(maxLayer, minLayer, abs(dot(vec3(0.0, 0.0, 1.0), viewDir)));
+
+	vec2 p = viewDir.xy / viewDir.z * height_scale;          // do not need height value, because we gonna try step by step to accurate the offset 
+
+	// get delta value
+	vec2 deltaTexCoords = p / layerNums;
+	float layerDepth = 1.0 / layerNums;
+
+	// get inital value
+	float currentLayerDepth = 0.0;
+	vec2 currentTexCoords = texCoords;
+	float currentDepthMapValue = texture(texture_depth1, texCoords).x;
+
+	while (currentLayerDepth < currentDepthMapValue)
+	{
+		currentTexCoords -= deltaTexCoords;
+		currentLayerDepth += layerDepth;
+		currentDepthMapValue = texture(texture_depth1, currentTexCoords).x;
+	}
+	
+	// Parallax Occlusion Mapping part
+	vec2 preTexCoords = currentTexCoords + deltaTexCoords;
+
+	float afterDepth = currentLayerDepth - currentDepthMapValue;
+	float beforeDepth = texture(texture_depth1, preTexCoords).x - currentLayerDepth + layerDepth;
+
+	float weight = afterDepth / (afterDepth + beforeDepth);
+	vec2 finalTexCoords = preTexCoords * weight + currentTexCoords * (1.0 - weight);
+
+	return finalTexCoords;
 }
 
 void main()
 {
 
 	vec3 viewDir = normalize(fs_in.TangentViewPos - fs_in.TangentFragPos);
-	vec2 texCoords = ParallaxMapping(fs_in.TexCoords, viewDir);
+	vec2 texCoords = SteepParallaxMapping(fs_in.TexCoords, viewDir);
+
+	// texture coordinates could oversample outside the range [0, 1] and this gives unrealistic results based on the texture's wrapping mode(s). 
+	// A cool trick to solve this issue is to discard the fragment whenever it samples outside the default texture coordinate range
+	if (texCoords.x < 0.0 || texCoords.y < 0.0 || texCoords.x > 1.0 || texCoords.y > 1.0)
+		discard;
 
 	vec3 color = texture(texture_diffuse1, texCoords).rgb;
 	vec3 normal = texture(texture_normal1, texCoords).rgb;
