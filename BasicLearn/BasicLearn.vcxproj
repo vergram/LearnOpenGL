@@ -191,6 +191,7 @@
     <None Include="res\models\cyborg\cyborg.blend1" />
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
+    <None Include="res\shader\AdvanceParallaxMap.shader" />
     <None Include="res\shader\AdvanceBuildCubeDepthmap.shader" />
     <None Include="res\shader\AdvanceBuildDepthmap.shader" />
     <None Include="res\shader\AdvanceBuildShadowWithDepthmap.shader" />

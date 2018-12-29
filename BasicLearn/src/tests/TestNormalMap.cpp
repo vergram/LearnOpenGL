@@ -21,11 +21,17 @@ namespace test{
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		m_IsShowMouse = false;
 
-		m_NormalMapModelShader = std::make_unique<Shader>("res/shader/AdvanceNormalMapModel.shader");
-		m_QuadShader = std::make_unique<Shader>("res/shader/AdvanceNormalMap.shader");
+		m_NormapMapShader = std::make_unique<Shader>("res/shader/AdvanceNormalMap.shader");
+		m_BrickWall = std::make_unique<Texture2D>("res/image/brickwall.jpg");
+		m_BrickWall_Normal = std::make_unique<Texture2D>("res/image/brickwall_normal.jpg");
 
+		m_NormalMapModelShader = std::make_unique<Shader>("res/shader/AdvanceNormalMapModel.shader");
 		m_Model = std::make_unique<Model>("res/models/cyborg/cyborg.obj");
 
+		m_ParallaxMapShader = std::make_unique<Shader>("res/shader/AdvanceParallaxMap.shader");
+		m_Bricks2 = std::make_unique<Texture2D>("res/image/bricks2.jpg");
+		m_Bricks2_Normal = std::make_unique<Texture2D>("res/image/bricks2_normal.jpg");
+		m_Bricks2_Depth = std::make_unique<Texture2D>("res/image/bricks2_disp.jpg");
 
 		// about tangent space
 		// 切线空间的坐标轴向量是以模型空间作为参考系的，在计算向量T和B的时候所有的数据都是在该参考系下度量的。
@@ -33,11 +39,7 @@ namespace test{
 		// 为什么会写出这样的公式从而把位置值和纹理值关连起来？是因为E0可以通过T和B的线性组合得到，而该线性组合的系数正好可以通过纹理坐标得到，
 		// 纹理坐标的定义或生成就是在T和B方向上进行的。这里实际上只是利用了一种潜在的几何关系来得到方程，这是因为位置和纹理不是同一个概念，
 		// 因此只能在比例上获得关系，这也导致了T和B基本上不会是单位向量。
-
-		m_BrickWall = std::make_unique<Texture2D>("res/image/brickwall.jpg");
-		m_BrickWall_Normal = std::make_unique<Texture2D>("res/image/brickwall_normal.jpg");
-
-		#pragma region tangent space
+		#pragma region tangent space for quad
 		
 		// positions
 		glm::vec3 pos1(-1.0f, 1.0f, 0.0f);
@@ -52,8 +54,8 @@ namespace test{
 		// normal vector
 		glm::vec3 nm(0.0f, 0.0f, 1.0f);
 
-		glm::vec3 tangent1, bitangent1;
-		glm::vec3 tangent2, bitangent2;
+		glm::vec3 tangent1;
+		glm::vec3 tangent2;
 
 		// triangle 1
 		// ----------
@@ -69,11 +71,6 @@ namespace test{
 		tangent1.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 		tangent1 = glm::normalize(tangent1);
 
-		bitangent1.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-		bitangent1.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-		bitangent1.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-		bitangent1 = glm::normalize(bitangent1);
-
 		// triangle 2
 		// ----------
 		edge1 = pos3 - pos1;
@@ -88,33 +85,26 @@ namespace test{
 		tangent2.z = f * (deltaUV2.y * edge1.z - deltaUV1.y * edge2.z);
 		tangent2 = glm::normalize(tangent2);
 
-
-		bitangent2.x = f * (-deltaUV2.x * edge1.x + deltaUV1.x * edge2.x);
-		bitangent2.y = f * (-deltaUV2.x * edge1.y + deltaUV1.x * edge2.y);
-		bitangent2.z = f * (-deltaUV2.x * edge1.z + deltaUV1.x * edge2.z);
-		bitangent2 = glm::normalize(bitangent2);
-
 		float quadVertices[] = {
-			// positions            // normal         // texcoords  // tangent                          // bitangent
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z, bitangent1.x, bitangent1.y, bitangent1.z,
+			// positions            // normal         // texcoords  // tangent                         
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent1.x, tangent1.y, tangent1.z,
+			pos2.x, pos2.y, pos2.z, nm.x, nm.y, nm.z, uv2.x, uv2.y, tangent1.x, tangent1.y, tangent1.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent1.x, tangent1.y, tangent1.z,
 
-			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
-			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z,
-			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z, bitangent2.x, bitangent2.y, bitangent2.z
+			pos1.x, pos1.y, pos1.z, nm.x, nm.y, nm.z, uv1.x, uv1.y, tangent2.x, tangent2.y, tangent2.z,
+			pos3.x, pos3.y, pos3.z, nm.x, nm.y, nm.z, uv3.x, uv3.y, tangent2.x, tangent2.y, tangent2.z,
+			pos4.x, pos4.y, pos4.z, nm.x, nm.y, nm.z, uv4.x, uv4.y, tangent2.x, tangent2.y, tangent2.z
 		};
 
-		VertexBufferLayout PNTTBLayout;
-		PNTTBLayout.Push<float>(3);
-		PNTTBLayout.Push<float>(3);
-		PNTTBLayout.Push<float>(2);
-		PNTTBLayout.Push<float>(3);
-		PNTTBLayout.Push<float>(3);
+		VertexBufferLayout PNTTLayout;
+		PNTTLayout.Push<float>(3);
+		PNTTLayout.Push<float>(3);
+		PNTTLayout.Push<float>(2);
+		PNTTLayout.Push<float>(3);
 
 		m_QuadVAO = std::make_unique<VertexArray>();
 		m_QuadVBO = std::make_unique<VertexBuffer>(quadVertices, sizeof(quadVertices));
-		m_QuadVAO->AddBuffer(*m_QuadVBO, PNTTBLayout);
+		m_QuadVAO->AddBuffer(*m_QuadVBO, PNTTLayout);
 
 
 		#pragma endregion
@@ -123,38 +113,52 @@ namespace test{
 
 	void TestNormalMap::OnRender()
 	{
-		Renderer renderer;
-
 		glm::mat4 model;
 		//model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		//model = glm::rotate(model, (float)glfwGetTime() * -10.0f, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
-		model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
+		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glm::mat4 view = m_Camera.GetViewMatrix();
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
-		//// lighting
-		//m_QuadShader->Bind();
-		//m_QuadShader->SetUniform3f("lightPos", m_LightPos);
-		//m_QuadShader->SetUniform3f("viewPos", m_Camera.GetPosition());
-		//m_QuadShader->SetUniformMatrix4fv("model", model);
-		//m_QuadShader->SetUniformMatrix4fv("view", view);
-		//m_QuadShader->SetUniformMatrix4fv("projection", projection);
-
-		//// texture
+		//// normal map brick wall
+		//m_NormalMapShader->Bind();
+		//m_NormalMapShader->SetUniform3f("lightPos", m_LightPos);
+		//m_NormalMapShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		//m_NormalMapShader->SetUniformMatrix4fv("model", model);
+		//m_NormalMapShader->SetUniformMatrix4fv("view", view);
+		//m_NormalMapShader->SetUniformMatrix4fv("projection", projection);
+		//m_NormalMap->SetUniform1i("diffuseTexture", 0);
+		//m_NormalMap->SetUniform1i("normalMap", 1);
 		//m_BrickWall->Bind(0);
 		//m_BrickWall_Normal->Bind(1);
-		//m_QuadShader->SetUniform1i("diffuseTexture", 0);
-		//m_QuadShader->SetUniform1i("normalMap", 1);
 		//m_QuadVAO->Bind();
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
 
-		m_NormalMapModelShader->Bind();
-		m_NormalMapModelShader->SetUniform3f("lightPos", m_LightPos);
-		m_NormalMapModelShader->SetUniform3f("viewPos", m_Camera.GetPosition());
-		m_NormalMapModelShader->SetUniformMatrix4fv("model", model);
-		m_NormalMapModelShader->SetUniformMatrix4fv("view", view);
-		m_NormalMapModelShader->SetUniformMatrix4fv("projection", projection);
-		m_Model->Draw(*m_NormalMapModelShader);
+		//// normal map model
+		//m_NormalMapModelShader->Bind();
+		//m_NormalMapModelShader->SetUniform3f("lightPos", m_LightPos);
+		//m_NormalMapModelShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		//m_NormalMapModelShader->SetUniformMatrix4fv("model", model);
+		//m_NormalMapModelShader->SetUniformMatrix4fv("view", view);
+		//m_NormalMapModelShader->SetUniformMatrix4fv("projection", projection);
+		//m_Model->Draw(*m_NormalMapModelShader);
+
+		// Parallax Map bricks
+		m_ParallaxMapShader->Bind();
+		m_ParallaxMapShader->SetUniform3f("lightPos", m_LightPos);
+		m_ParallaxMapShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		m_ParallaxMapShader->SetUniformMatrix4fv("model", model);
+		m_ParallaxMapShader->SetUniformMatrix4fv("view", view);
+		m_ParallaxMapShader->SetUniformMatrix4fv("projection", projection);
+		m_ParallaxMapShader->SetUniform1f("height_scale", 0.1f);
+		m_ParallaxMapShader->SetUniform1i("texture_diffuse1", 0);
+		m_ParallaxMapShader->SetUniform1i("texture_normal1", 1);
+		m_ParallaxMapShader->SetUniform1i("texture_depth1", 2);
+		m_Bricks2->Bind(0);
+		m_Bricks2_Normal->Bind(1);
+		m_Bricks2_Depth->Bind(2);
+		m_QuadVAO->Bind();
+		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 	}
 
