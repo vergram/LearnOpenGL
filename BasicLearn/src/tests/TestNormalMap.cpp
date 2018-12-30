@@ -15,11 +15,12 @@
 
 namespace test{
 
-	TestNormalMap::TestNormalMap() :m_Camera(), m_LightPos(0.5f, 1.0f, 2.0f)
+	TestNormalMap::TestNormalMap() :m_Camera(), m_LightPos(0.0f, 0.0f, 0.0f)
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		m_IsShowMouse = false;
+		m_IsSelfShadowing = false;
 
 		m_NormapMapShader = std::make_unique<Shader>("res/shader/AdvanceNormalMap.shader");
 		m_BrickWall = std::make_unique<Texture2D>("res/image/brickwall.jpg");
@@ -32,6 +33,11 @@ namespace test{
 		m_Bricks2 = std::make_unique<Texture2D>("res/image/bricks2.jpg");
 		m_Bricks2_Normal = std::make_unique<Texture2D>("res/image/bricks2_normal.jpg");
 		m_Bricks2_Depth = std::make_unique<Texture2D>("res/image/bricks2_disp.jpg");
+
+		m_Toy_Box_Diffuse = std::make_unique<Texture2D>("res/image/toy_box_diffuse.png");
+		m_Toy_Box_Normal = std::make_unique<Texture2D>("res/image/toy_box_normal.png");
+		m_Toy_Box_Depth = std::make_unique<Texture2D>("res/image/toy_box_disp.png");
+
 
 		// about tangent space
 		// 切线空间的坐标轴向量是以模型空间作为参考系的，在计算向量T和B的时候所有的数据都是在该参考系下度量的。
@@ -114,7 +120,7 @@ namespace test{
 	void TestNormalMap::OnRender()
 	{
 		glm::mat4 model;
-		//model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, -90.0f, glm::vec3(1.0f, 0.0f, 0.0f));
 		//model = glm::rotate(model, (float)glfwGetTime() * -10.0f, glm::normalize(glm::vec3(1.0, 0.0, 1.0)));
 		//model = glm::scale(model, glm::vec3(0.3f, 0.3f, 0.3f));
 		glm::mat4 view = m_Camera.GetViewMatrix();
@@ -143,20 +149,34 @@ namespace test{
 		//m_NormalMapModelShader->SetUniformMatrix4fv("projection", projection);
 		//m_Model->Draw(*m_NormalMapModelShader);
 
+
+		float radius = 2.0f;
+		float currentTime = 20.0f * glfwGetTime();
+		glm::vec3 lightPos(0.0f, 0.0f, 0.0f);
+		glm::mat4 lightModel(1.0f);
+		lightModel = glm::translate(lightModel, glm::vec3(radius * glm::sin(glm::radians(currentTime)), 
+														  1.0f, 
+														  radius * glm::cos(glm::radians(currentTime))));
+		lightPos = glm::vec3(lightModel * glm::vec4(lightPos, 1.0f));
+
 		// Parallax Map bricks
 		m_ParallaxMapShader->Bind();
-		m_ParallaxMapShader->SetUniform3f("lightPos", m_LightPos);
+		m_ParallaxMapShader->SetUniform3f("lightPos", lightPos);
 		m_ParallaxMapShader->SetUniform3f("viewPos", m_Camera.GetPosition());
 		m_ParallaxMapShader->SetUniformMatrix4fv("model", model);
 		m_ParallaxMapShader->SetUniformMatrix4fv("view", view);
 		m_ParallaxMapShader->SetUniformMatrix4fv("projection", projection);
-		m_ParallaxMapShader->SetUniform1f("height_scale", 0.1f);
+		m_ParallaxMapShader->SetUniform1f("parallax_scale", 0.1f);
 		m_ParallaxMapShader->SetUniform1i("texture_diffuse1", 0);
 		m_ParallaxMapShader->SetUniform1i("texture_normal1", 1);
 		m_ParallaxMapShader->SetUniform1i("texture_depth1", 2);
-		m_Bricks2->Bind(0);
-		m_Bricks2_Normal->Bind(1);
-		m_Bricks2_Depth->Bind(2);
+		m_ParallaxMapShader->SetUniform1i("self_shadowing", m_IsSelfShadowing);
+		//m_Bricks2->Bind(0);
+		//m_Bricks2_Normal->Bind(1);
+		//m_Bricks2_Depth->Bind(2);
+		m_Toy_Box_Diffuse->Bind(0);
+		m_Toy_Box_Normal->Bind(1);
+		m_Toy_Box_Depth->Bind(2);
 		m_QuadVAO->Bind();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
@@ -164,6 +184,7 @@ namespace test{
 
 	void TestNormalMap::OnImGuiRender()
 	{
+		ImGui::Checkbox("SoftShadow", &m_IsSelfShadowing);
 	}
 	
 	TestNormalMap::~TestNormalMap()

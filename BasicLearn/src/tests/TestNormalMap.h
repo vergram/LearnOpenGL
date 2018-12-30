@@ -41,6 +41,10 @@ namespace test {
 		std::unique_ptr<Texture2D> m_Bricks2;
 		std::unique_ptr<Texture2D> m_Bricks2_Normal;
 		std::unique_ptr<Texture2D> m_Bricks2_Depth;
+		std::unique_ptr<Texture2D> m_Toy_Box_Diffuse;
+		std::unique_ptr<Texture2D> m_Toy_Box_Normal;
+		std::unique_ptr<Texture2D> m_Toy_Box_Depth;
+
 
 		std::unique_ptr<Model> m_Model;
 
@@ -48,6 +52,7 @@ namespace test {
 		glm::vec3 m_LightPos;
 
 		bool m_IsShowMouse;
+		bool m_IsSelfShadowing;
 
 		unsigned int m_DepthCubeMapFbo;
 		unsigned int m_DepthCubeMap;
