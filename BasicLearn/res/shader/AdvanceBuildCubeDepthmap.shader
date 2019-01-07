@@ -24,7 +24,7 @@ void main()
 {
 	for (int face = 0; face < 6; face++)
 	{
-		gl_Layer = face;
+		gl_Layer = face;  //  built-in variable called gl_Layer that specifies which cubemap face to emit a primitive to.
 		for (int i = 0; i < 3; i++)
 		{
 			FragPos = gl_in[i].gl_Position;

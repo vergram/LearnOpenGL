@@ -123,6 +123,9 @@
     <ClCompile Include="src\tests\TestNormalMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestHDR.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -593,6 +596,9 @@
     <ClInclude Include="src\tests\TestNormalMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestHDR.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -936,6 +942,8 @@
     <None Include="res\shader\AdvanceNormalMapModel.shader" />
     <None Include="res\models\cyborg\cyborg.blend1" />
     <None Include="res\shader\AdvanceParallaxMap.shader" />
+    <None Include="res\shader\HDRScene.shader" />
+    <None Include="res\shader\HDRQuad.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

@@ -39,6 +39,7 @@
 #include "tests/TestDepthMap.h"
 #include "tests/TestPointShadow.h"
 #include "tests/TestNormalMap.h"
+#include "tests/TestHDR.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -112,6 +113,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestHDR>("HDR");
 		testMenu->RegisterTest<test::TestNormalMap>("NormalMap");
 		testMenu->RegisterTest<test::TestPointShadow>("Point Shadow");
 		testMenu->RegisterTest<test::TestDepthMap>("DepthMap");
