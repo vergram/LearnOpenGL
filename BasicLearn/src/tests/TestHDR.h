@@ -43,6 +43,7 @@ namespace test {
 		std::vector<glm::vec3> m_LightColors;
 
 		bool m_IsShowMouse;
+		float m_Exposure;
 
 		unsigned int m_HDRfbo;
 		unsigned int m_HDRColorBuffer;

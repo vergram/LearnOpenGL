@@ -15,7 +15,7 @@
 
 namespace test{
 
-	TestHDR::TestHDR() :m_Camera()
+	TestHDR::TestHDR() :m_Camera(), m_Exposure(1.0f)
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -105,7 +105,7 @@ namespace test{
 
 		m_HDRSceneShader = std::make_unique<Shader>("res/shader/HDRScene.shader");
 		m_HDRQuadShader = std::make_unique<Shader>("res/shader/HDRQuad.shader");
-		m_WoodTexture = std::make_unique<Texture2D>("res/image/wood.png");
+		m_WoodTexture = std::make_unique<Texture2D>("res/image/wood.png", true); // loading texture as SRGB format
 
 
 		#pragma region lighting info
@@ -184,6 +184,7 @@ namespace test{
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, m_HDRColorBuffer);
 		m_HDRQuadShader->Bind();
+		m_HDRQuadShader->SetUniform1f("exposure", m_Exposure);
 		m_QuadVAO->Bind();
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
@@ -191,6 +192,7 @@ namespace test{
 
 	void TestHDR::OnImGuiRender()
 	{
+		ImGui::DragFloat("Exposure", &m_Exposure, 0.1f, 0.0f, 1.0f);
 	}
 	
 	TestHDR::~TestHDR()

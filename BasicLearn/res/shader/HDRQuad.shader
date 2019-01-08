@@ -21,10 +21,22 @@ out vec4 FragColor;
 in vec2 TexCoords;
 
 uniform sampler2D diffuseTexture;
+uniform float exposure;
 
 void main()
 {
-	vec3 color = texture(diffuseTexture, TexCoords).rgb;
-	FragColor = vec4(color, 1.0f);
+	const float gamma = 2.2f;
+	vec3 hdrColor = texture(diffuseTexture, TexCoords).rgb;
+
+	// Reinhard tone mapping
+	//vec3 mapped = hdrColor / (hdrColor + vec3(1.0f));
+
+	// Exposure tone mapping
+	vec3 mapped = vec3(1.0f) - exp(-hdrColor * exposure);
+
+	// Gamma correction
+	mapped = pow(mapped, vec3(1.0f / gamma));
+	
+	FragColor = vec4(mapped, 1.0f);
 
 }
