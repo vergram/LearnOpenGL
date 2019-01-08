@@ -40,6 +40,7 @@
 #include "tests/TestPointShadow.h"
 #include "tests/TestNormalMap.h"
 #include "tests/TestHDR.h"
+#include "tests/TestBloom.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -113,6 +114,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestBloom>("Bloom");
 		testMenu->RegisterTest<test::TestHDR>("HDR");
 		testMenu->RegisterTest<test::TestNormalMap>("NormalMap");
 		testMenu->RegisterTest<test::TestPointShadow>("Point Shadow");

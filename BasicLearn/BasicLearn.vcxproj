@@ -161,6 +161,7 @@
     <ClCompile Include="src\tests\Test.cpp" />
     <ClCompile Include="src\tests\TestAdvanceGLSL.cpp" />
     <ClCompile Include="src\tests\TestAdvanceLighting.cpp" />
+    <ClCompile Include="src\tests\TestBloom.cpp" />
     <ClCompile Include="src\tests\TestCamera.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestCubemap.cpp" />
@@ -203,6 +204,10 @@
     <None Include="res\shader\AdvancePointShadow.shader" />
     <None Include="res\shader\Basic.shader" />
     <None Include="res\shader\Blend.shader" />
+    <None Include="res\shader\BloomGaussBlur.shader" />
+    <None Include="res\shader\BloomLightCube.shader" />
+    <None Include="res\shader\BloomQuad.shader" />
+    <None Include="res\shader\BloomScene.shader" />
     <None Include="res\shader\Envmap.shader" />
     <None Include="res\shader\EnvmapModel.shader" />
     <None Include="res\shader\GeoExplodeModel.shader" />
@@ -338,6 +343,7 @@
     <ClInclude Include="src\tests\Test.h" />
     <ClInclude Include="src\tests\TestAdvanceGLSL.h" />
     <ClInclude Include="src\tests\TestAdvanceLighting.h" />
+    <ClInclude Include="src\tests\TestBloom.h" />
     <ClInclude Include="src\tests\TestCamera.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestCubemap.h" />
