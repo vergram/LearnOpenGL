@@ -34,7 +34,7 @@ in vec2 TexCoords;
 uniform vec3 cameraPos;
 uniform samplerCube envmap;
 uniform sampler2D texture_diffuse1;
-uniform sampler2D texture_reflection1;
+uniform sampler2D texture_height1;
 
 void main()
 {
@@ -44,7 +44,7 @@ void main()
 	// reflect
 	vec3 I = normalize(Position - cameraPos);
 	vec3 R = reflect(I, normalize(Normal));   
-	float reflect_intensity = texture(texture_reflection1, TexCoords).x;
+	float reflect_intensity = texture(texture_height1, TexCoords).x;
 	vec4 reflect_color;
 	if (reflect_intensity > 0.1)
 	{

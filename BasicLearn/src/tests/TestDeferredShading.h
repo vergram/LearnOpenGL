@@ -32,10 +32,10 @@ namespace test {
 		std::unique_ptr<VertexBuffer> m_QuadVBO;
 		std::unique_ptr<VertexArray> m_QuadVAO;
 
-		std::unique_ptr<Shader> m_HDRQuadShader;
+		std::unique_ptr<Shader> m_QuadShader;
 		std::unique_ptr<Shader> m_LightCubeShader;
 		std::unique_ptr<Shader> m_GeometryPassShader;
-		std::unique_ptr<Shader> m_GaussBlurShader;
+		std::unique_ptr<Shader> m_LightingPassShader;
 
 		std::unique_ptr<Model> m_Nanosuit;
 

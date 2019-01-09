@@ -5,9 +5,9 @@
 
 #include <iostream>
 
-unsigned int TextureFormFile(const char * name, const std::string& directory, bool gammaCorrection = true);
+unsigned int TextureFormFile(const char * name, const std::string& directory, bool gammaCorrection = false);
 
-Model::Model(const char * path)
+Model::Model(const char * path, bool gamma): gammaCorrection(gamma)
 {
 	loadModel(path);
 }
@@ -122,12 +122,12 @@ Mesh Model::processMesh(aiMesh * mesh, const aiScene * scene)
 		// Specular maps
 		std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 		textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-		// Reflection maps (Note that ASSIMP doesn't load reflection maps properly from wavefront objects, so we'll cheat a little by defining the reflection maps as ambient maps in the .obj file, which ASSIMP is able to load)
-		std::vector<Texture> reflectionMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_reflection");
-		textures.insert(textures.end(), reflectionMaps.begin(), reflectionMaps.end());
 		// Assimp's aiTextureType_NORMAL doesn't load its normal maps while aiTextureType_HEIGHT does so I often load them as aiTextureType_HEIGHT
 		std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_normal");
 		textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+		// Reflection maps (Note that ASSIMP doesn't load reflection maps properly from wavefront objects, so we'll cheat a little by defining the reflection maps as ambient maps in the .obj file, which ASSIMP is able to load)
+		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
+		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 	}
 
 	return Mesh(vertices, indices, textures);
@@ -155,7 +155,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial * material, aiTextur
 		if (!skip)
 		{
 			Texture texture;
-			texture.id = TextureFormFile(str.C_Str(), m_Directory);
+			texture.id = TextureFormFile(str.C_Str(), m_Directory, gammaCorrection);
 			texture.type = typeName;
 			texture.path = str;
 			textures.push_back(texture);
@@ -201,8 +201,8 @@ unsigned int TextureFormFile(const char * name, const std::string & directory, b
 
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT));
 
 		GLCall(glBindTexture(GL_TEXTURE_2D, 0));
 

@@ -104,11 +104,11 @@ namespace test{
 		m_QuadVAO->AddBuffer(*m_QuadVBO, PTLayout);
 
 		m_GeometryPassShader = std::make_unique<Shader>("res/shader/DeferredShadingGeometryPass.shader");
-		m_HDRQuadShader = std::make_unique<Shader>("res/shader/DeferredShadingQuad.shader");
+		m_QuadShader = std::make_unique<Shader>("res/shader/DeferredShadingQuad.shader");
 		m_LightCubeShader = std::make_unique<Shader>("res/shader/BloomLightCube.shader");
-		m_GaussBlurShader = std::make_unique<Shader>("res/shader/BloomGaussBlur.shader");
+		m_LightingPassShader = std::make_unique<Shader>("res/shader/DeferredShadingLightingPass.shader");
 
-		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj");
+		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit_Joey/nanosuit.obj");
 
 		#pragma region position and color info
 		// object positions
@@ -121,18 +121,25 @@ namespace test{
 		m_ObjectPositions.push_back(glm::vec3(-3.0, -3.0,  3.0));
 		m_ObjectPositions.push_back(glm::vec3( 0.0, -3.0,  3.0));
 		m_ObjectPositions.push_back(glm::vec3( 3.0, -3.0,  3.0));
+
+		// lighting info
 		// -------------
-		// light positions
-		m_LightPositions.push_back(glm::vec3( 0.0f, 0.5f,  1.5f));
-		m_LightPositions.push_back(glm::vec3(-4.0f, 0.5f, -3.0f));
-		m_LightPositions.push_back(glm::vec3( 3.0f, 0.5f,  1.0f));
-		m_LightPositions.push_back(glm::vec3(-0.8f, 2.4f, -1.0f));
-		
-		// light colors
-		m_LightColors.push_back(glm::vec3(2.0f, 2.0f, 2.0f));
-		m_LightColors.push_back(glm::vec3(1.5f, 0.0f, 0.0f));
-		m_LightColors.push_back(glm::vec3(0.0f, 0.0f, 1.5f));
-		m_LightColors.push_back(glm::vec3(0.0f, 1.5f, 0.0f));
+		const unsigned int NR_LIGHTS = 32;
+		srand(13);
+		for (unsigned int i = 0; i < NR_LIGHTS; i++)
+		{
+			// calculate slightly random offsets
+			float xPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+			float yPos = ((rand() % 100) / 100.0) * 6.0 - 4.0;
+			float zPos = ((rand() % 100) / 100.0) * 6.0 - 3.0;
+			m_LightPositions.push_back(glm::vec3(xPos, yPos, zPos));
+			// also calculate random color
+			float rColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+			float gColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+			float bColor = ((rand() % 100) / 200.0f) + 0.5; // between 0.5 and 1.0
+			m_LightColors.push_back(glm::vec3(rColor, gColor, bColor));
+		}
+
 		#pragma endregion
 
 		#pragma region G-Buffer init
@@ -190,6 +197,7 @@ namespace test{
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_GBuffer);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_GeometryPassShader->Bind();
@@ -208,10 +216,27 @@ namespace test{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_GPosition);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, m_GNormal);
+		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, m_GAlbedoSpec);
-		m_HDRQuadShader->Bind();
-		m_HDRQuadShader->SetUniform1i("diffuseTexture", 0);
-		m_HDRQuadShader->SetUniform1f("exposure", m_Exposure);
+
+		m_LightingPassShader->Bind();
+		m_LightingPassShader->SetUniform1i("gPosition", 0);
+		m_LightingPassShader->SetUniform1i("gNormal", 1);
+		m_LightingPassShader->SetUniform1i("gAlbedoSpec", 2);
+		m_LightingPassShader->SetUniform3f("viewPos", m_Camera.GetPosition());
+		for (int i = 0; i < m_LightColors.size(); i++)
+		{
+			m_LightingPassShader->SetUniform3f("lights[" + std::to_string(i) + "].Position", m_LightPositions[i]);
+			m_LightingPassShader->SetUniform3f("lights[" + std::to_string(i) + "].Color", m_LightColors[i]);
+			const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+			const float linear = 0.7;
+			const float quadratic = 1.8;
+			m_LightingPassShader->SetUniform1f("lights[" + std::to_string(i) + "].Linear", linear);
+			m_LightingPassShader->SetUniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
+		}
 		m_QuadVAO->Bind();
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 

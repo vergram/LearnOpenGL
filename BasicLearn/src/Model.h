@@ -13,11 +13,13 @@
 class Model
 {
 public:
-	Model(const char* path);
+	Model(const char* path, bool gamma = false);
 	void Draw(Shader& shader);
 	
 	std::vector<Mesh> m_Meshs;
 	std::vector<Texture> m_Textures_loaded;
+
+	bool gammaCorrection;
 
 private:
 	std::string m_Directory;
