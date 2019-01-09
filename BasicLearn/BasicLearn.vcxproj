@@ -165,6 +165,7 @@
     <ClCompile Include="src\tests\TestCamera.cpp" />
     <ClCompile Include="src\tests\TestClearColor.cpp" />
     <ClCompile Include="src\tests\TestCubemap.cpp" />
+    <ClCompile Include="src\tests\TestDeferredShading.cpp" />
     <ClCompile Include="src\tests\TestDepth.cpp" />
     <ClCompile Include="src\tests\TestFrameBuffer.cpp" />
     <ClCompile Include="src\tests\TestGeometry.cpp" />
@@ -208,6 +209,8 @@
     <None Include="res\shader\BloomLightCube.shader" />
     <None Include="res\shader\BloomQuad.shader" />
     <None Include="res\shader\BloomScene.shader" />
+    <None Include="res\shader\DeferredShadingGeometryPass.shader" />
+    <None Include="res\shader\DeferredShadingQuad.shader" />
     <None Include="res\shader\Envmap.shader" />
     <None Include="res\shader\EnvmapModel.shader" />
     <None Include="res\shader\GeoExplodeModel.shader" />
@@ -347,6 +350,7 @@
     <ClInclude Include="src\tests\TestCamera.h" />
     <ClInclude Include="src\tests\TestClearColor.h" />
     <ClInclude Include="src\tests\TestCubemap.h" />
+    <ClInclude Include="src\tests\TestDeferredShading.h" />
     <ClInclude Include="src\tests\TestDepth.h" />
     <ClInclude Include="src\tests\TestFrameBuffer.h" />
     <ClInclude Include="src\tests\TestGeometry.h" />

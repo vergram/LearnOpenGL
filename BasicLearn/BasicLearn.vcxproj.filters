@@ -129,6 +129,9 @@
     <ClCompile Include="src\tests\TestBloom.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestDeferredShading.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -605,6 +608,9 @@
     <ClInclude Include="src\tests\TestBloom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestDeferredShading.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -954,6 +960,8 @@
     <None Include="res\shader\BloomQuad.shader" />
     <None Include="res\shader\BloomScene.shader" />
     <None Include="res\shader\BloomGaussBlur.shader" />
+    <None Include="res\shader\DeferredShadingGeometryPass.shader" />
+    <None Include="res\shader\DeferredShadingQuad.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

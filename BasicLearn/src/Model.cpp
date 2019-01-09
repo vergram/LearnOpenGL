@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-unsigned int TextureFormFile(const char * name, const std::string& directory, bool gammaCorrection = false);
+unsigned int TextureFormFile(const char * name, const std::string& directory, bool gammaCorrection = true);
 
 Model::Model(const char * path)
 {

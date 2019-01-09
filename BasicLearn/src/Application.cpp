@@ -41,6 +41,7 @@
 #include "tests/TestNormalMap.h"
 #include "tests/TestHDR.h"
 #include "tests/TestBloom.h"
+#include "tests/TestDeferredShading.h"
 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -114,6 +115,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestDeferredShading>("DeferredShading");
 		testMenu->RegisterTest<test::TestBloom>("Bloom");
 		testMenu->RegisterTest<test::TestHDR>("HDR");
 		testMenu->RegisterTest<test::TestNormalMap>("NormalMap");

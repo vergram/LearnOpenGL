@@ -12,11 +12,11 @@
 
 namespace test {
 
-	class TestBloom : public Test
+	class TestDeferredShading : public Test
 	{
 	public:
-		TestBloom();
-		~TestBloom();
+		TestDeferredShading();
+		~TestDeferredShading();
 
 		void OnUpdate(float delaTime) override;
 		void OnRender() override;
@@ -34,25 +34,21 @@ namespace test {
 
 		std::unique_ptr<Shader> m_HDRQuadShader;
 		std::unique_ptr<Shader> m_LightCubeShader;
-		std::unique_ptr<Shader> m_HDRSceneShader;
+		std::unique_ptr<Shader> m_GeometryPassShader;
 		std::unique_ptr<Shader> m_GaussBlurShader;
 
-		std::unique_ptr<Texture2D> m_WoodTexture;
-		std::unique_ptr<Texture2D> m_ContainerTexture;
+		std::unique_ptr<Model> m_Nanosuit;
 
 		std::vector<glm::vec3> m_LightPositions;
 		std::vector<glm::vec3> m_LightColors;
+		std::vector<glm::vec3> m_ObjectPositions;
 
 		bool m_IsShowMouse;
 		float m_Exposure;
 
-		unsigned int m_HDRfbo;
-		unsigned int m_HDRColorBuffers[2];
-		unsigned int m_HDRDepthBuffer;
-
-		unsigned int m_PingPongFbos[2];
-		unsigned int m_PingPongColorBuffers[2];
-
+		unsigned int m_GBuffer;
+		unsigned int m_GPosition, m_GNormal, m_GAlbedoSpec;
+		unsigned int m_GDepthBuffer;
 
 	};
 

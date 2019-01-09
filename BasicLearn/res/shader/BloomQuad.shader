@@ -28,11 +28,11 @@ void main()
 {
 	const float gamma = 2.2f;
 	vec3 hdrColor = texture(diffuseTexture, TexCoords).rgb;
-	vec3 bloomBlurColor = texture(bloomBlur, TexCoords).rgb;
+	//vec3 bloomBlurColor = texture(bloomBlur, TexCoords).rgb;
 
 	// Interesting to note here is that we add the bloom effect before we apply tone mapping. 
 	// This way the added brightness of bloom is also softly transformed to LDR range witih better relative lighting as a result.
-	hdrColor += bloomBlurColor; // additive blending
+	//hdrColor += bloomBlurColor; // additive blending
 
 	// Exposure tone mapping
 	vec3 mapped = vec3(1.0f) - exp(-hdrColor * exposure);
