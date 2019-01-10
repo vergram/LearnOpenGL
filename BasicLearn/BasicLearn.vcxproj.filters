@@ -963,6 +963,7 @@
     <None Include="res\shader\DeferredShadingGeometryPass.shader" />
     <None Include="res\shader\DeferredShadingQuad.shader" />
     <None Include="res\shader\DeferredShadingLightingPass.shader" />
+    <None Include="res\shader\DeferredShadingLightCube.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

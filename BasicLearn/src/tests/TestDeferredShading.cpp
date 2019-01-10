@@ -105,10 +105,10 @@ namespace test{
 
 		m_GeometryPassShader = std::make_unique<Shader>("res/shader/DeferredShadingGeometryPass.shader");
 		m_QuadShader = std::make_unique<Shader>("res/shader/DeferredShadingQuad.shader");
-		m_LightCubeShader = std::make_unique<Shader>("res/shader/BloomLightCube.shader");
+		m_LightCubeShader = std::make_unique<Shader>("res/shader/DeferredShadingLightCube.shader");
 		m_LightingPassShader = std::make_unique<Shader>("res/shader/DeferredShadingLightingPass.shader");
 
-		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit_Joey/nanosuit.obj");
+		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
 		#pragma region position and color info
 		// object positions
@@ -231,15 +231,50 @@ namespace test{
 		{
 			m_LightingPassShader->SetUniform3f("lights[" + std::to_string(i) + "].Position", m_LightPositions[i]);
 			m_LightingPassShader->SetUniform3f("lights[" + std::to_string(i) + "].Color", m_LightColors[i]);
-			const float constant = 1.0; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
-			const float linear = 0.7;
-			const float quadratic = 1.8;
+			const float constant = 1.0f; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
+			const float linear = 0.7f;
+			const float quadratic = 1.8f;
+
+			//  We use a light source's brightest color component, 
+			// as solving the equation for a light's brightest intensity value best reflects the ideal light volume radius.
+			float lightMax = std::fmaxf(m_LightColors[i].x, std::fmaxf(m_LightColors[i].y, m_LightColors[i].z));
+			
+			// 这里的场景中使用 5/256 作为不可见光强的阈值，表示少于它的光照强度都不在 fragment 里面计算
+			// 关键公式是：
+			// 5 / 256 = lightMax / Attenuation
+			// 注意这里的 Attenuation 是衰减倍数，等于光的衰减方程：
+			// Attenuation = 1 / (constant + linear * distance + quadratic * distance * distance)
+			// 最后使用求根公式算出 radius 
+			float radius = (-linear + std::sqrtf(linear * linear - 4.0f * quadratic * (constant - (256.0f / 5.0f) * lightMax)))
+							/
+							(2.0f * quadratic);
+
 			m_LightingPassShader->SetUniform1f("lights[" + std::to_string(i) + "].Linear", linear);
 			m_LightingPassShader->SetUniform1f("lights[" + std::to_string(i) + "].Quadratic", quadratic);
+			m_LightingPassShader->SetUniform1f("lights[" + std::to_string(i) + "].Radius", radius);
 		}
 		m_QuadVAO->Bind();
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBlitFramebuffer(0, 0, 800, 600, 0, 0, 800, 600, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// forward rendering as usual
+		m_LightCubeShader->Bind();
+		m_LightCubeShader->SetUniformMatrix4fv("view", view);
+		m_LightCubeShader->SetUniformMatrix4fv("projection", projection);
+		for (int i = 0; i < m_LightPositions.size(); i++)
+		{
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, m_LightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.25f));
+			m_LightCubeShader->SetUniformMatrix4fv("model", model);
+			m_LightCubeShader->SetUniform3f("lightColor", m_LightColors[i]);
+			m_CubeVAO->Bind();
+			glDrawArrays(GL_TRIANGLES, 0, 36);
+		}
 	}
 
 	void TestDeferredShading::OnImGuiRender()

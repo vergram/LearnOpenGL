@@ -27,6 +27,8 @@ struct Light
 
 	float Linear;
 	float Quadratic;
+
+	float Radius;
 };
 const int NR_LIGHTS = 32;
 uniform Light lights[NR_LIGHTS];
@@ -48,6 +50,13 @@ void main()
 	
 	for (int i = 0; i < NR_LIGHTS; i++)
 	{
+		float distance = length(lights[i].Position - FragPos);
+		
+		// skip the light if it is too far away
+		if (distance > lights[i].Radius) continue;
+		
+		float attenuation = 1.0f / (1.0f + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
+
 		// diffuse
 		vec3 lightDir = normalize(lights[i].Position - FragPos);
 		vec3 diffuse = max(dot(lightDir, Normal), 0.0f) * lights[i].Color;
@@ -56,9 +65,6 @@ void main()
 		vec3 halfwayDir = normalize(viewDir + lightDir);
 		vec3 specular = pow(max(dot(halfwayDir, Normal), 0.0f), 32.0f) * lights[i].Color * SpecularIntensity;
 
-		float distance = length(lights[i].Position - FragPos);
-		float attenuation = 1.0f / (1.0f + lights[i].Linear * distance + lights[i].Quadratic * distance * distance);
-		
 		vec3 result = specular + diffuse;
 		result *= attenuation * Albedo;
 
@@ -66,7 +72,7 @@ void main()
 	}
 
 	// Gamma correction
-	//lighting = pow(lighting, vec3(1.0f / gamma));
+	lighting = pow(lighting, vec3(1.0f / gamma));
 	
 	FragColor = vec4(lighting, 1.0f);
 
