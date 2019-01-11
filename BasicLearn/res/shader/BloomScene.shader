@@ -87,5 +87,5 @@ void main()
 	if (brightness > 1.0f)
 		BrightColor = vec4(FragColor.rgb, 1.0f);
 	else
-		BrightColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);
+		BrightColor = vec4(0.0f, 0.0f, 0.0f, 1.0f); // since we use additive blend finally, we can set the pixel pure black for make no effort to blend.
 }

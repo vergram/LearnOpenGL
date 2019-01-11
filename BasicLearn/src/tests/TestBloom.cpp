@@ -196,6 +196,7 @@ namespace test{
 		glm::mat4 projection = m_Camera.GetProjectionMatrix();
 
 		glBindFramebuffer(GL_FRAMEBUFFER, m_HDRfbo);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		m_HDRSceneShader->Bind();
@@ -273,30 +274,30 @@ namespace test{
 		#pragma endregion
 
 		#pragma region gauss blur
-		//bool horizontal = true, first_iteration = true;
-		//int amout = 10;
-		//m_GaussBlurShader->Bind();
-		//for (int i = 0; i < amout; i++)
-		//{
-		//	GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_PingPongFbos[horizontal]));
-		//	GLCall(glBindTexture(GL_TEXTURE_2D, first_iteration ? m_HDRColorBuffers[1] : m_PingPongColorBuffers[!horizontal]));
-		//	m_GaussBlurShader->SetUniform1i("horizontal", horizontal);
-		//	m_QuadVAO->Bind();
-		//	glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		//	horizontal = !horizontal;
-		//	if (first_iteration) first_iteration = false;
-		//}
+		bool horizontal = true, first_iteration = true;
+		int amout = 10;
+		m_GaussBlurShader->Bind();
+		for (int i = 0; i < amout; i++)
+		{
+			GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_PingPongFbos[horizontal]));
+			GLCall(glBindTexture(GL_TEXTURE_2D, first_iteration ? m_HDRColorBuffers[1] : m_PingPongColorBuffers[!horizontal]));
+			m_GaussBlurShader->SetUniform1i("horizontal", horizontal);
+			m_QuadVAO->Bind();
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			horizontal = !horizontal;
+			if (first_iteration) first_iteration = false;
+		}
 		#pragma endregion
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_HDRColorBuffers[1]);
+		glBindTexture(GL_TEXTURE_2D, m_HDRColorBuffers[0]);
 		glActiveTexture(GL_TEXTURE1);
 		glBindTexture(GL_TEXTURE_2D, m_PingPongColorBuffers[1]);
 		m_HDRQuadShader->Bind();
 		m_HDRQuadShader->SetUniform1i("diffuseTexture", 0);
-		//m_HDRQuadShader->SetUniform1i("bloomBlur", 1);
+		m_HDRQuadShader->SetUniform1i("bloomBlur", 1);
 		m_HDRQuadShader->SetUniform1f("exposure", m_Exposure);
 		m_QuadVAO->Bind();
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
