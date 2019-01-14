@@ -32,9 +32,11 @@ public:
 	std::vector<Texture> textures;
 
 	void Draw(Shader& shader);
-	unsigned int GetVAO() const;
+	inline unsigned int GetVAO() const { return VAO; }
+	inline unsigned int GetEBO() const { return EBO; }
 
-private:
+
+protected:
 	unsigned int VAO, VBO, EBO;
 	void setupMesh();
 };

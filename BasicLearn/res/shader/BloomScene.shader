@@ -86,6 +86,8 @@ void main()
 	float brightness = dot(FragColor.rgb, vec3(0.2126, 0.7152, 0.0722));
 	if (brightness > 1.0f)
 		BrightColor = vec4(FragColor.rgb, 1.0f);
+	// it is necessary for this else statement, since NV card automatically use the first buffer value to initlize the other.
+	// for this reason, without this else statement, no matter the `brightness` pass the if statement or not the BrightColor would qeuals to that FragColor.
 	else
 		BrightColor = vec4(0.0f, 0.0f, 0.0f, 1.0f); // since we use additive blend finally, we can set the pixel pure black for make no effort to blend.
 }

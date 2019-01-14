@@ -7,6 +7,7 @@
 #include "Texture2D.h"
 #include "Camera.h"
 #include "Model.h"
+#include "Sphere.h"
 
 #include <vector>
 
@@ -42,6 +43,8 @@ namespace test {
 		std::vector<glm::vec3> m_LightPositions;
 		std::vector<glm::vec3> m_LightColors;
 		std::vector<glm::vec3> m_ObjectPositions;
+
+		std::unique_ptr<Sphere> m_Sphere;
 
 		bool m_IsShowMouse;
 		float m_Exposure;

@@ -103,6 +103,8 @@ namespace test{
 		m_QuadVBO = std::make_unique<VertexBuffer>(quadVertices, sizeof(quadVertices));
 		m_QuadVAO->AddBuffer(*m_QuadVBO, PTLayout);
 
+		m_Sphere = std::make_unique<Sphere>();
+
 		m_GeometryPassShader = std::make_unique<Shader>("res/shader/DeferredShadingGeometryPass.shader");
 		m_QuadShader = std::make_unique<Shader>("res/shader/DeferredShadingQuad.shader");
 		m_LightCubeShader = std::make_unique<Shader>("res/shader/DeferredShadingLightCube.shader");
@@ -272,8 +274,10 @@ namespace test{
 			model = glm::scale(model, glm::vec3(0.25f));
 			m_LightCubeShader->SetUniformMatrix4fv("model", model);
 			m_LightCubeShader->SetUniform3f("lightColor", m_LightColors[i]);
-			m_CubeVAO->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			//m_CubeVAO->Bind();
+			//glDrawArrays(GL_TRIANGLES, 0, 36);
+			m_Sphere->Bind();
+			glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 		}
 	}
 
