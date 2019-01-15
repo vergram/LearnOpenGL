@@ -210,10 +210,13 @@
     <None Include="res\shader\BloomLightCube.shader" />
     <None Include="res\shader\BloomQuad.shader" />
     <None Include="res\shader\BloomScene.shader" />
+    <None Include="res\shader\DeferredDebug.shader" />
+    <None Include="res\shader\DeferredPointLightPass.shader" />
     <None Include="res\shader\DeferredShadingGeometryPass.shader" />
     <None Include="res\shader\DeferredShadingLightCube.shader" />
     <None Include="res\shader\DeferredShadingLightingPass.shader" />
     <None Include="res\shader\DeferredShadingQuad.shader" />
+    <None Include="res\shader\DeferredStencilPass.shader" />
     <None Include="res\shader\Envmap.shader" />
     <None Include="res\shader\EnvmapModel.shader" />
     <None Include="res\shader\GeoExplodeModel.shader" />

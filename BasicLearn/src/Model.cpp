@@ -155,7 +155,15 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial * material, aiTextur
 		if (!skip)
 		{
 			Texture texture;
-			texture.id = TextureFormFile(str.C_Str(), m_Directory, gammaCorrection);
+			// load texture in srgb only when texture type is diffuse
+			if (type == aiTextureType_DIFFUSE)
+			{
+				texture.id = TextureFormFile(str.C_Str(), m_Directory, gammaCorrection);
+			}
+			else
+			{
+				texture.id = TextureFormFile(str.C_Str(), m_Directory);
+			}
 			texture.type = typeName;
 			texture.path = str;
 			textures.push_back(texture);

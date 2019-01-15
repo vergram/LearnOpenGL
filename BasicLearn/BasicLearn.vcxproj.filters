@@ -970,6 +970,9 @@
     <None Include="res\shader\DeferredShadingQuad.shader" />
     <None Include="res\shader\DeferredShadingLightingPass.shader" />
     <None Include="res\shader\DeferredShadingLightCube.shader" />
+    <None Include="res\shader\DeferredStencilPass.shader" />
+    <None Include="res\shader\DeferredPointLightPass.shader" />
+    <None Include="res\shader\DeferredDebug.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

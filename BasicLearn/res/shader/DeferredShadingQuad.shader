@@ -28,11 +28,14 @@ void main()
 	const float gamma = 2.2f;
 	vec3 color = texture(diffuseTexture, TexCoords).rgb;
 
+	// Reinhard tone mapping
+	//color = color / (color + vec3(1.0f));
+
 	// Exposure tone mapping
-	//vec3 mapped = vec3(1.0f) - exp(-color * exposure);
+	color = vec3(1.0f) - exp(-color * exposure);
 
 	// Gamma correction
-	//mapped = pow(mapped, vec3(1.0f / gamma));
+	color = pow(color, vec3(1.0f / gamma));
 	
 	FragColor = vec4(color, 1.0f);
 

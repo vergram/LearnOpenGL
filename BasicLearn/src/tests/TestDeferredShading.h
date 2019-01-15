@@ -24,6 +24,8 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
+		float calculateLightRadius(glm::vec3& lightColor);
+
 		Camera m_Camera;
 
 		std::unique_ptr<VertexBuffer> m_PlaneVBO;
@@ -37,6 +39,11 @@ namespace test {
 		std::unique_ptr<Shader> m_LightCubeShader;
 		std::unique_ptr<Shader> m_GeometryPassShader;
 		std::unique_ptr<Shader> m_LightingPassShader;
+		std::unique_ptr<Shader> m_PointLightPassShader;
+		std::unique_ptr<Shader> m_StencilPassShader;
+		std::unique_ptr<Shader> m_DebugShader;
+
+		std::unique_ptr<Sphere> m_Sphere;
 
 		std::unique_ptr<Model> m_Nanosuit;
 
@@ -44,13 +51,11 @@ namespace test {
 		std::vector<glm::vec3> m_LightColors;
 		std::vector<glm::vec3> m_ObjectPositions;
 
-		std::unique_ptr<Sphere> m_Sphere;
-
 		bool m_IsShowMouse;
 		float m_Exposure;
 
 		unsigned int m_GBuffer;
-		unsigned int m_GPosition, m_GNormal, m_GAlbedoSpec;
+		unsigned int m_GPosition, m_GNormal, m_GAlbedoSpec, m_GFinalTexture;
 		unsigned int m_GDepthBuffer;
 
 	};
