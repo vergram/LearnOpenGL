@@ -51,6 +51,8 @@ namespace test {
 		std::vector<glm::vec3> m_LightColors;
 		std::vector<glm::vec3> m_ObjectPositions;
 
+		glm::mat4 tangentMatrix;
+
 		bool m_IsShowMouse;
 		float m_Exposure;
 

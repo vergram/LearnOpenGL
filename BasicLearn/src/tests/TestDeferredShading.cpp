@@ -152,20 +152,20 @@ namespace test{
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_GBuffer));
 
 		// -position color buffer
-		GLCall(glGenTextures(1, &m_GPosition));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_GPosition));
+		GLCall(glGenTextures(1, &m_GTangentPosition));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_GTangentPosition));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_GPosition, 0));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_GTangentPosition, 0));
 
 		// -normal color buffer
-		GLCall(glGenTextures(1, &m_GNormal));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_GNormal));
+		GLCall(glGenTextures(1, &m_GTangentNormal));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_GTangentNormal));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_GNormal, 0));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_GTangentNormal, 0));
 
 		// -color + specular color buffer
 		GLCall(glGenTextures(1, &m_GAlbedoSpec));
@@ -325,9 +325,9 @@ namespace test{
 
 				// set up texture sampler for calculatelight
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, m_GPosition);
+				glBindTexture(GL_TEXTURE_2D, m_GTangentPosition);
 				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, m_GNormal);
+				glBindTexture(GL_TEXTURE_2D, m_GTangentNormal);
 				glActiveTexture(GL_TEXTURE2);
 				glBindTexture(GL_TEXTURE_2D, m_GAlbedoSpec);
 				
@@ -339,11 +339,10 @@ namespace test{
 				glCullFace(GL_FRONT);                 // culling the FRONT face because when camera was in that light volume, we can only see the BACK
 				
 				m_PointLightPassShader->Bind();
-				m_PointLightPassShader->SetUniform3f("light.Position", m_LightPositions[i]);
-				m_PointLightPassShader->SetUniform3f("light.Color", m_LightColors[i]);
-				m_PointLightPassShader->SetUniform1f("light.Linear", 0.7f);
-				m_PointLightPassShader->SetUniform1f("light.Quadratic", 1.8f);
-				m_PointLightPassShader->SetUniform1f("light.Radius", radius);
+				m_PointLightPassShader->SetUniform3f("pointLight.Position", m_LightPositions[i]);
+				m_PointLightPassShader->SetUniform3f("pointLight.Color", m_LightColors[i]);
+				m_PointLightPassShader->SetUniform1f("pointLight.Linear", 0.7f);
+				m_PointLightPassShader->SetUniform1f("pointLight.Quadratic", 1.8f);
 				m_PointLightPassShader->SetUniformMatrix4fv("model", model);
 				//m_DebugShader->Bind();
 				//m_DebugShader->SetUniformMatrix4fv("model", model);
