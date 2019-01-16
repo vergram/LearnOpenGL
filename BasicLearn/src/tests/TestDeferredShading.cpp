@@ -15,7 +15,7 @@
 
 namespace test{
 
-	TestDeferredShading::TestDeferredShading() :m_Camera(), m_Exposure(1.0f)
+	TestDeferredShading::TestDeferredShading() :m_Camera(), m_Exposure(1.0f), m_DebugMode(0)
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -151,44 +151,31 @@ namespace test{
 		GLCall(glGenFramebuffers(1, &m_GBuffer));
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_GBuffer));
 
-		// -position color buffer
-		GLCall(glGenTextures(1, &m_GTangentPosition));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_GTangentPosition));
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, m_GTangentPosition, 0));
-
-		// -normal color buffer
-		GLCall(glGenTextures(1, &m_GTangentNormal));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_GTangentNormal));
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, m_GTangentNormal, 0));
-
-		// -color + specular color buffer
-		GLCall(glGenTextures(1, &m_GAlbedoSpec));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_GAlbedoSpec));
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 800, 600, 0, GL_RGBA, GL_FLOAT, NULL));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_GAlbedoSpec, 0));
-
-		// final texture for bilt
-		GLCall(glGenTextures(1, &m_GFinalTexture));
-		GLCall(glBindTexture(GL_TEXTURE_2D, m_GFinalTexture));
-		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
-		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
-		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, m_GFinalTexture, 0));
+		glGenTextures(4, m_GBufferTextures);
+		// for POSITION, NORMAL
+		for (unsigned int i = 0; i < 2; i++)
+		{
+			GLCall(glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[i]));
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_GBufferTextures[i], 0));
+		}
+		// for DIFFUSE_SPECULAR_INTENSITY and FINAL_TEXTURE
+		for (unsigned int i = 2; i < 4; i++)
+		{
+			GLCall(glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[i]));
+			GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, 800, 600, 0, GL_RGBA, GL_FLOAT, NULL));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+			GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_GBufferTextures[i], 0));
+		}
 
 		// add depth Render buffer object for the framebuffer
 		GLCall(glGenRenderbuffers(1, &m_GDepthBuffer));
 		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_GDepthBuffer));
-		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH32F_STENCIL8, 800, 600));
+		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600));            // don't use GL_DEPTH32F_STENCIL8 because the 0 framebuffer can't accpet it well
 		GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_GDepthBuffer));
-
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -228,7 +215,7 @@ namespace test{
 		// clear the final texture
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_GBuffer);
 
-		glDrawBuffer(GL_COLOR_ATTACHMENT3);
+		glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_TEXTURE);
 		glClear(GL_COLOR_BUFFER_BIT);
 
 
@@ -240,7 +227,11 @@ namespace test{
 		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_GBuffer);
 
 		// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-		unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
+		unsigned int attachments[3];
+		for (unsigned int i = 0; i < 3; i++)
+		{
+			attachments[i] = GL_COLOR_ATTACHMENT0 + i;
+		}
 		GLCall(glDrawBuffers(3, attachments));
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -315,7 +306,7 @@ namespace test{
 			// point light pass
 			//{
 				// draw the pixels to final texture
-				glDrawBuffer(GL_COLOR_ATTACHMENT3);
+				glDrawBuffer(GL_COLOR_ATTACHMENT0 + GBufferTextureType::FINAL_TEXTURE);
 
 				// after the stencil pass, now the stencil buffer should have NOT_ZERO value for this particular light
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
@@ -325,12 +316,12 @@ namespace test{
 
 				// set up texture sampler for calculatelight
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, m_GTangentPosition);
+				glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::POSITION]);
 				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, m_GTangentNormal);
+				glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::NORMAL]);
 				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, m_GAlbedoSpec);
-				
+				glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::DIFFUSE_SPECULAR_INTENSITY]);
+
 				glEnable(GL_BLEND);
 				glBlendEquation(GL_FUNC_ADD);         // we use additive blend for light volume
 				glBlendFunc(GL_ONE, GL_ONE);
@@ -362,13 +353,13 @@ namespace test{
 		#pragma region final pass
 		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 		//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer);
-		//glReadBuffer(GL_COLOR_ATTACHMENT3);
+		//glReadBuffer(GL_COLOR_ATTACHMENT0 + m_DebugMode);
 		//glBlitFramebuffer(0, 0, 800, 600,
 		//				  0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, m_GFinalTexture);
+		glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::FINAL_TEXTURE]);
 		m_QuadShader->Bind();
 		m_QuadShader->SetUniform1i("diffuseTexture", 0);
 		m_QuadShader->SetUniform1f("exposure", m_Exposure);
@@ -379,32 +370,36 @@ namespace test{
 
 		// forward rendering as usual
 		#pragma region forward rendering for light sphere
-		//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer);
-		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		//glBlitFramebuffer(0, 0, 800, 600, 0, 0, 800, 600, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glDisable(GL_CULL_FACE);
+		glEnable(GL_DEPTH_TEST);
+		glDepthMask(GL_TRUE);
+		glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBuffer);
+		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		glBlitFramebuffer(0, 0, 800, 600, 0, 0, 800, 600, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-		//m_LightCubeShader->Bind();
-		//m_LightCubeShader->SetUniformMatrix4fv("view", view);
-		//m_LightCubeShader->SetUniformMatrix4fv("projection", projection);
-		//for (int i = 0; i < m_LightPositions.size(); i++)
-		//{
-		//	glm::mat4 model = glm::mat4(1.0f);
-		//	model = glm::translate(model, m_LightPositions[i]);
-		//	model = glm::scale(model, glm::vec3(0.25f));
-		//	m_LightCubeShader->SetUniformMatrix4fv("model", model);
-		//	m_LightCubeShader->SetUniform3f("lightColor", m_LightColors[i]);
-		//	//m_CubeVAO->Bind();
-		//	//glDrawArrays(GL_TRIANGLES, 0, 36);
-		//	m_Sphere->Bind();
-		//	glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
-		//}
+		m_LightCubeShader->Bind();
+		m_LightCubeShader->SetUniformMatrix4fv("view", view);
+		m_LightCubeShader->SetUniformMatrix4fv("projection", projection);
+		for (int i = 0; i < m_LightPositions.size(); i++)
+		{
+			glm::mat4 model = glm::mat4(1.0f);
+			model = glm::translate(model, m_LightPositions[i]);
+			model = glm::scale(model, glm::vec3(0.25f));
+			m_LightCubeShader->SetUniformMatrix4fv("model", model);
+			m_LightCubeShader->SetUniform3f("lightColor", m_LightColors[i]);
+			//m_CubeVAO->Bind();
+			//glDrawArrays(GL_TRIANGLES, 0, 36);
+			m_Sphere->Bind();
+			glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
+		}
 		#pragma endregion
 	}
 
 	void TestDeferredShading::OnImGuiRender()
 	{
 		ImGui::DragFloat("Exposure", &m_Exposure, 0.1f, 0.0f, 1.0f);
+		ImGui::DragInt("DebugGBuffer", &m_DebugMode, 1.0f, 0, 3);
 	}
 
 	float TestDeferredShading::calculateLightRadius(glm::vec3 & lightColor)

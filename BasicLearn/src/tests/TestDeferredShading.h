@@ -51,15 +51,21 @@ namespace test {
 		std::vector<glm::vec3> m_LightColors;
 		std::vector<glm::vec3> m_ObjectPositions;
 
-		glm::mat4 tangentMatrix;
-
 		bool m_IsShowMouse;
 		float m_Exposure;
 
-		unsigned int m_GBuffer;
-		unsigned int m_GPosition, m_GNormal, m_GAlbedoSpec, m_GFinalTexture;
-		unsigned int m_GDepthBuffer;
+		enum GBufferTextureType
+		{
+			POSITION                   = 0,
+			NORMAL                     = 1,
+			DIFFUSE_SPECULAR_INTENSITY = 2,
+			FINAL_TEXTURE              = 3
+		};
 
+		unsigned int m_GBufferTextures[4];
+		unsigned int m_GBuffer;
+		unsigned int m_GDepthBuffer;
+		int m_DebugMode;
 	};
 
 }

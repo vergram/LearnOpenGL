@@ -36,12 +36,6 @@ struct DirectionLight
 	vec3 Color;
 	vec3 Direction;
 };
-uniform PointLight pointLight;
-uniform vec3 viewPos;
-
-uniform sampler2D gPosition;
-uniform sampler2D gNormal;
-uniform sampler2D gAlbedoSpec;
 
 // Blining-Phong lighting model
 vec3 CalcLightInternal(vec3 lightColor, 
@@ -65,52 +59,68 @@ vec3 CalcLightInternal(vec3 lightColor,
 	return lighting;
 }
 
-vec4 CalcPointLight(PointLight pointLight,
+vec4 CalcPointLight(vec3 lightColor,
+					vec3 lightPos,
+	                float linear,
+	                float quadratic,
 	                vec3 fragPos,
 	                vec3 normal,
 	                vec3 viewPos,
 	                float diffuseIntensity,
 	                float specularIntensity)
 {
-	vec3 lightDir = normalize(pointLight.Position - fragPos);
-	vec3 lighting = CalcLightInternal(pointLight.Color, lightDir, fragPos, normal, viewPos, diffuseIntensity, specularIntensity);
+	vec3 lightDir = normalize(lightPos - fragPos);
+	vec3 lighting = CalcLightInternal(lightColor, lightDir, fragPos, normal, viewPos, diffuseIntensity, specularIntensity);
 
-	float distance = length(pointLight.Position - fragPos);
-	float Attenuation = 1.0f + pointLight.Linear * distance + pointLight.Quadratic * distance * distance;
+	float distance = length(lightPos - fragPos);
+	float Attenuation = 1.0f + linear * distance + quadratic * distance * distance;
 
 	return vec4(lighting / Attenuation, 1.0f);
 }
 
-vec4 CalcDirectionLight(DirectionLight directionLight,
-					    vec3 fragPos,
-					    vec3 normal,
-					    vec3 viewPos,
-					    float diffuseIntensity,
-					    float specularIntensity)
-{
-	vec3 lightDir = -directionLight.Direction;
-	vec3 lighting = CalcLightInternal(directionLight.Color, lightDir, fragPos, normal, viewPos, diffuseIntensity, specularIntensity);
-	return vec4(lighting, 1.0f);
-}
+//vec4 CalcDirectionLight(DirectionLight directionLight,
+//					    vec3 fragPos,
+//					    vec3 normal,
+//					    vec3 viewPos,
+//					    float diffuseIntensity,
+//					    float specularIntensity)
+//{
+//	vec3 lightDir = -directionLight.Direction;
+//	vec3 lighting = CalcLightInternal(directionLight.Color, lightDir, fragPos, normal, viewPos, diffuseIntensity, specularIntensity);
+//	return vec4(lighting, 1.0f);
+//}
 
+// calculate texCoord for gBuffer
 vec2 CalcTexCoord()
 {
 	return gl_FragCoord.xy / vec2(800, 600);
 }
 
+uniform PointLight pointLight;
+uniform vec3 viewPos;
+
+uniform sampler2D gPosition;
+uniform sampler2D gNormal;
+uniform sampler2D gAlbedoSpec;
+
 void main()
 {
-	vec2 TexCoords = CalcTexCoord();
+	vec2  TexCoords         =  CalcTexCoord();
+	vec3  Position          =  texture(gPosition, TexCoords).xyz;
+	vec3  Normal            =  texture(gNormal, TexCoords).xyz;
+	vec3  Albedo            =  texture(gAlbedoSpec, TexCoords).rgb;
+	float SpecularIntensity =  texture(gAlbedoSpec, TexCoords).a;
 
-	vec3 FragPos = texture(gPosition, TexCoords).xyz;
-	vec3 Normal = normalize(texture(gNormal, TexCoords).xyz);
-	vec3 Albedo = texture(gAlbedoSpec, TexCoords).xyz;
-	float SpecularIntensity = texture(gAlbedoSpec, TexCoords).a;
+	vec3  LightPos          =  pointLight.Position;
+	vec3  ViewPos           =  viewPos;
 
-	vec4 lighting = CalcPointLight(pointLight, FragPos, Normal, viewPos, 1.0f, SpecularIntensity);
+	vec4 lighting = CalcPointLight(pointLight.Color, pointLight.Position, pointLight.Linear, pointLight.Quadratic, 
+									Position, Normal, ViewPos, 1.0f, SpecularIntensity);
 	
 	vec4 color = vec4(Albedo, 1.0f) * lighting;
-
+	
+	//vec4 color = vec4(Albedo, 1.0f);
+	
 	FragColor = color;
 
 }
