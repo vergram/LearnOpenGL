@@ -135,6 +135,9 @@
     <ClCompile Include="src\Sphere.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\TestSSAO.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -617,6 +620,9 @@
     <ClInclude Include="src\Sphere.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\TestSSAO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -973,6 +979,11 @@
     <None Include="res\shader\DeferredStencilPass.shader" />
     <None Include="res\shader\DeferredPointLightPass.shader" />
     <None Include="res\shader\DeferredDebug.shader" />
+    <None Include="res\shader\SSAOGeometryPass.shader" />
+    <None Include="res\shader\SSAOSsaoPass.shader" />
+    <None Include="res\shader\SSAOQuad.shader" />
+    <None Include="res\shader\SSAOBlur.shader" />
+    <None Include="res\shader\SSAOLightPass.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

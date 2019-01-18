@@ -177,6 +177,7 @@
     <ClCompile Include="src\tests\TestDepthMap.cpp" />
     <ClCompile Include="src\tests\TestNormalMap.cpp" />
     <ClCompile Include="src\tests\TestPointShadow.cpp" />
+    <ClCompile Include="src\tests\TestSSAO.cpp" />
     <ClCompile Include="src\tests\TestTexture.cpp" />
     <ClCompile Include="src\Texture2D.cpp" />
     <ClCompile Include="src\TextureCube.cpp" />
@@ -233,6 +234,11 @@
     <None Include="res\shader\Post_Processing.shader" />
     <None Include="res\shader\SingleColor.shader" />
     <None Include="res\shader\Skybox.shader" />
+    <None Include="res\shader\SSAOBlur.shader" />
+    <None Include="res\shader\SSAOGeometryPass.shader" />
+    <None Include="res\shader\SSAOLightPass.shader" />
+    <None Include="res\shader\SSAOQuad.shader" />
+    <None Include="res\shader\SSAOSsaoPass.shader" />
     <None Include="res\shader\UboSingleColorB.shader" />
     <None Include="res\shader\UboSingleColorG.shader" />
     <None Include="res\shader\UboSingleColorR.shader" />
@@ -368,6 +374,7 @@
     <ClInclude Include="src\tests\TestDepthMap.h" />
     <ClInclude Include="src\tests\TestNormalMap.h" />
     <ClInclude Include="src\tests\TestPointShadow.h" />
+    <ClInclude Include="src\tests\TestSSAO.h" />
     <ClInclude Include="src\tests\TestTexture.h" />
     <ClInclude Include="src\TextureCube.h" />
     <ClInclude Include="src\vendor\glm\core\func_common.hpp" />
