@@ -51,6 +51,7 @@ namespace test {
 		std::unique_ptr<Shader> m_LightingPassShader;
 		std::unique_ptr<Shader> m_SSAOBlurShader;
 		std::unique_ptr<Shader> m_SSAOPassShader;
+		std::unique_ptr<Shader> m_ReconstructPosShader;
 
 		glm::vec3 m_LightPosition;
 		glm::vec3 m_LightColor;
@@ -66,7 +67,8 @@ namespace test {
 		{
 			POSITION  = 0,
 			NORMAL    = 1,
-			ALBEDO    = 2
+			ALBEDO    = 2,
+			DEPTH     = 3,
 		};
 
 		enum SSAOTextureType
@@ -75,13 +77,13 @@ namespace test {
 			BLUR = 1
 		};
 
-		unsigned int m_GBufferTextures[4];
+		unsigned int m_GBufferTextures[5];
 		unsigned int m_GBufferFBO;
 		unsigned int m_GDepthBuffer;
 
 		unsigned int m_SSAO_fbo;
 		unsigned int m_SSAOTextures[2];
-
+		unsigned int m_ReconstructPosTexture;
 
 		int m_DebugMode;
 	};

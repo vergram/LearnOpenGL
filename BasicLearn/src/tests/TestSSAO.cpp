@@ -111,6 +111,7 @@ namespace test{
 		m_LightingPassShader = std::make_unique<Shader>("res/shader/SSAOLightPass.shader");
 		m_SSAOBlurShader = std::make_unique<Shader>("res/shader/SSAOBlur.shader");
 		m_SSAOPassShader = std::make_unique<Shader>("res/shader/SSAOSsaoPass.shader");
+		m_ReconstructPosShader = std::make_unique<Shader>("res/shader/SSAOReconstructPos.shader");
 
 		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
@@ -170,6 +171,23 @@ namespace test{
 			GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_SSAOTextures[i], 0));
 		}
 
+		// debug depth
+		GLCall(glGenTextures(1, &m_ReconstructPosTexture));
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_ReconstructPosTexture));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, 800, 600, 0, GL_RGB, GL_FLOAT, NULL));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_ReconstructPosTexture, 0));
+		
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+		{
+			std::cout << "ERROR:: FRAMEBUFFER is NOT COMPLETE." << std::endl;
+		}
+		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, 0));
+
+
 		#pragma region G-Buffer init
 		GLCall(glGenFramebuffers(1, &m_GBufferFBO));
 		GLCall(glBindFramebuffer(GL_FRAMEBUFFER, m_GBufferFBO));
@@ -186,18 +204,27 @@ namespace test{
 			GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 			GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, m_GBufferTextures[i], 0));
 		}
-		// FINAL_TEXTURE
+		// ALBEDO
 		GLCall(glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::ALBEDO]));
 		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
 		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
 		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::ALBEDO], 0));
 
+		// DEPTH
+		GLCall(glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::DEPTH]));
+		GLCall(glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT32F, 800, 600, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
+		GLCall(glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
+		GLCall(glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::DEPTH], 0));
+
 		// add depth Render buffer object for the framebuffer
-		GLCall(glGenRenderbuffers(1, &m_GDepthBuffer));
-		GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_GDepthBuffer));
-		GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600));            // don't use GL_DEPTH32F_STENCIL8 because the 0 framebuffer can't accpet it well
-		GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_GDepthBuffer));
+		//GLCall(glGenRenderbuffers(1, &m_GDepthBuffer));
+		//GLCall(glBindRenderbuffer(GL_RENDERBUFFER, m_GDepthBuffer));
+		//GLCall(glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600));            // don't use GL_DEPTH32F_STENCIL8 because the 0 framebuffer can't accpet it well
+		//GLCall(glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, m_GDepthBuffer));
 
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 		{
@@ -213,26 +240,26 @@ namespace test{
 	{
 
 		GeometryPass();
-		
+
 		SSAOPass();
 
-		LightingPass();
+		//LightingPass();
 		
 		#pragma region debug porpuse
 		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
-		//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_SSAO_fbo);
+		//glBindFramebuffer(GL_READ_FRAMEBUFFER, m_GBufferFBO);
 		//glReadBuffer(GL_COLOR_ATTACHMENT0 + m_DebugMode);
 		//glBlitFramebuffer(0, 0, 800, 600,
 		//				  0, 0, 800, 600, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 
-		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		//glActiveTexture(GL_TEXTURE0);
-		//glBindTexture(GL_TEXTURE_2D, m_SSAOTextures[m_DebugMode]);
-		//m_QuadShader->Bind();
-		//m_QuadShader->SetUniform1i("diffuseTexture", 0);
-		//m_QuadShader->SetUniform1f("exposure", m_Exposure);
-		//m_QuadVAO->Bind();
-		//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, m_SSAOTextures[m_DebugMode]);
+		m_QuadShader->Bind();
+		m_QuadShader->SetUniform1i("diffuseTexture", 0);
+		m_QuadShader->SetUniform1f("exposure", m_Exposure);
+		m_QuadVAO->Bind();
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		#pragma endregion
 	}
 
@@ -241,8 +268,6 @@ namespace test{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_GBufferFBO);
 
 		glEnable(GL_DEPTH_TEST);
-		// only geometry pass can updates the depth buffer
-		glDepthMask(GL_TRUE);
 
 		// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
 		unsigned int attachments[3];
@@ -276,9 +301,7 @@ namespace test{
 		m_GeometryPassShader->SetUniform1i("inverseNormal", false);
 		m_Nanosuit->Draw(*m_GeometryPassShader);
 
-		// When we get here the depth buffer is already populated and the stencil pass
-		// depends on it, but it does not write to it.
-		glDepthMask(GL_FALSE);
+
 	}
 
 	void TestSSAO::SSAOPass()
@@ -292,11 +315,19 @@ namespace test{
 		glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::NORMAL]);
 		glActiveTexture(GL_TEXTURE2);
 		glBindTexture(GL_TEXTURE_2D, m_NoiseTexture);
+		glActiveTexture(GL_TEXTURE3);
+		glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::DEPTH]);
+
 		m_SSAOPassShader->Bind();
 		m_SSAOPassShader->SetUniform1i("gPosition", 0);
 		m_SSAOPassShader->SetUniform1i("gNormal", 1);
 		m_SSAOPassShader->SetUniform1i("texNoise", 2);
 		m_SSAOPassShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
+		
+		m_SSAOPassShader->SetUniform1i("gDepthMap", 3);
+		m_SSAOPassShader->SetUniform1f("gProjectionTangentHalfFov", std::tanf(glm::radians(45.0f / 2.0f)));
+		m_SSAOPassShader->SetUniform1f("gProjectionAspect", 1.3f);
+
 		for (int i = 0; i < m_SSAO_Kernel.size(); i++)
 		{
 			m_SSAOPassShader->SetUniform3f("samples[" + std::to_string(i) + "]", m_SSAO_Kernel[i]);
@@ -326,17 +357,25 @@ namespace test{
 		glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::ALBEDO]);
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, m_SSAOTextures[SSAOTextureType::BLUR]);
+		glActiveTexture(GL_TEXTURE4);
+		glBindTexture(GL_TEXTURE_2D, m_GBufferTextures[GBufferTextureType::DEPTH]);
+
 		m_LightingPassShader->Bind();
 		m_LightingPassShader->SetUniform1i("gPosition", 0);
 		m_LightingPassShader->SetUniform1i("gNormal", 1);
 		m_LightingPassShader->SetUniform1i("gAlbedoSpec", 2);
 		m_LightingPassShader->SetUniform1i("ssao", 3);
+		m_LightingPassShader->SetUniform1i("gDepthMap", 4);
 
 		glm::vec3 lightPos = glm::vec3(m_Camera.GetViewMatrix() * glm::vec4(m_LightPosition, 1.0f));
 		m_LightingPassShader->SetUniform3f("pointLight.Position", lightPos);
 		m_LightingPassShader->SetUniform3f("pointLight.Color", m_LightColor);
 		m_LightingPassShader->SetUniform1f("pointLight.Linear", 0.09f);
 		m_LightingPassShader->SetUniform1f("pointLight.Quadratic", 0.032);
+		m_LightingPassShader->SetUniform1f("gProjectionTangentHalfFov", std::tanf(glm::radians(45.0f / 2.0f)));
+		m_LightingPassShader->SetUniform1f("gProjectionAspect", 1.3f);
+		m_LightingPassShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
+
 		m_QuadVAO->Bind();
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}

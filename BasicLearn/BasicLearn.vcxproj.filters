@@ -984,6 +984,7 @@
     <None Include="res\shader\SSAOQuad.shader" />
     <None Include="res\shader\SSAOBlur.shader" />
     <None Include="res\shader\SSAOLightPass.shader" />
+    <None Include="res\shader\SSAOReconstructPos.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
