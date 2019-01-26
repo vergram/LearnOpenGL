@@ -20,10 +20,10 @@ namespace test{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-		m_ShaderR = std::make_unique<Shader>("res/shader/UboSingleColorR.shader");
-		m_ShaderG = std::make_unique<Shader>("res/shader/UboSingleColorG.shader");
-		m_ShaderB = std::make_unique<Shader>("res/shader/UboSingleColorB.shader");
-		m_ShaderY = std::make_unique<Shader>("res/shader/UboSingleColorY.shader");
+		m_ShaderR = std::make_unique<Shader>("res/shader/uniformBufferObject/UboSingleColorR.shader");
+		m_ShaderG = std::make_unique<Shader>("res/shader/uniformBufferObject/UboSingleColorG.shader");
+		m_ShaderB = std::make_unique<Shader>("res/shader/uniformBufferObject/UboSingleColorB.shader");
+		m_ShaderY = std::make_unique<Shader>("res/shader/uniformBufferObject/UboSingleColorY.shader");
 
 		float vertices[] = {
 			-0.5f, -0.5f, -0.5f,

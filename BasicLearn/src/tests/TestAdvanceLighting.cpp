@@ -33,7 +33,7 @@ namespace test{
 			-10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,   0.0f, 10.0f,
 			 10.0f, -0.5f, -10.0f,  0.0f, 1.0f, 0.0f,  10.0f, 10.0f
 		};
-		m_Shader = std::make_unique<Shader>("res/shader/AdvanceLighting_Blinn_Phong.shader");
+		m_Shader = std::make_unique<Shader>("res/shader/blinnPhong/AdvanceLighting_Blinn_Phong.shader");
 		m_woodTexture = std::make_unique<Texture2D>("res/image/wood.png");
 		m_woodTextureWithGammaCorrecetion = std::make_unique<Texture2D>("res/image/wood.png", true); // gamma corrected
 

@@ -106,9 +106,9 @@ namespace test{
 		m_woodTexture = std::make_unique<Texture2D>("res/image/wood.png");
 		m_woodTextureWithGammaCorrecetion = std::make_unique<Texture2D>("res/image/wood.png", true); // gamma corrected
 
-		m_SimpleDepthMapShader = std::make_unique<Shader>("res/shader/AdvanceBuildDepthmap.shader");
-		m_QuadShader = std::make_unique<Shader>("res/shader/AdvanceDebugDepthmap.shader");
-		m_ShadowMapShader = std::make_unique<Shader>("res/shader/AdvanceBuildShadowWithDepthmap.shader");
+		m_SimpleDepthMapShader = std::make_unique<Shader>("res/shader/shadow/AdvanceBuildDepthmap.shader");
+		m_QuadShader = std::make_unique<Shader>("res/shader/shadow/AdvanceDebugDepthmap.shader");
+		m_ShadowMapShader = std::make_unique<Shader>("res/shader/shadow/AdvanceBuildShadowWithDepthmap.shader");
 
 		#pragma region DepthMap fbo
 		GLCall(glGenFramebuffers(1, &m_DepthMapFbo));

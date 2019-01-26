@@ -103,10 +103,10 @@ namespace test{
 		m_QuadVBO = std::make_unique<VertexBuffer>(quadVertices, sizeof(quadVertices));
 		m_QuadVAO->AddBuffer(*m_QuadVBO, PTLayout);
 
-		m_HDRSceneShader = std::make_unique<Shader>("res/shader/BloomScene.shader");
-		m_HDRQuadShader = std::make_unique<Shader>("res/shader/BloomQuad.shader");
-		m_LightCubeShader = std::make_unique<Shader>("res/shader/BloomLightCube.shader");
-		m_GaussBlurShader = std::make_unique<Shader>("res/shader/BloomGaussBlur.shader");
+		m_HDRSceneShader = std::make_unique<Shader>("res/shader/bloom/BloomScene.shader");
+		m_HDRQuadShader = std::make_unique<Shader>("res/shader/bloom/BloomQuad.shader");
+		m_LightCubeShader = std::make_unique<Shader>("res/shader/bloom/BloomLightCube.shader");
+		m_GaussBlurShader = std::make_unique<Shader>("res/shader/bloom/BloomGaussBlur.shader");
 
 		m_WoodTexture = std::make_unique<Texture2D>("res/image/wood.png", true); // loading texture as SRGB format
 		m_ContainerTexture = std::make_unique<Texture2D>("res/image/container2.png", true); // loading texture as SRGB format

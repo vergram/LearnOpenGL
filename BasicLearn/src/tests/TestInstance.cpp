@@ -24,7 +24,7 @@ namespace test{
 		m_Rock = std::make_unique<Model>("res/models/rock/rock.obj");
 
 		m_PlanetShader = std::make_unique<Shader>("res/shader/Model.shader");
-		m_InstanceRockShader = std::make_unique<Shader>("res/shader/InstanceModel.shader");
+		m_InstanceRockShader = std::make_unique<Shader>("res/shader/instance/InstanceModel.shader");
 
 	
 		#pragma region init model matrices

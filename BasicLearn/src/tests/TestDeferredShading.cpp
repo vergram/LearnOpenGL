@@ -105,13 +105,13 @@ namespace test{
 
 		m_Sphere = std::make_unique<Sphere>();
 
-		m_GeometryPassShader = std::make_unique<Shader>("res/shader/DeferredShadingGeometryPass.shader");
-		m_QuadShader = std::make_unique<Shader>("res/shader/DeferredShadingQuad.shader");
-		m_LightCubeShader = std::make_unique<Shader>("res/shader/DeferredShadingLightCube.shader");
-		m_LightingPassShader = std::make_unique<Shader>("res/shader/DeferredShadingLightingPass.shader");
-		m_PointLightPassShader = std::make_unique<Shader>("res/shader/DeferredPointLightPass.shader");
-		m_StencilPassShader = std::make_unique<Shader>("res/shader/DeferredStencilPass.shader");
-		m_DebugShader = std::make_unique<Shader>("res/shader/DeferredDebug.shader");
+		m_GeometryPassShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredShadingGeometryPass.shader");
+		m_QuadShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredShadingQuad.shader");
+		m_LightCubeShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredShadingLightCube.shader");
+		m_LightingPassShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredShadingLightingPass.shader");
+		m_PointLightPassShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredPointLightPass.shader");
+		m_StencilPassShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredStencilPass.shader");
+		m_DebugShader = std::make_unique<Shader>("res/shader/deferredShading/DeferredDebug.shader");
 
 		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 

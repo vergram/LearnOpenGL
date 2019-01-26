@@ -22,14 +22,14 @@ namespace test{
 		m_IsShowMouse = false;
 		m_IsSelfShadowing = false;
 
-		m_NormapMapShader = std::make_unique<Shader>("res/shader/AdvanceNormalMap.shader");
+		m_NormapMapShader = std::make_unique<Shader>("res/shader/normalMap/AdvanceNormalMap.shader");
 		m_BrickWall = std::make_unique<Texture2D>("res/image/brickwall.jpg");
 		m_BrickWall_Normal = std::make_unique<Texture2D>("res/image/brickwall_normal.jpg");
 
-		m_NormalMapModelShader = std::make_unique<Shader>("res/shader/AdvanceNormalMapModel.shader");
+		m_NormalMapModelShader = std::make_unique<Shader>("res/shader/normalMap/AdvanceNormalMapModel.shader");
 		m_Model = std::make_unique<Model>("res/models/cyborg/cyborg.obj");
 
-		m_ParallaxMapShader = std::make_unique<Shader>("res/shader/AdvanceParallaxMap.shader");
+		m_ParallaxMapShader = std::make_unique<Shader>("res/shader/parallaxMap/AdvanceParallaxMap.shader");
 		m_Bricks2 = std::make_unique<Texture2D>("res/image/bricks2.jpg");
 		m_Bricks2_Normal = std::make_unique<Texture2D>("res/image/bricks2_normal.jpg");
 		m_Bricks2_Depth = std::make_unique<Texture2D>("res/image/bricks2_disp.jpg");

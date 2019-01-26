@@ -138,6 +138,9 @@
     <ClCompile Include="src\tests\TestSSAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\pbr\TestPBRLighting.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -623,6 +626,9 @@
     <ClInclude Include="src\tests\TestSSAO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\pbr\TestPBRLighting.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -944,47 +950,47 @@
     <None Include="res\shader\Lamp.shader" />
     <None Include="res\shader\SingleColor.shader" />
     <None Include="res\shader\Post_Processing.shader" />
-    <None Include="res\shader\Skybox.shader" />
-    <None Include="res\shader\Envmap.shader" />
-    <None Include="res\shader\EnvmapModel.shader" />
-    <None Include="res\shader\UboSingleColorB.shader" />
-    <None Include="res\shader\UboSingleColorG.shader" />
-    <None Include="res\shader\UboSingleColorR.shader" />
-    <None Include="res\shader\UboSingleColorY.shader" />
-    <None Include="res\shader\GeoSingleColor.shader" />
-    <None Include="res\shader\GeoExplodeModel.shader" />
-    <None Include="res\shader\GeoNormalVisualize.shader" />
-    <None Include="res\shader\Instance.shader" />
-    <None Include="res\shader\InstanceModel.shader" />
-    <None Include="res\shader\AdvanceLighting_Blinn_Phong.shader" />
-    <None Include="res\shader\AdvanceBuildDepthmap.shader" />
-    <None Include="res\shader\AdvanceDebugDepthmap.shader" />
-    <None Include="res\shader\AdvanceBuildShadowWithDepthmap.shader" />
-    <None Include="res\shader\AdvanceBuildCubeDepthmap.shader" />
-    <None Include="res\shader\AdvancePointShadow.shader" />
-    <None Include="res\shader\AdvanceNormalMap.shader" />
-    <None Include="res\shader\AdvanceNormalMapModel.shader" />
     <None Include="res\models\cyborg\cyborg.blend1" />
-    <None Include="res\shader\AdvanceParallaxMap.shader" />
-    <None Include="res\shader\HDRScene.shader" />
-    <None Include="res\shader\HDRQuad.shader" />
-    <None Include="res\shader\BloomLightCube.shader" />
-    <None Include="res\shader\BloomQuad.shader" />
-    <None Include="res\shader\BloomScene.shader" />
-    <None Include="res\shader\BloomGaussBlur.shader" />
-    <None Include="res\shader\DeferredShadingGeometryPass.shader" />
-    <None Include="res\shader\DeferredShadingQuad.shader" />
-    <None Include="res\shader\DeferredShadingLightingPass.shader" />
-    <None Include="res\shader\DeferredShadingLightCube.shader" />
-    <None Include="res\shader\DeferredStencilPass.shader" />
-    <None Include="res\shader\DeferredPointLightPass.shader" />
-    <None Include="res\shader\DeferredDebug.shader" />
-    <None Include="res\shader\SSAOGeometryPass.shader" />
-    <None Include="res\shader\SSAOSsaoPass.shader" />
-    <None Include="res\shader\SSAOQuad.shader" />
-    <None Include="res\shader\SSAOBlur.shader" />
-    <None Include="res\shader\SSAOLightPass.shader" />
-    <None Include="res\shader\SSAOReconstructPos.shader" />
+    <None Include="res\shader\DeferredShading\DeferredDebug.shader" />
+    <None Include="res\shader\DeferredShading\DeferredPointLightPass.shader" />
+    <None Include="res\shader\DeferredShading\DeferredShadingGeometryPass.shader" />
+    <None Include="res\shader\DeferredShading\DeferredShadingLightCube.shader" />
+    <None Include="res\shader\DeferredShading\DeferredShadingLightingPass.shader" />
+    <None Include="res\shader\DeferredShading\DeferredShadingQuad.shader" />
+    <None Include="res\shader\DeferredShading\DeferredStencilPass.shader" />
+    <None Include="res\shader\Bloom\BloomGaussBlur.shader" />
+    <None Include="res\shader\Bloom\BloomLightCube.shader" />
+    <None Include="res\shader\Bloom\BloomQuad.shader" />
+    <None Include="res\shader\Bloom\BloomScene.shader" />
+    <None Include="res\shader\ssao\SSAOBlur.shader" />
+    <None Include="res\shader\ssao\SSAOGeometryPass.shader" />
+    <None Include="res\shader\ssao\SSAOLightPass.shader" />
+    <None Include="res\shader\ssao\SSAOQuad.shader" />
+    <None Include="res\shader\ssao\SSAOReconstructPos.shader" />
+    <None Include="res\shader\ssao\SSAOSsaoPass.shader" />
+    <None Include="res\shader\normalMap\AdvanceNormalMap.shader" />
+    <None Include="res\shader\normalMap\AdvanceNormalMapModel.shader" />
+    <None Include="res\shader\uniformBufferObject\UboSingleColorB.shader" />
+    <None Include="res\shader\uniformBufferObject\UboSingleColorG.shader" />
+    <None Include="res\shader\uniformBufferObject\UboSingleColorR.shader" />
+    <None Include="res\shader\uniformBufferObject\UboSingleColorY.shader" />
+    <None Include="res\shader\hdr\HDRQuad.shader" />
+    <None Include="res\shader\hdr\HDRScene.shader" />
+    <None Include="res\shader\instance\Instance.shader" />
+    <None Include="res\shader\instance\InstanceModel.shader" />
+    <None Include="res\shader\geometryShader\GeoExplodeModel.shader" />
+    <None Include="res\shader\geometryShader\GeoNormalVisualize.shader" />
+    <None Include="res\shader\geometryShader\GeoSingleColor.shader" />
+    <None Include="res\shader\environmentMap\Envmap.shader" />
+    <None Include="res\shader\environmentMap\EnvmapModel.shader" />
+    <None Include="res\shader\environmentMap\Skybox.shader" />
+    <None Include="res\shader\shadow\AdvanceBuildCubeDepthmap.shader" />
+    <None Include="res\shader\shadow\AdvanceBuildDepthmap.shader" />
+    <None Include="res\shader\shadow\AdvanceBuildShadowWithDepthmap.shader" />
+    <None Include="res\shader\shadow\AdvanceDebugDepthmap.shader" />
+    <None Include="res\shader\shadow\AdvancePointShadow.shader" />
+    <None Include="res\shader\blinnPhong\AdvanceLighting_Blinn_Phong.shader" />
+    <None Include="res\shader\parallaxMap\AdvanceParallaxMap.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

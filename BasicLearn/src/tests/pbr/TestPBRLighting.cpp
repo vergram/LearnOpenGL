@@ -1,4 +1,4 @@
-#include "TestSSAO.h"
+#include "TestPBRLighting.h"
 
 #include "VertexBufferLayout.h"
 #include "Renderer.h"
@@ -16,7 +16,7 @@
 
 namespace test{
 
-	TestSSAO::TestSSAO() :m_Camera(), m_Exposure(1.0f), m_DebugMode(0)
+	TestPBRLighting::TestPBRLighting() :m_Camera(), m_Exposure(1.0f), m_DebugMode(0)
 	{
 		// tell GLFW to capture our mouse
 		glfwSetInputMode(Window::window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -106,12 +106,12 @@ namespace test{
 
 		m_Sphere = std::make_unique<Sphere>();
 
-		m_GeometryPassShader = std::make_unique<Shader>("res/shader/ssao/SSAOGeometryPass.shader");
-		m_QuadShader = std::make_unique<Shader>("res/shader/ssao/SSAOQuad.shader");
-		m_LightingPassShader = std::make_unique<Shader>("res/shader/ssao/SSAOLightPass.shader");
-		m_SSAOBlurShader = std::make_unique<Shader>("res/shader/ssao/SSAOBlur.shader");
-		m_SSAOPassShader = std::make_unique<Shader>("res/shader/ssao/SSAOSsaoPass.shader");
-		m_ReconstructPosShader = std::make_unique<Shader>("res/shader/ssao/SSAOReconstructPos.shader");
+		m_GeometryPassShader = std::make_unique<Shader>("res/shader/SSAOGeometryPass.shader");
+		m_QuadShader = std::make_unique<Shader>("res/shader/SSAOQuad.shader");
+		m_LightingPassShader = std::make_unique<Shader>("res/shader/SSAOLightPass.shader");
+		m_SSAOBlurShader = std::make_unique<Shader>("res/shader/SSAOBlur.shader");
+		m_SSAOPassShader = std::make_unique<Shader>("res/shader/SSAOSsaoPass.shader");
+		m_ReconstructPosShader = std::make_unique<Shader>("res/shader/SSAOReconstructPos.shader");
 
 		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
@@ -236,7 +236,7 @@ namespace test{
 
 	}
 
-	void TestSSAO::OnRender()
+	void TestPBRLighting::OnRender()
 	{
 
 		GeometryPass();
@@ -263,7 +263,7 @@ namespace test{
 		#pragma endregion
 	}
 
-	void TestSSAO::GeometryPass()
+	void TestPBRLighting::GeometryPass()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_GBufferFBO);
 
@@ -304,7 +304,7 @@ namespace test{
 
 	}
 
-	void TestSSAO::SSAOPass()
+	void TestPBRLighting::SSAOPass()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_SSAO_fbo);
 		glDrawBuffer(GL_COLOR_ATTACHMENT0 + SSAOTextureType::SSAO);
@@ -346,7 +346,7 @@ namespace test{
 
 	}
 
-	void TestSSAO::LightingPass()
+	void TestPBRLighting::LightingPass()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glActiveTexture(GL_TEXTURE0);
@@ -380,13 +380,13 @@ namespace test{
 		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
-	void TestSSAO::OnImGuiRender()
+	void TestPBRLighting::OnImGuiRender()
 	{
 		ImGui::DragFloat("Exposure", &m_Exposure, 0.1f, 0.0f, 1.0f);
 		ImGui::DragInt("DebugGBuffer", &m_DebugMode, 1.0f, 0, 3);
 	}
 
-	float TestSSAO::calculateLightRadius(glm::vec3 & lightColor)
+	float TestPBRLighting::calculateLightRadius(glm::vec3 & lightColor)
 	{
 		const float constant = 1.0f; // note that we don't send this to the shader, we assume it is always 1.0 (in our case)
 		const float linear = 0.7f;
@@ -409,10 +409,10 @@ namespace test{
 		return radius;
 	}
 
-	TestSSAO::~TestSSAO()
+	TestPBRLighting::~TestPBRLighting()
 	{}
 
-	void TestSSAO::OnUpdate(float deltaTime)
+	void TestPBRLighting::OnUpdate(float deltaTime)
 	{
 		if (Input::currentKeys[KeyBoard::ESC])
 		{

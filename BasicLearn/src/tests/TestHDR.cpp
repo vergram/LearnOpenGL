@@ -103,8 +103,8 @@ namespace test{
 		m_QuadVBO = std::make_unique<VertexBuffer>(quadVertices, sizeof(quadVertices));
 		m_QuadVAO->AddBuffer(*m_QuadVBO, PTLayout);
 
-		m_HDRSceneShader = std::make_unique<Shader>("res/shader/HDRScene.shader");
-		m_HDRQuadShader = std::make_unique<Shader>("res/shader/HDRQuad.shader");
+		m_HDRSceneShader = std::make_unique<Shader>("res/shader/hdr/HDRScene.shader");
+		m_HDRQuadShader = std::make_unique<Shader>("res/shader/hdr/HDRQuad.shader");
 		m_WoodTexture = std::make_unique<Texture2D>("res/image/wood.png", true); // loading texture as SRGB format
 
 

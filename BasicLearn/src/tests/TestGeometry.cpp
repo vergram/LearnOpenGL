@@ -21,7 +21,7 @@ namespace test{
 
 		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj");
 		m_ModelShader = std::make_unique<Shader>("res/shader/Model.shader");
-		m_NormalVisualizeShader = std::make_unique<Shader>("res/shader/GeoNormalVisualize.shader");
+		m_NormalVisualizeShader = std::make_unique<Shader>("res/shader/geometryShader/GeoNormalVisualize.shader");
 	}
 
 	void TestGeometry::OnRender()

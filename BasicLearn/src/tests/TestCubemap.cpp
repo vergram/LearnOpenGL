@@ -130,9 +130,9 @@ namespace test{
 		m_Model = std::make_unique<Model>("res/models/nanosuit_reflection/nanosuit.obj");
 		m_SkyboxTexture = std::make_unique<TextureCube>(skyboxFacePaths);
 
-		m_SkyboxShader = std::make_unique<Shader>("res/shader/Skybox.shader");
-		m_NanosuitShader = std::make_unique<Shader>("res/shader/EnvmapModel.shader");
-		m_CubeShader = std::make_unique<Shader>("res/shader/Envmap.shader");
+		m_SkyboxShader = std::make_unique<Shader>("res/shader/environmentMap/Skybox.shader");
+		m_NanosuitShader = std::make_unique<Shader>("res/shader/environmentMap/EnvmapModel.shader");
+		m_CubeShader = std::make_unique<Shader>("res/shader/environmentMap/Envmap.shader");
 		
 	}
 
