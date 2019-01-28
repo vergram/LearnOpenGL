@@ -43,6 +43,7 @@
 #include "tests/TestBloom.h"
 #include "tests/TestDeferredShading.h"
 #include "tests/TestSSAO.h"
+#include "tests/pbr/TestPBRLighting.h"
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
@@ -115,6 +116,7 @@ int main()
 		test::TestMenu* testMenu = new test::TestMenu(currentTest);
 		currentTest = testMenu;
 
+		testMenu->RegisterTest<test::TestPBRLighting>("pbr");
 		testMenu->RegisterTest<test::TestSSAO>("SSAO");
 		testMenu->RegisterTest<test::TestDeferredShading>("DeferredShading");
 		testMenu->RegisterTest<test::TestBloom>("Bloom");

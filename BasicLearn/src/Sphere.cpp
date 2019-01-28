@@ -22,13 +22,13 @@ Sphere::Sphere(int sectors, int stacks, float radius)
 	float stackStep = PI / float(stacks);
 	float sectorAngle, stackAngle;
 
-	for (int i = 0; i < stacks; i++)
+	for (int i = 0; i <= stacks; i++)
 	{
 		stackAngle = PI / 2 - i * stackStep;              // starting form pi/2 to -pi/2
 		xy = radius * cosf(stackAngle);                   // r * cos(u);
 		z = radius * sinf(stackAngle);                    // r * sin(u);
 
-		for (int j = 0; j < sectors; j++)
+		for (int j = 0; j <= sectors; j++)
 		{
 			sectorAngle = j * sectorStep;                 // starting form 0 to 2 * PI
 			
@@ -59,8 +59,8 @@ Sphere::Sphere(int sectors, int stacks, float radius)
 	int k1, k2;
 	for (int i = 0; i < stacks; i++)
 	{
-		k1 = i * (sectors);                     // begining of current stack
-		k2 = k1 + sectors;                      // begining of next stack
+		k1 = i * (sectors + 1);                     // begining of current stack
+		k2 = k1 + sectors + 1;                      // begining of next stack
 
 		for (int j = 0; j < sectors; j++, k1++, k2++)
 		{

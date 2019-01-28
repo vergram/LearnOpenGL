@@ -198,6 +198,7 @@
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\parallaxMap\AdvanceParallaxMap.shader" />
+    <None Include="res\shader\pbr\pbrLighting.shader" />
     <None Include="res\shader\shadow\AdvanceBuildCubeDepthmap.shader" />
     <None Include="res\shader\shadow\AdvanceBuildDepthmap.shader" />
     <None Include="res\shader\shadow\AdvanceBuildShadowWithDepthmap.shader" />
