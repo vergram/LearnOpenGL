@@ -39,7 +39,7 @@ namespace test{
 		m_Toy_Box_Depth = std::make_unique<Texture2D>("res/image/toy_box_disp.png");
 
 
-		// about tangent space
+		// about tangent space http://www.terathon.com/code/tangent.html
 		// 切线空间的坐标轴向量是以模型空间作为参考系的，在计算向量T和B的时候所有的数据都是在该参考系下度量的。
 		// 求切线空间的主要目的就是求出T和B，为了求出它们，从已知的关系出发，得出一个关于T和B的方程，也就是你写出的公式。
 		// 为什么会写出这样的公式从而把位置值和纹理值关连起来？是因为E0可以通过T和B的线性组合得到，而该线性组合的系数正好可以通过纹理坐标得到，

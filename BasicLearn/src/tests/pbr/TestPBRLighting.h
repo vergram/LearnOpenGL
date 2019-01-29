@@ -36,15 +36,16 @@ namespace test {
 		std::unique_ptr<VertexArray> m_QuadVAO;
 
 		std::unique_ptr<Sphere> m_Sphere;
-
 		std::unique_ptr<Model> m_Nanosuit;
 	
-		std::unique_ptr<Shader> m_QuadShader;
-		std::unique_ptr<Shader> m_GeometryPassShader;
-		std::unique_ptr<Shader> m_LightingPassShader;
-		std::unique_ptr<Shader> m_SSAOBlurShader;
-		std::unique_ptr<Shader> m_SSAOPassShader;
 		std::unique_ptr<Shader> m_PBRLightingShader;
+
+		std::unique_ptr<Texture2D> m_Albedo;
+		std::unique_ptr<Texture2D> m_Metallic;
+		std::unique_ptr<Texture2D> m_Roughness;
+		std::unique_ptr<Texture2D> m_Ao;
+		std::unique_ptr<Texture2D> m_Normal;
+
 
 		std::vector<glm::vec3> m_LightPositions;
 		std::vector<glm::vec3> m_LightColors;

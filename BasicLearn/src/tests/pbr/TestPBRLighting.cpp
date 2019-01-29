@@ -110,26 +110,29 @@ namespace test{
 
 		m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
+		m_Albedo    = std::make_unique<Texture2D>("res/pbr/rustediron2/albedo.png", true);
+		m_Metallic  = std::make_unique<Texture2D>("res/pbr/rustediron2/metallic.png");
+		m_Roughness = std::make_unique<Texture2D>("res/pbr/rustediron2/roughness.png");
+		m_Ao        = std::make_unique<Texture2D>("res/pbr/rustediron2/ao.png");
+		m_Normal    = std::make_unique<Texture2D>("res/pbr/rustediron2/normal.png");
+
 		// lighting info
 		// -------------
 		m_LightPositions = {
-			glm::vec3(-10.0f,  10.0f, 10.0f),
-			glm::vec3( 10.0f,  10.0f, 10.0f),
-			glm::vec3(-10.0f, -10.0f, 10.0f),
-			glm::vec3( 10.0f, -10.0f, 10.0f),
+			glm::vec3(0.0f, 0.0f, 10.0f), 
 		};
 		m_LightColors = {
-			glm::vec3(300.0f, 300.0f, 300.0f),
-			glm::vec3(300.0f, 300.0f, 300.0f),
-			glm::vec3(300.0f, 300.0f, 300.0f),
-			glm::vec3(300.0f, 300.0f, 300.0f)
+			glm::vec3(150.0f, 150.0f, 150.0f),
 		};
 
 		m_PBRLightingShader->Bind();
 		m_PBRLightingShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
 		m_PBRLightingShader->SetUniform1i("reverse_normals", false);
-		m_PBRLightingShader->SetUniform3f("albedo", 0.5f, 0.0f, 0.0f);
-		m_PBRLightingShader->SetUniform1f("ao", 1.0f);
+		m_PBRLightingShader->SetUniform1i("albedoMap", 0);
+		m_PBRLightingShader->SetUniform1i("metallicMap", 1);
+		m_PBRLightingShader->SetUniform1i("roughnessMap", 2);
+		m_PBRLightingShader->SetUniform1i("aoMap", 3);
+		m_PBRLightingShader->SetUniform1i("normalMap", 4);
 
 	}
 
@@ -139,6 +142,12 @@ namespace test{
 		m_PBRLightingShader->SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
 		m_PBRLightingShader->SetUniform3f("camPos", m_Camera.GetPosition());
 
+		m_Albedo->Bind(0);
+		m_Metallic->Bind(1);
+		m_Roughness->Bind(2);
+		m_Ao->Bind(3);
+		m_Normal->Bind(4);
+
 		int nrRows = 7;
 		int nrColumns = 7;
 		float spacing = 2.5f;
@@ -146,10 +155,10 @@ namespace test{
 		glm::mat4 model(1.0f);
 		for (int row = 0; row < nrRows; row++)
 		{
-			m_PBRLightingShader->SetUniform1f("metallic", (float)row / (float)nrRows);
+			//m_PBRLightingShader->SetUniform1f("metallic", (float)row / (float)nrRows);
 			for (int col = 0; col < nrColumns; col++)
 			{
-				m_PBRLightingShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
+				//m_PBRLightingShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
 				
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3((row - (nrRows / 2)) * spacing,

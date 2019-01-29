@@ -96,7 +96,7 @@ Sphere::Sphere(int sectors, int stacks, float radius)
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 3, GL_FLOAT, false, 3 * sizeof(float), (void*)(positionSize));
 	glEnableVertexAttribArray(2);
-	glVertexAttribPointer(2, 2, GL_FLOAT, false, 2 * sizeof(float), (void*)(positionSize * positionSize));
+	glVertexAttribPointer(2, 2, GL_FLOAT, false, 2 * sizeof(float), (void*)(positionSize + positionSize));
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 
