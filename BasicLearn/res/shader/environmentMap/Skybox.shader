@@ -11,7 +11,8 @@ out vec3 TexCoords;
 void main()
 {
 	TexCoords = aPos;
-	vec4 pos = projection * view * vec4(aPos, 1.0f);
+	mat4 rotView = mat4(mat3(view));
+	vec4 pos = projection * rotView * vec4(aPos, 1.0f);
 	gl_Position = pos.xyww;
 }
 
@@ -27,5 +28,5 @@ uniform samplerCube skybox;
 
 void main()
 {
-	FragColor = texture(skybox, TexCoords);
+	FragColor = vec4(texture(skybox, TexCoords).rgb, 1.0);
 }

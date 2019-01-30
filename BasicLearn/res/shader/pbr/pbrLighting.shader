@@ -248,6 +248,7 @@ vec3 GetNormalFromMap()
 	return normalize(TBN * normal);
 }
 
+
 void main()
 {
 	vec3  albedo    = texture(albedoMap, fs_in.TexCoords).rgb;

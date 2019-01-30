@@ -141,6 +141,9 @@
     <ClCompile Include="src\tests\pbr\TestPBRLighting.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\tests\pbr\TestIBL.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Renderer.h">
@@ -629,6 +632,9 @@
     <ClInclude Include="src\tests\pbr\TestPBRLighting.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\tests\pbr\TestIBL.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shader\Basic.shader" />
@@ -944,12 +950,9 @@
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\Model.shader" />
-    <None Include="res\shader\DepthTest.shader" />
     <None Include="res\shader\Blend.shader" />
     <None Include="res\shader\Lighting.shader" />
     <None Include="res\shader\Lamp.shader" />
-    <None Include="res\shader\SingleColor.shader" />
-    <None Include="res\shader\Post_Processing.shader" />
     <None Include="res\models\cyborg\cyborg.blend1" />
     <None Include="res\shader\DeferredShading\DeferredDebug.shader" />
     <None Include="res\shader\DeferredShading\DeferredPointLightPass.shader" />
@@ -992,6 +995,11 @@
     <None Include="res\shader\blinnPhong\AdvanceLighting_Blinn_Phong.shader" />
     <None Include="res\shader\parallaxMap\AdvanceParallaxMap.shader" />
     <None Include="res\shader\pbr\pbrLighting.shader" />
+    <None Include="res\shader\ibl\equirectangular_to_cubemap.shader" />
+    <None Include="res\shader\debug\SingleColor.shader" />
+    <None Include="res\shader\debug\DepthTest.shader" />
+    <None Include="res\shader\postProcessing\Post_Processing.shader" />
+    <None Include="res\shader\debug\cubemap.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
