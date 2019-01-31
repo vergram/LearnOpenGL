@@ -41,7 +41,7 @@ namespace test {
 		std::unique_ptr<Sphere> m_Sphere;
 		std::unique_ptr<Model> m_Nanosuit;
 	
-		std::unique_ptr<Shader> m_PBRLightingShader;
+		std::unique_ptr<Shader> m_IBLShader;
 		std::unique_ptr<Shader> m_EquirectangularToCubeMapShader;
 		std::unique_ptr<Shader> m_ConvolutionShader;
 		std::unique_ptr<Shader> m_SkyboxShader;
@@ -59,8 +59,8 @@ namespace test {
 		bool m_IsShowMouse;
 		float m_Exposure;
 
-		unsigned int m_EnvCubeMap;
-		unsigned int m_IrradianceMap;
+		std::vector<unsigned int> m_EnvCubeMaps;
+		std::vector<unsigned int> m_IrradianceMaps;
 		int m_DebugMode;
 	};
 

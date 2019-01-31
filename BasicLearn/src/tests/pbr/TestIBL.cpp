@@ -108,7 +108,7 @@ namespace test{
 
 		m_Sphere = std::make_unique<Sphere>();
 
-		m_PBRLightingShader = std::make_unique<Shader>("res/shader/ibl/diffuseIrradiance.shader");
+		m_IBLShader = std::make_unique<Shader>("res/shader/ibl/diffuseIrradiance.shader");
 		m_EquirectangularToCubeMapShader = std::make_unique<Shader>("res/shader/ibl/equirectangular_to_cubemap.shader");
 		m_ConvolutionShader = std::make_unique<Shader>("res/shader/ibl/convolution.shader");
 		m_SkyboxShader = std::make_unique<Shader>("res/shader/ibl/hdrSkybox.shader");
@@ -125,35 +125,47 @@ namespace test{
 		// lighting info
 		// -------------
 		m_LightPositions = {
-			glm::vec3(0.0f, 0.0f, 10.0f), 
+			glm::vec3(-10.0f,  10.0f, 10.0f),
+			glm::vec3( 10.0f,  10.0f, 10.0f),
+			glm::vec3(-10.0f, -10.0f, 10.0f),
+			glm::vec3( 10.0f, -10.0f, 10.0f),
 		};
 		m_LightColors = {
-			glm::vec3(150.0f, 150.0f, 150.0f),
+			glm::vec3(300.0f, 300.0f, 300.0f),
+			glm::vec3(300.0f, 300.0f, 300.0f),
+			glm::vec3(300.0f, 300.0f, 300.0f),
+			glm::vec3(300.0f, 300.0f, 300.0f) 
 		};
 
-		m_PBRLightingShader->Bind();
-		m_PBRLightingShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
-		m_PBRLightingShader->SetUniform1i("reverse_normals", false);
-		m_PBRLightingShader->SetUniform1i("albedoMap", 0);
-		m_PBRLightingShader->SetUniform1i("metallicMap", 1);
-		m_PBRLightingShader->SetUniform1i("roughnessMap", 2);
-		m_PBRLightingShader->SetUniform1i("aoMap", 3);
-		m_PBRLightingShader->SetUniform1i("normalMap", 4);
-
 		buildCubeMap("res/hdr/newport_loft/newport_loft.hdr");
+		buildCubeMap("res/hdr/Chelsea_Stairs/Chelsea_Stairs_3k.hdr");
+
+		m_IBLShader->Bind();
+		m_IBLShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
+		m_IBLShader->SetUniform1i("reverse_normals", false);
+		//m_IBLShader->SetUniform1i("albedoMap", 0);
+		//m_IBLShader->SetUniform1i("metallicMap", 1);
+		//m_IBLShader->SetUniform1i("roughnessMap", 2);
+		//m_IBLShader->SetUniform1i("aoMap", 3);
+		//m_IBLShader->SetUniform1i("normalMap", 4);
+		m_IBLShader->SetUniform1i("irradianceMap", 5);
+		m_IBLShader->SetUniform3f("albedo", 0.5f, 0.0f, 0.0f);
+		m_IBLShader->SetUniform1f("ao", 1.0f);
 	}
 
 	void TestIBL::OnRender()
 	{
-		m_PBRLightingShader->Bind();
-		m_PBRLightingShader->SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
-		m_PBRLightingShader->SetUniform3f("camPos", m_Camera.GetPosition());
+		m_IBLShader->Bind();
+		m_IBLShader->SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
+		m_IBLShader->SetUniform3f("camPos", m_Camera.GetPosition());
 
 		m_Albedo->Bind(0);
 		m_Metallic->Bind(1);
 		m_Roughness->Bind(2);
 		m_Ao->Bind(3);
 		m_Normal->Bind(4);
+		glActiveTexture(GL_TEXTURE5);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IrradianceMaps[m_DebugMode]);
 
 		int nrRows = 7;
 		int nrColumns = 7;
@@ -162,16 +174,16 @@ namespace test{
 		glm::mat4 model(1.0f);
 		for (int row = 0; row < nrRows; row++)
 		{
-			//m_PBRLightingShader->SetUniform1f("metallic", (float)row / (float)nrRows);
+			m_IBLShader->SetUniform1f("metallic", (float)row / (float)nrRows);
 			for (int col = 0; col < nrColumns; col++)
 			{
-				//m_PBRLightingShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
+				m_IBLShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
 				
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3((row - (nrRows / 2)) * spacing,
 														(col - (nrColumns / 2)) * spacing,
 														0.0f));
-				m_PBRLightingShader->SetUniformMatrix4fv("model", model);
+				m_IBLShader->SetUniformMatrix4fv("model", model);
 				m_Sphere->Bind();
 				glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 			}
@@ -182,19 +194,19 @@ namespace test{
 			//glm::vec3 newPos = m_LightPositions[i] + glm::vec3(sinf(glfwGetTime() * 5.0f) * 5.0f, 0.0f, 0.0f);
 			//newPos = m_LightPositions[i];
 			//m_PBRLightingShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", newPos);
-			m_PBRLightingShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", m_LightPositions[i]);
-			m_PBRLightingShader->SetUniform3f("lightColor[" + std::to_string(i) + "]", m_LightColors[i]);
+			m_IBLShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", m_LightPositions[i]);
+			m_IBLShader->SetUniform3f("lightColor[" + std::to_string(i) + "]", m_LightColors[i]);
 
 			model = glm::mat4(1.0f);
 			//model = glm::translate(model, newPos);
 			model = glm::translate(model, m_LightPositions[i]);
 			model = glm::scale(model, glm::vec3(0.5f));
-			m_PBRLightingShader->SetUniformMatrix4fv("model", model);
+			m_IBLShader->SetUniformMatrix4fv("model", model);
 			m_Sphere->Bind();
 			glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 		}
 		
-		renderSkybox(m_IrradianceMap);
+		renderSkybox(m_EnvCubeMaps[m_DebugMode]);
 	}
 
 	void TestIBL::renderSkybox(unsigned int cubemap)
@@ -226,7 +238,7 @@ namespace test{
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-		m_EnvCubeMap = generateHDRCubeMap(512);
+		m_EnvCubeMaps.push_back(generateHDRCubeMap(512));
 
 		// since envCubeMap is a unit cube, we do not need a huge range for perspective projection
 		float near_plane = 0.1f, far_plane = 10.0f;
@@ -253,7 +265,7 @@ namespace test{
 		for (unsigned int i = 0; i < 6; i++)
 		{
 			m_EquirectangularToCubeMapShader->SetUniformMatrix4fv("view", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_EnvCubeMap, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_EnvCubeMaps.back(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_CubeVAO->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -264,13 +276,13 @@ namespace test{
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-		m_IrradianceMap = generateHDRCubeMap(32);
+		m_IrradianceMaps.push_back(generateHDRCubeMap(32));
 
 		m_ConvolutionShader->Bind();
 		m_ConvolutionShader->SetUniformMatrix4fv("projection", capturePorjection);
 		m_ConvolutionShader->SetUniform1i("environmentMap", 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvCubeMap);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvCubeMaps.back());
 
 		// build convolution cube map
 		glViewport(0, 0, 32, 32);
@@ -278,7 +290,7 @@ namespace test{
 		for (unsigned int i = 0; i < 6; i++)
 		{
 			m_ConvolutionShader->SetUniformMatrix4fv("view", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IrradianceMap, 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IrradianceMaps.back(), 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_CubeVAO->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -333,7 +345,7 @@ namespace test{
 	void TestIBL::OnImGuiRender()
 	{
 		ImGui::DragFloat("Exposure", &m_Exposure, 0.1f, 0.0f, 1.0f);
-		ImGui::DragInt("DebugGBuffer", &m_DebugMode, 1.0f, 0, 3);
+		ImGui::DragInt("DebugGBuffer", &m_DebugMode, 1.0f, 0, 1);
 	}
 
 	TestIBL::~TestIBL()
