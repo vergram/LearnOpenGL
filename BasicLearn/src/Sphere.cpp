@@ -1,40 +1,40 @@
-#include "Sphere.h"
+﻿#include "Sphere.h"
 #include "Renderer.h"
 #include "VertexBufferLayout.h"
 
 ///////////////////////////////////////////////////////////////////////////////
-// build vertices of sphere with smooth shading using parametric equation
-// x = r * cos(u) * cos(v)
-// y = r * cos(u) * sin(v)
-// z = r * sin(u)
-// where u: stack(latitude) angle (-90 <= u <= 90)
-//       v: sector(longitude) angle (0 <= v <= 360)
+// build vertices of sphere with smooth shading using parametric equation. MORE MATH: http://www.scratchapixel.com/lessons/mathematics-physics-for-computer-graphics/mathematics-of-shading
+// x = r * sin(θ) * cos(ϕ)
+// z = r * sin(θ) * sin(ϕ)
+// y = r * cos(θ)
+// where θ: stack(latitude)   angle (0 <= θ <= π)
+//       ϕ: sector(longitude) angle (0 <= ϕ <= 2π)
 ///////////////////////////////////////////////////////////////////////////////
 Sphere::Sphere(int sectors, int stacks, float radius)
 {
 	const float PI = 3.1415926f;
 
-	float x, y, z, xy;                                // vertex position
-	float nx, ny, nz, lengthInv = 1.0f / radius;      // normal
-	float u, v;                                       // texCoord
+	float x, y, z, sinTheta;                            // vertex position
+	float nx, ny, nz, lengthInv = 1.0f / radius;        // normal
+	float u, v;                                         // texCoord
 
 	float sectorStep = 2.0f * PI / float(sectors);
 	float stackStep = PI / float(stacks);
-	float sectorAngle, stackAngle;
+	float phi, theta;                                   // phi ∈ [0, 2π],  theta ∈ [0, π]
 
 	for (int i = 0; i <= stacks; i++)
 	{
-		stackAngle = PI / 2 - i * stackStep;              // starting form pi/2 to -pi/2
-		xy = radius * cosf(stackAngle);                   // r * cos(u);
-		z = radius * sinf(stackAngle);                    // r * sin(u);
+		theta = stackStep * i;                          // θ starting form 0 to π
+		sinTheta = radius * sinf(theta);                // r * sin(θ);
+		y = radius * cosf(theta);                       // r * cos(θ);
 
 		for (int j = 0; j <= sectors; j++)
 		{
-			sectorAngle = j * sectorStep;                 // starting form 0 to 2 * PI
-			
+			phi = sectorStep * j;                       // starting form 0 to 2 * PI
+
 			// vertex position
-			x = xy * cosf(sectorAngle);                   // r * cos(u) * cos(v)
-			y = xy * sinf(sectorAngle);                   // r * cos(u) * sin(v)
+			x = sinTheta * cosf(phi);                   // x = r * sin(θ) * cos(ϕ)
+			z = sinTheta * sinf(phi);                   // z = r * sin(θ) * sin(ϕ)
 			positions.push_back(glm::vec3(x, y, z));
 
 			// normalize vectex normal

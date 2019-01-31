@@ -24,8 +24,10 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
+		void buildCubeMap(const char* path);
 		unsigned int loadHDREnvmap(const char* path);
-		unsigned int buildCubeMap(const char* path);
+		unsigned int generateHDRCubeMap(int size);
+		void renderSkybox(unsigned int cubemap);
 
 		Camera m_Camera;
 
@@ -41,6 +43,7 @@ namespace test {
 	
 		std::unique_ptr<Shader> m_PBRLightingShader;
 		std::unique_ptr<Shader> m_EquirectangularToCubeMapShader;
+		std::unique_ptr<Shader> m_ConvolutionShader;
 		std::unique_ptr<Shader> m_SkyboxShader;
 		std::unique_ptr<Shader> m_DebugShader;
 
@@ -50,7 +53,6 @@ namespace test {
 		std::unique_ptr<Texture2D> m_Ao;
 		std::unique_ptr<Texture2D> m_Normal;
 
-
 		std::vector<glm::vec3> m_LightPositions;
 		std::vector<glm::vec3> m_LightColors;
 
@@ -58,7 +60,7 @@ namespace test {
 		float m_Exposure;
 
 		unsigned int m_EnvCubeMap;
-
+		unsigned int m_IrradianceMap;
 		int m_DebugMode;
 	};
 

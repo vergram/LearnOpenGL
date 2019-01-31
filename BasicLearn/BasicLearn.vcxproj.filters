@@ -1000,6 +1000,9 @@
     <None Include="res\shader\debug\DepthTest.shader" />
     <None Include="res\shader\postProcessing\Post_Processing.shader" />
     <None Include="res\shader\debug\cubemap.shader" />
+    <None Include="res\shader\ibl\hdrSkybox.shader" />
+    <None Include="res\shader\ibl\diffuseIrradiance.shader" />
+    <None Include="res\shader\ibl\convolution.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">
