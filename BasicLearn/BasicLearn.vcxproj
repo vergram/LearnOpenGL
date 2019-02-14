@@ -199,10 +199,12 @@
     <None Include="res\models\nanosuit\nanosuit.blend" />
     <None Include="res\models\nanosuit\nanosuit.mtl" />
     <None Include="res\shader\debug\cubemap.shader" />
-    <None Include="res\shader\ibl\convolution.shader" />
+    <None Include="res\shader\ibl\irradianceConvolution.shader" />
     <None Include="res\shader\ibl\diffuseIrradiance.shader" />
     <None Include="res\shader\ibl\equirectangular_to_cubemap.shader" />
     <None Include="res\shader\ibl\hdrSkybox.shader" />
+    <None Include="res\shader\ibl\specularBRDF.shader" />
+    <None Include="res\shader\ibl\specularPreFilter.shader" />
     <None Include="res\shader\parallaxMap\AdvanceParallaxMap.shader" />
     <None Include="res\shader\pbr\pbrLighting.shader" />
     <None Include="res\shader\shadow\AdvanceBuildCubeDepthmap.shader" />

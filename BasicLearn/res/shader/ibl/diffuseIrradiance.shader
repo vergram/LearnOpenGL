@@ -76,7 +76,7 @@ void main()
 // --------------------------------------------------------------------------------------------------------------------------------
 //
 // fr(p, ωi, ωo):
-// here we use Cook-Torrance BRDF to approximate the surface's reaction to light.
+// here we use Cook-Torrance BRDF to approximate the surface's reaction to light. Great resource: https://zhuanlan.zhihu.com/p/21376124
 //
 // The Cook-Torrance BRDF contains both a diffuse and specular part:
 //          --------------------------------------------
@@ -309,7 +309,7 @@ void main()
 	
 	vec3 kS = FresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
 	vec3 kD = 1.0 - kS;
-
+	kD     *= 1.0 - metallic;
 	// Given the irradiance map that holds all of the scene's indirect diffuse light, 
 	// retrieving the irradiance influencing the fragment is as simple as a single texture sample given the surface's normal:
 	vec3 irradiance = texture(irradianceMap, N).rgb;

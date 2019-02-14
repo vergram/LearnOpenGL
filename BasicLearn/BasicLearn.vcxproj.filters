@@ -1002,7 +1002,9 @@
     <None Include="res\shader\debug\cubemap.shader" />
     <None Include="res\shader\ibl\hdrSkybox.shader" />
     <None Include="res\shader\ibl\diffuseIrradiance.shader" />
-    <None Include="res\shader\ibl\convolution.shader" />
+    <None Include="res\shader\ibl\specularBRDF.shader" />
+    <None Include="res\shader\ibl\specularPreFilter.shader" />
+    <None Include="res\shader\ibl\irradianceConvolution.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\image\wall.jpg">

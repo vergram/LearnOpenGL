@@ -115,9 +115,9 @@ void main()
 			irradiance += texture(environmentMap, sampleVec).rgb * cosTheta * sinTheta;
 			nrSamples++;                                                   // represent the (n1 * n2)
 		}
-		// multiple with π here for we dont need divide π outside on the lambert diffuse term
 	}
 	
+	// multiple with π here for we dont need divide π outside on the lambert diffuse term
 	irradiance = PI * irradiance * (1.0 / float(nrSamples));
 
 	FragColor  = irradiance;

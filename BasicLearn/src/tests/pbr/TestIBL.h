@@ -13,6 +13,14 @@
 
 namespace test {
 
+	struct IBL
+	{
+		unsigned int EnvironmentMap;
+		unsigned int DiffuseIrradianceMap;
+		unsigned int SpecularPreFilterMap;
+		unsigned int SpecularBRDFMap;
+	};
+
 	class TestIBL : public Test
 	{
 	public:
@@ -24,9 +32,9 @@ namespace test {
 		void OnImGuiRender() override;
 
 	private:
-		void buildCubeMap(const char* path);
+		IBL* bakeIBL(const char* path);
 		unsigned int loadHDREnvmap(const char* path);
-		unsigned int generateHDRCubeMap(int size);
+		unsigned int generateHDRCubeMap(int size, bool mipmap = false);
 		void renderSkybox(unsigned int cubemap);
 
 		Camera m_Camera;
@@ -43,7 +51,9 @@ namespace test {
 	
 		std::unique_ptr<Shader> m_IBLShader;
 		std::unique_ptr<Shader> m_EquirectangularToCubeMapShader;
-		std::unique_ptr<Shader> m_ConvolutionShader;
+		std::unique_ptr<Shader> m_DiffuseIrradianceConvolutionShader;
+		std::unique_ptr<Shader> m_SpecularPreFilterShader;
+		std::unique_ptr<Shader> m_SpecularBRDFShader;
 		std::unique_ptr<Shader> m_SkyboxShader;
 		std::unique_ptr<Shader> m_DebugShader;
 
@@ -59,8 +69,8 @@ namespace test {
 		bool m_IsShowMouse;
 		float m_Exposure;
 
-		std::vector<unsigned int> m_EnvCubeMaps;
-		std::vector<unsigned int> m_IrradianceMaps;
+		std::vector<IBL*> m_IBLTextures;
+
 		int m_DebugMode;
 	};
 

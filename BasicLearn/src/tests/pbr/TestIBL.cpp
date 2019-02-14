@@ -108,11 +108,13 @@ namespace test{
 
 		m_Sphere = std::make_unique<Sphere>();
 
-		m_IBLShader = std::make_unique<Shader>("res/shader/ibl/diffuseIrradiance.shader");
-		m_EquirectangularToCubeMapShader = std::make_unique<Shader>("res/shader/ibl/equirectangular_to_cubemap.shader");
-		m_ConvolutionShader = std::make_unique<Shader>("res/shader/ibl/convolution.shader");
-		m_SkyboxShader = std::make_unique<Shader>("res/shader/ibl/hdrSkybox.shader");
-		m_DebugShader = std::make_unique<Shader>("res/shader/debug/cubemap.shader");
+		m_IBLShader                          = std::make_unique<Shader>("res/shader/ibl/diffuseIrradiance.shader");
+		m_EquirectangularToCubeMapShader     = std::make_unique<Shader>("res/shader/ibl/equirectangular_to_cubemap.shader");
+		m_DiffuseIrradianceConvolutionShader = std::make_unique<Shader>("res/shader/ibl/irradianceConvolution.shader");
+		m_SpecularPreFilterShader            = std::make_unique<Shader>("res/shader/ibl/specularPreFilter.shader");
+		m_SpecularBRDFShader                 = std::make_unique<Shader>("res/shader/ibl/specularBRDF.shader");
+		m_SkyboxShader                       = std::make_unique<Shader>("res/shader/ibl/hdrSkybox.shader");
+		m_DebugShader                        = std::make_unique<Shader>("res/shader/debug/cubemap.shader");
 
 		//m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
@@ -137,8 +139,8 @@ namespace test{
 			glm::vec3(300.0f, 300.0f, 300.0f) 
 		};
 
-		buildCubeMap("res/hdr/newport_loft/newport_loft.hdr");
-		buildCubeMap("res/hdr/Chelsea_Stairs/Chelsea_Stairs_3k.hdr");
+		m_IBLTextures.push_back(bakeIBL("res/hdr/newport_loft/newport_loft.hdr"));
+		m_IBLTextures.push_back(bakeIBL("res/hdr/Chelsea_Stairs/Chelsea_Stairs_3k.hdr"));
 
 		m_IBLShader->Bind();
 		m_IBLShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
@@ -165,7 +167,7 @@ namespace test{
 		m_Ao->Bind(3);
 		m_Normal->Bind(4);
 		glActiveTexture(GL_TEXTURE5);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IrradianceMaps[m_DebugMode]);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLTextures[m_DebugMode]->DiffuseIrradianceMap);
 
 		int nrRows = 7;
 		int nrColumns = 7;
@@ -206,7 +208,7 @@ namespace test{
 			glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 		}
 		
-		renderSkybox(m_EnvCubeMaps[m_DebugMode]);
+		renderSkybox(m_IBLTextures[m_DebugMode]->SpecularPreFilterMap);
 	}
 
 	void TestIBL::renderSkybox(unsigned int cubemap)
@@ -223,12 +225,14 @@ namespace test{
 		glDrawArrays(GL_TRIANGLES, 0, 36);
 	}
 
-	void TestIBL::buildCubeMap(const char* path)
+	IBL* TestIBL::bakeIBL(const char* path)
 	{
+		IBL *ibl = new IBL();
+
 		// take the hdr texture
 		unsigned int hdrEnvTexture = loadHDREnvmap(path);
 
-		// set fbo for conversion
+		// init fbo for baking
 		unsigned int captureFBO, captureRBO;
 		glGenFramebuffers(1, &captureFBO);
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
@@ -237,8 +241,6 @@ namespace test{
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
-
-		m_EnvCubeMaps.push_back(generateHDRCubeMap(512));
 
 		// since envCubeMap is a unit cube, we do not need a huge range for perspective projection
 		float near_plane = 0.1f, far_plane = 10.0f;
@@ -253,6 +255,9 @@ namespace test{
 		captureViews[4] = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3( 0.0,  0.0,  1.0), glm::vec3(0.0, -1.0,  0.0));
 		captureViews[5] = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3( 0.0,  0.0, -1.0), glm::vec3(0.0, -1.0,  0.0));
 
+		// --------------------------- diffuse part ----------------------------------------------
+		ibl->EnvironmentMap = generateHDRCubeMap(512);
+
 		m_EquirectangularToCubeMapShader->Bind();
 		m_EquirectangularToCubeMapShader->SetUniformMatrix4fv("projection", capturePorjection);
 		m_EquirectangularToCubeMapShader->SetUniform1i("equirectangularMap", 0);
@@ -265,39 +270,72 @@ namespace test{
 		for (unsigned int i = 0; i < 6; i++)
 		{
 			m_EquirectangularToCubeMapShader->SetUniformMatrix4fv("view", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_EnvCubeMaps.back(), 0);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, ibl->EnvironmentMap, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_CubeVAO->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		// set up fbo for convolution
+		// set up fbo for diffuse convolution
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
 		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 32, 32);
 		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, captureRBO);
 
-		m_IrradianceMaps.push_back(generateHDRCubeMap(32));
+		ibl->DiffuseIrradianceMap = generateHDRCubeMap(32);
 
-		m_ConvolutionShader->Bind();
-		m_ConvolutionShader->SetUniformMatrix4fv("projection", capturePorjection);
-		m_ConvolutionShader->SetUniform1i("environmentMap", 0);
+		m_DiffuseIrradianceConvolutionShader->Bind();
+		m_DiffuseIrradianceConvolutionShader->SetUniformMatrix4fv("projection", capturePorjection);
+		m_DiffuseIrradianceConvolutionShader->SetUniform1i("environmentMap", 0);
 		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, m_EnvCubeMaps.back());
+		glBindTexture(GL_TEXTURE_CUBE_MAP, ibl->EnvironmentMap);
 
-		// build convolution cube map
+		// build diffuse part convolution cube map
 		glViewport(0, 0, 32, 32);
 		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
 		for (unsigned int i = 0; i < 6; i++)
 		{
-			m_ConvolutionShader->SetUniformMatrix4fv("view", captureViews[i]);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, m_IrradianceMaps.back(), 0);
+			m_DiffuseIrradianceConvolutionShader->SetUniformMatrix4fv("view", captureViews[i]);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, ibl->DiffuseIrradianceMap, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			m_CubeVAO->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
+		// ----------------------------------------- specular part ---------------------------------------
+		ibl->SpecularPreFilterMap = generateHDRCubeMap(128, true);
+		
+		m_SpecularPreFilterShader->Bind();
+		m_SpecularPreFilterShader->SetUniformMatrix4fv("projection", capturePorjection);
+		m_SpecularPreFilterShader->SetUniform1i("environmentMap", 0);
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, ibl->EnvironmentMap);
+		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+		unsigned int mipMapLevels = 5;
+		for (unsigned int mip = 0; mip < mipMapLevels; mip++)
+		{
+			// resize framebuffer base on mipmaps level
+			unsigned int mipWidth  = 128 * pow(0.5f, mip);
+			unsigned int mipHeight = 128 * pow(0.5f, mip);
+			glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, mipWidth, mipHeight);
+			glViewport(0, 0, mipWidth, mipHeight);
+			
+			float roughness = (float)mip / (float)(mipMapLevels - 1);
+			m_SpecularPreFilterShader->SetUniform1f("roughness", roughness);
+			for (unsigned int i = 0; i < 6; i++)
+			{
+				m_SpecularPreFilterShader->SetUniformMatrix4fv("view", captureViews[i]);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, ibl->SpecularPreFilterMap, mip);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				m_CubeVAO->Bind();
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+			}
+		}
+
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, 800, 600);
+
+		return ibl;
 	}
 
 	unsigned int TestIBL::loadHDREnvmap(const char* path)
@@ -324,7 +362,7 @@ namespace test{
 		return hdrTexture;
 	}
 
-	unsigned int TestIBL::generateHDRCubeMap(int size)
+	unsigned int TestIBL::generateHDRCubeMap(int size, bool mipmap)
 	{
 		unsigned int cubemap;
 		glGenTextures(1, &cubemap);
@@ -333,12 +371,17 @@ namespace test{
 		{
 			glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB16F, size, size, 0, GL_RGB, GL_FLOAT, nullptr);
 		}
-		GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR));
+		GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, mipmap ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR));
 		GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE));
 		GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE));
 		GLCall(glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE));
 		
+		if (mipmap)
+		{
+			GLCall(glGenerateMipmap(GL_TEXTURE_CUBE_MAP));
+		}
+
 		return cubemap;
 	}
 
