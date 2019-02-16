@@ -145,16 +145,14 @@ namespace test{
 		m_PBRShader->Bind();
 		m_PBRShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
 		m_PBRShader->SetUniform1i("reverse_normals", false);
-		//m_IBLShader->SetUniform1i("albedoMap", 0);
-		//m_IBLShader->SetUniform1i("metallicMap", 1);
-		//m_IBLShader->SetUniform1i("roughnessMap", 2);
-		//m_IBLShader->SetUniform1i("aoMap", 3);
-		//m_IBLShader->SetUniform1i("normalMap", 4);
+		m_PBRShader->SetUniform1i("albedoMap", 0);
+		m_PBRShader->SetUniform1i("metallicMap", 1);
+		m_PBRShader->SetUniform1i("roughnessMap", 2);
+		m_PBRShader->SetUniform1i("aoMap", 3);
+		m_PBRShader->SetUniform1i("normalMap", 4);
 		m_PBRShader->SetUniform1i("irradianceMap", 5);
 		m_PBRShader->SetUniform1i("prefilterMap", 6);
 		m_PBRShader->SetUniform1i("brdfLUT", 7);
-		m_PBRShader->SetUniform3f("albedo", 0.5f, 0.0f, 0.0f);
-		m_PBRShader->SetUniform1f("ao", 1.0f);
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	}
@@ -184,11 +182,8 @@ namespace test{
 		glm::mat4 model(1.0f);
 		for (int row = 0; row < nrRows; row++)
 		{
-			m_PBRShader->SetUniform1f("metallic", (float)row / (float)nrRows);
 			for (int col = 0; col < nrColumns; col++)
 			{
-				m_PBRShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
-				
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3((row - (nrRows / 2)) * spacing,
 														(col - (nrColumns / 2)) * spacing,
@@ -201,15 +196,15 @@ namespace test{
 
 		for (int i = 0; i < m_LightPositions.size(); i++)
 		{
-			//glm::vec3 newPos = m_LightPositions[i] + glm::vec3(sinf(glfwGetTime() * 5.0f) * 5.0f, 0.0f, 0.0f);
+			glm::vec3 newPos = m_LightPositions[i] + glm::vec3(sinf(glfwGetTime() * 5.0f) * 5.0f, 0.0f, 0.0f);
 			//newPos = m_LightPositions[i];
-			//m_PBRLightingShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", newPos);
-			m_PBRShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", m_LightPositions[i]);
+			m_PBRShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", newPos);
+			//m_PBRShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", m_LightPositions[i]);
 			m_PBRShader->SetUniform3f("lightColor[" + std::to_string(i) + "]", m_LightColors[i]);
 
 			model = glm::mat4(1.0f);
-			//model = glm::translate(model, newPos);
-			model = glm::translate(model, m_LightPositions[i]);
+			model = glm::translate(model, newPos);
+			//model = glm::translate(model, m_LightPositions[i]);
 			model = glm::scale(model, glm::vec3(0.5f));
 			m_PBRShader->SetUniformMatrix4fv("model", model);
 			m_Sphere->Bind();

@@ -220,17 +220,17 @@ in VS_OUT{
 uniform vec3 camPos;
 
 // material parameters
-uniform vec3 albedo;
-uniform float metallic;
-uniform float roughness;
-uniform float ao;
+//uniform vec3 albedo;
+//uniform float metallic;
+//uniform float roughness;
+//uniform float ao;
 
 // material map
-//uniform sampler2D albedoMap;
-//uniform sampler2D metallicMap;
-//uniform sampler2D roughnessMap;
-//uniform sampler2D aoMap;
-//uniform sampler2D normalMap;
+uniform sampler2D albedoMap;
+uniform sampler2D metallicMap;
+uniform sampler2D roughnessMap;
+uniform sampler2D aoMap;
+uniform sampler2D normalMap;
 
 // ibl maps
 uniform samplerCube irradianceMap;
@@ -242,37 +242,37 @@ uniform vec3 lightPos[4];
 uniform vec3 lightColor[4];
 
 // all about tangent space here: http://www.terathon.com/code/tangent.html
-//vec3 GetNormalFromMap()
-//{
-//	// dFdx means the paramter variable in two fragment's value difference. 
-//	// More detail here: https://stackoverflow.com/questions/16365385/explanation-of-dfdx
-//	vec3 Q1  = dFdx(fs_in.WorldPos);
-//	vec3 Q2  = dFdy(fs_in.WorldPos);
-//	vec2 st1 = dFdx(fs_in.TexCoords);
-//	vec2 st2 = dFdy(fs_in.TexCoords);
-//
-//	vec3 N = normalize(fs_in.Normal);
-//	vec3 T = normalize(st2.t * Q1 - st1.t * Q2);
-//	
-//	T = T - N * dot(N, T);
-//	vec3 B = cross(N, T);
-//
-//	mat3 TBN = mat3(T, B, N);
-//
-//	vec3 normal = texture(normalMap, fs_in.TexCoords).xyz * 2.0 - 1.0;
-//	return normalize(TBN * normal);
-//}
+vec3 GetNormalFromMap()
+{
+	// dFdx means the paramter variable in two fragment's value difference. 
+	// More detail here: https://stackoverflow.com/questions/16365385/explanation-of-dfdx
+	vec3 Q1  = dFdx(fs_in.WorldPos);
+	vec3 Q2  = dFdy(fs_in.WorldPos);
+	vec2 st1 = dFdx(fs_in.TexCoords);
+	vec2 st2 = dFdy(fs_in.TexCoords);
+
+	vec3 N = normalize(fs_in.Normal);
+	vec3 T = normalize(st2.t * Q1 - st1.t * Q2);
+	
+	T = T - N * dot(N, T);
+	vec3 B = cross(N, T);
+
+	mat3 TBN = mat3(T, B, N);
+
+	vec3 normal = texture(normalMap, fs_in.TexCoords).xyz * 2.0 - 1.0;
+	return normalize(TBN * normal);
+}
 
 
 void main()
 {
-	//vec3  albedo    = texture(albedoMap, fs_in.TexCoords).rgb;
-	//float metallic  = texture(metallicMap, fs_in.TexCoords).r;
-	//float roughness = texture(roughnessMap, fs_in.TexCoords).r;
-	//float ao        = texture(aoMap, fs_in.TexCoords).r;
+	vec3  albedo    = texture(albedoMap, fs_in.TexCoords).rgb;
+	float metallic  = texture(metallicMap, fs_in.TexCoords).r;
+	float roughness = texture(roughnessMap, fs_in.TexCoords).r;
+	float ao        = texture(aoMap, fs_in.TexCoords).r;
 
-	vec3 N = normalize(fs_in.Normal);
-	//vec3 N = GetNormalFromMap();
+	//vec3 N = normalize(fs_in.Normal);
+	vec3 N = GetNormalFromMap();
 	vec3 V = normalize(camPos - fs_in.WorldPos);
 
 	vec3 R = reflect(-V, N);
