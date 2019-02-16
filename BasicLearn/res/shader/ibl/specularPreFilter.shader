@@ -57,6 +57,25 @@ void main()
 
 const float PI = 3.14159265359;
 
+// The normal distribution function D statistically approximates the relative surface area of microfacets exactly aligned to the (halfway) vector h.
+//                                          α²    
+//           NDFGGXTR(n, h, α) = ------------------------
+//                                π((n⋅h)²(α² − 1) + 1)²
+// When the roughness is low (thus the surface is smooth) a highly concentrated number of microfacets are aligned to halfway vectors over a small radius. 
+// Due to this high concentration the NDF displays a very bright spot
+float DistributionGGX(vec3 N, vec3 H, float a)
+{
+	float a2 = a * a;
+	float NdotH = dot(N, H);
+	float NdotH2 = NdotH * NdotH;
+
+	float nom = a2;
+	float denom = NdotH2 * (a2 - 1) + 1;
+	denom = PI * denom * denom;
+
+	return nom / denom;
+}
+
 // we'll pre-compute the specular portion of the indirect reflectance equation using importance sampling
 // given a random low-discrepancy sequence based on the Quasi-Monte Carlo method.
 // The sequence we'll be using is known as the Hammersley Sequence as carefully described by [Holger Dammertz](http://holger.dammertz.org/stuff/notes_HammersleyOnHemisphere.html)
@@ -121,13 +140,25 @@ void main()
 	{
 		vec2 Xi = Hammersley(i, SAMPLE_COUNT);
 		vec3 H  = ImportanceSampleGGX(Xi, N, roughness);
-		vec3 L  = normalize(2.0 * dot(V, H) * H - V);              // in specular part we need reflect vector as our incident light
+		vec3 L  = normalize(2.0 * dot(V, H) * H - V);                                    // in specular part we need reflect vector as our incident light
 
 		float NdotL = max(dot(N, L), 0.0);
-		if (NdotL > 0.0)
+
+		if (NdotL > 0.0)                                                                 // only account it where sample in hemisphere
 		{
-			prefilter   += texture(environmentMap, L).rgb * NdotL;
-			totalWeight += NdotL;
+			float D          = DistributionGGX(N, H, roughness);
+			float NdotH      = max(dot(N, H), 0.0);
+			float HdotV      = max(dot(H, V), 0.0);
+			float pdf        = D * NdotH / (4.0 * HdotV) + 0.0001;
+
+			float resolution = 512.0;                                                    // resolution of source cubemap (per face)
+			float saTexel    = 4.0 * PI / (6.0 * resolution * resolution);               // solid angle per pixel
+			float saSample   = 1.0 / (float(SAMPLE_COUNT) * pdf + 0.0001);               // inverse probability of the particular sample
+
+			float mipLevel   = roughness == 0.0 ? 0.0 : 0.5 * log2(saSample / saTexel);  // basically we are saying the more pixels in unit solid angle, we need the higher mipmap level for average.
+
+			prefilter       += textureLod(environmentMap, L, mipLevel).rgb * NdotL;
+			totalWeight     += NdotL;
 		}
 	}
 

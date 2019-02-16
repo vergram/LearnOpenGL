@@ -160,19 +160,22 @@ float DistributionGGX(vec3 N, vec3 H, float a)
 //
 // The geometry function is a multiplier between [0.0, 1.0] with white or 1.0 measuring no microfacet shadowing
 // and black or 0.0 complete microfacet shadowing.
-float GeometrySchlickGGX(float NdotV, float k)
+float GeometrySchlickGGX(float NdotV, float roughness)
 {
+	float r     = roughness + 1.0;
+	float k     = (r * r) / 8.0;
+
 	float nom   = NdotV;
 	float denom = NdotV * (1.0 - k) + k;
 	return nom / denom;
 }
 
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float k)
+float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
 	float NdotV = max(dot(N, V), 0.0);
 	float NdotL = max(dot(N, L), 0.0);
-	float ggx1  = GeometrySchlickGGX(NdotV, k);
-	float ggx2  = GeometrySchlickGGX(NdotL, k);
+	float ggx1  = GeometrySchlickGGX(NdotV, roughness);
+	float ggx2  = GeometrySchlickGGX(NdotL, roughness);
 	return ggx1 * ggx2;
 }
 

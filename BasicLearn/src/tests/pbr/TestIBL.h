@@ -49,7 +49,7 @@ namespace test {
 		std::unique_ptr<Sphere> m_Sphere;
 		std::unique_ptr<Model> m_Nanosuit;
 	
-		std::unique_ptr<Shader> m_IBLShader;
+		std::unique_ptr<Shader> m_PBRShader;
 		std::unique_ptr<Shader> m_EquirectangularToCubeMapShader;
 		std::unique_ptr<Shader> m_DiffuseIrradianceConvolutionShader;
 		std::unique_ptr<Shader> m_SpecularPreFilterShader;

@@ -108,13 +108,13 @@ namespace test{
 
 		m_Sphere = std::make_unique<Sphere>();
 
-		m_IBLShader                          = std::make_unique<Shader>("res/shader/ibl/diffuseIrradiance.shader");
+		m_PBRShader                          = std::make_unique<Shader>("res/shader/ibl/pbr.shader");
 		m_EquirectangularToCubeMapShader     = std::make_unique<Shader>("res/shader/ibl/equirectangular_to_cubemap.shader");
 		m_DiffuseIrradianceConvolutionShader = std::make_unique<Shader>("res/shader/ibl/irradianceConvolution.shader");
 		m_SpecularPreFilterShader            = std::make_unique<Shader>("res/shader/ibl/specularPreFilter.shader");
 		m_SpecularBRDFShader                 = std::make_unique<Shader>("res/shader/ibl/specularBRDF.shader");
 		m_SkyboxShader                       = std::make_unique<Shader>("res/shader/ibl/hdrSkybox.shader");
-		m_DebugShader                        = std::make_unique<Shader>("res/shader/debug/cubemap.shader");
+		m_DebugShader                        = std::make_unique<Shader>("res/shader/debug/texture.shader");
 
 		//m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
@@ -142,24 +142,26 @@ namespace test{
 		m_IBLTextures.push_back(bakeIBL("res/hdr/newport_loft/newport_loft.hdr"));
 		m_IBLTextures.push_back(bakeIBL("res/hdr/Chelsea_Stairs/Chelsea_Stairs_3k.hdr"));
 
-		m_IBLShader->Bind();
-		m_IBLShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
-		m_IBLShader->SetUniform1i("reverse_normals", false);
+		m_PBRShader->Bind();
+		m_PBRShader->SetUniformMatrix4fv("projection", m_Camera.GetProjectionMatrix());
+		m_PBRShader->SetUniform1i("reverse_normals", false);
 		//m_IBLShader->SetUniform1i("albedoMap", 0);
 		//m_IBLShader->SetUniform1i("metallicMap", 1);
 		//m_IBLShader->SetUniform1i("roughnessMap", 2);
 		//m_IBLShader->SetUniform1i("aoMap", 3);
 		//m_IBLShader->SetUniform1i("normalMap", 4);
-		m_IBLShader->SetUniform1i("irradianceMap", 5);
-		m_IBLShader->SetUniform3f("albedo", 0.5f, 0.0f, 0.0f);
-		m_IBLShader->SetUniform1f("ao", 1.0f);
+		m_PBRShader->SetUniform1i("irradianceMap", 5);
+		m_PBRShader->SetUniform3f("albedo", 0.5f, 0.0f, 0.0f);
+		m_PBRShader->SetUniform1f("ao", 1.0f);
+
+		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
 	}
 
 	void TestIBL::OnRender()
 	{
-		m_IBLShader->Bind();
-		m_IBLShader->SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
-		m_IBLShader->SetUniform3f("camPos", m_Camera.GetPosition());
+		m_PBRShader->Bind();
+		m_PBRShader->SetUniformMatrix4fv("view", m_Camera.GetViewMatrix());
+		m_PBRShader->SetUniform3f("camPos", m_Camera.GetPosition());
 
 		m_Albedo->Bind(0);
 		m_Metallic->Bind(1);
@@ -176,16 +178,16 @@ namespace test{
 		glm::mat4 model(1.0f);
 		for (int row = 0; row < nrRows; row++)
 		{
-			m_IBLShader->SetUniform1f("metallic", (float)row / (float)nrRows);
+			m_PBRShader->SetUniform1f("metallic", (float)row / (float)nrRows);
 			for (int col = 0; col < nrColumns; col++)
 			{
-				m_IBLShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
+				m_PBRShader->SetUniform1f("roughness", glm::clamp((float)col / (float)nrColumns, 0.05f, 1.0f));
 				
 				model = glm::mat4(1.0f);
 				model = glm::translate(model, glm::vec3((row - (nrRows / 2)) * spacing,
 														(col - (nrColumns / 2)) * spacing,
 														0.0f));
-				m_IBLShader->SetUniformMatrix4fv("model", model);
+				m_PBRShader->SetUniformMatrix4fv("model", model);
 				m_Sphere->Bind();
 				glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 			}
@@ -196,19 +198,25 @@ namespace test{
 			//glm::vec3 newPos = m_LightPositions[i] + glm::vec3(sinf(glfwGetTime() * 5.0f) * 5.0f, 0.0f, 0.0f);
 			//newPos = m_LightPositions[i];
 			//m_PBRLightingShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", newPos);
-			m_IBLShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", m_LightPositions[i]);
-			m_IBLShader->SetUniform3f("lightColor[" + std::to_string(i) + "]", m_LightColors[i]);
+			m_PBRShader->SetUniform3f("lightPos[" + std::to_string(i) + "]", m_LightPositions[i]);
+			m_PBRShader->SetUniform3f("lightColor[" + std::to_string(i) + "]", m_LightColors[i]);
 
 			model = glm::mat4(1.0f);
 			//model = glm::translate(model, newPos);
 			model = glm::translate(model, m_LightPositions[i]);
 			model = glm::scale(model, glm::vec3(0.5f));
-			m_IBLShader->SetUniformMatrix4fv("model", model);
+			m_PBRShader->SetUniformMatrix4fv("model", model);
 			m_Sphere->Bind();
 			glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 		}
 		
 		renderSkybox(m_IBLTextures[m_DebugMode]->SpecularPreFilterMap);
+
+		m_DebugShader->Bind();
+		m_DebugShader->SetUniform1i("debugTexture", 0);
+		glBindTexture(GL_TEXTURE_2D, m_IBLTextures[m_DebugMode]->SpecularBRDFMap);
+		m_QuadVAO->Bind();
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 	}
 
 	void TestIBL::renderSkybox(unsigned int cubemap)
@@ -255,8 +263,8 @@ namespace test{
 		captureViews[4] = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3( 0.0,  0.0,  1.0), glm::vec3(0.0, -1.0,  0.0));
 		captureViews[5] = glm::lookAt(glm::vec3(0.0f,0.0f,0.0f), glm::vec3( 0.0,  0.0, -1.0), glm::vec3(0.0, -1.0,  0.0));
 
-		// --------------------------- diffuse part ----------------------------------------------
-		ibl->EnvironmentMap = generateHDRCubeMap(512);
+		// --------------------------- irradiance map ----------------------------------------------
+		ibl->EnvironmentMap = generateHDRCubeMap(512, true);
 
 		m_EquirectangularToCubeMapShader->Bind();
 		m_EquirectangularToCubeMapShader->SetUniformMatrix4fv("projection", capturePorjection);
@@ -275,6 +283,7 @@ namespace test{
 			m_CubeVAO->Bind();
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
+		glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
 
 		// set up fbo for diffuse convolution
 		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
@@ -301,7 +310,7 @@ namespace test{
 			glDrawArrays(GL_TRIANGLES, 0, 36);
 		}
 
-		// ----------------------------------------- specular part ---------------------------------------
+		// ----------------------------------------- pre-fliter environment map ---------------------------------------
 		ibl->SpecularPreFilterMap = generateHDRCubeMap(128, true);
 		
 		m_SpecularPreFilterShader->Bind();
@@ -331,6 +340,26 @@ namespace test{
 				glDrawArrays(GL_TRIANGLES, 0, 36);
 			}
 		}
+
+		// -------------------------------------- integrate BRDF map -----------------------------------------
+		glGenTextures(1, &ibl->SpecularBRDFMap);
+		glBindTexture(GL_TEXTURE_2D, ibl->SpecularBRDFMap);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RG16F, 512, 512, 0, GL_RG, GL_FLOAT, 0);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glViewport(0, 0, 512, 512);
+		glBindFramebuffer(GL_FRAMEBUFFER, captureFBO);
+		glBindRenderbuffer(GL_RENDERBUFFER, captureRBO);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, 512, 512);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, ibl->SpecularBRDFMap, 0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		m_SpecularBRDFShader->Bind();
+		m_QuadVAO->Bind();
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glViewport(0, 0, 800, 600);
