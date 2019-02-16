@@ -232,8 +232,10 @@ uniform float ao;
 //uniform sampler2D aoMap;
 //uniform sampler2D normalMap;
 
-// environment map
+// ibl maps
 uniform samplerCube irradianceMap;
+uniform samplerCube prefilterMap;
+uniform sampler2D brdfLUT;
 
 // light parameters
 uniform vec3 lightPos[4];
@@ -272,6 +274,8 @@ void main()
 	vec3 N = normalize(fs_in.Normal);
 	//vec3 N = GetNormalFromMap();
 	vec3 V = normalize(camPos - fs_in.WorldPos);
+
+	vec3 R = reflect(-V, N);
 
 	// calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
 	// of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow) 	 
@@ -316,8 +320,14 @@ void main()
 	// Given the irradiance map that holds all of the scene's indirect diffuse light, 
 	// retrieving the irradiance influencing the fragment is as simple as a single texture sample given the surface's normal:
 	vec3 irradiance = texture(irradianceMap, N).rgb;
-	vec3 diffuse = irradiance * albedo;
-	vec3 ambient = (kD * diffuse) * ao;
+	vec3 diffuse    = irradiance * albedo;
+
+	const float MAX_REFLECTION_LOD = 4.0;
+	vec3 prefilterColor = textureLod(prefilterMap, R, roughness * MAX_REFLECTION_LOD).rgb;
+	vec2 integrateBRDF  = texture(brdfLUT, vec2(max(dot(N, V), 0.0), roughness)).xy;
+	vec3 specular       = prefilterColor * (kS * integrateBRDF.x + integrateBRDF.y);
+	
+	vec3 ambient = (kD * diffuse + specular) * ao;
 
 	vec3 color   = ambient + Lo;
 

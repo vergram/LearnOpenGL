@@ -28,9 +28,7 @@ uniform samplerCube skybox;
 
 void main()
 {
-	//vec3 color = texture(skybox, TexCoords).rgb;
-
-	vec3 color = textureLod(skybox, TexCoords, 3).rgb;
+	vec3 color = texture(skybox, TexCoords).rgb;
 
 	color = color / (color + 1.0);
 	color = pow(color, vec3(1.0 / 2.2));

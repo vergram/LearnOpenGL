@@ -151,6 +151,8 @@ namespace test{
 		//m_IBLShader->SetUniform1i("aoMap", 3);
 		//m_IBLShader->SetUniform1i("normalMap", 4);
 		m_PBRShader->SetUniform1i("irradianceMap", 5);
+		m_PBRShader->SetUniform1i("prefilterMap", 6);
+		m_PBRShader->SetUniform1i("brdfLUT", 7);
 		m_PBRShader->SetUniform3f("albedo", 0.5f, 0.0f, 0.0f);
 		m_PBRShader->SetUniform1f("ao", 1.0f);
 
@@ -170,6 +172,10 @@ namespace test{
 		m_Normal->Bind(4);
 		glActiveTexture(GL_TEXTURE5);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLTextures[m_DebugMode]->DiffuseIrradianceMap);
+		glActiveTexture(GL_TEXTURE6);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLTextures[m_DebugMode]->SpecularPreFilterMap);
+		glActiveTexture(GL_TEXTURE7);
+		glBindTexture(GL_TEXTURE_CUBE_MAP, m_IBLTextures[m_DebugMode]->SpecularBRDFMap);
 
 		int nrRows = 7;
 		int nrColumns = 7;
@@ -210,13 +216,7 @@ namespace test{
 			glDrawElements(GL_TRIANGLES, m_Sphere->GetIndicesCount(), GL_UNSIGNED_INT, 0);
 		}
 		
-		renderSkybox(m_IBLTextures[m_DebugMode]->SpecularPreFilterMap);
-
-		m_DebugShader->Bind();
-		m_DebugShader->SetUniform1i("debugTexture", 0);
-		glBindTexture(GL_TEXTURE_2D, m_IBLTextures[m_DebugMode]->SpecularBRDFMap);
-		m_QuadVAO->Bind();
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+		renderSkybox(m_IBLTextures[m_DebugMode]->EnvironmentMap);
 	}
 
 	void TestIBL::renderSkybox(unsigned int cubemap)
