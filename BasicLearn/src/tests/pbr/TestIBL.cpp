@@ -118,11 +118,11 @@ namespace test{
 
 		//m_Nanosuit = std::make_unique<Model>("res/models/nanosuit/nanosuit.obj", true);
 
-		m_Albedo    = std::make_unique<Texture2D>("res/pbr/rustediron2/albedo.png", true);
-		m_Metallic  = std::make_unique<Texture2D>("res/pbr/rustediron2/metallic.png");
-		m_Roughness = std::make_unique<Texture2D>("res/pbr/rustediron2/roughness.png");
-		m_Ao        = std::make_unique<Texture2D>("res/pbr/rustediron2/ao.png");
-		m_Normal    = std::make_unique<Texture2D>("res/pbr/rustediron2/normal.png");
+		m_Albedo    = std::make_unique<Texture2D>("res/pbr/twisted/albedo.png", true);
+		m_Metallic  = std::make_unique<Texture2D>("res/pbr/twisted/metallic.png");
+		m_Roughness = std::make_unique<Texture2D>("res/pbr/twisted/roughness.png");
+		m_Ao        = std::make_unique<Texture2D>("res/pbr/twisted/ao.png");
+		m_Normal    = std::make_unique<Texture2D>("res/pbr/twisted/normal.png");
 
 		// lighting info
 		// -------------
