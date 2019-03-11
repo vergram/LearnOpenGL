@@ -70,28 +70,28 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openglLibs\freetype\include;C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openglLibs\freetype;C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openglLibs\freetype\include;C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openglLibs\freetype;C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openglLibs\freetype\include;C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openglLibs\freetype;C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(SolutionDir)bin\intermediate\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
-    <LibraryPath>C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\openglLibs\freetype\include;C:\openglLibs\GLFW\include;C:\openglLibs\Assimp\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\openglLibs\freetype;C:\openglLibs\GLFW;C:\openglLibs\Assimp;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -102,7 +102,7 @@
       <AdditionalIncludeDirectories>src;src\vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -114,7 +114,7 @@
       <AdditionalIncludeDirectories>src;src\vendor</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -130,7 +130,7 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -146,11 +146,16 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>assimp-vc140-mt.lib;glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\..\glfw-3.2.1\glad\src\glad.c" />
+    <ClCompile Include="src\breakout\main.cpp" />
+    <ClCompile Include="src\breakout\resource_manager.cpp" />
+    <ClCompile Include="src\breakout\shader.cpp" />
+    <ClCompile Include="src\breakout\game.cpp" />
+    <ClCompile Include="src\breakout\texture.cpp" />
     <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Camera.cpp" />
@@ -360,6 +365,10 @@
     <None Include="src\vendor\glm\gtx\wrap.inl" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\breakout\resource_manager.h" />
+    <ClInclude Include="src\breakout\shader.h" />
+    <ClInclude Include="src\breakout\game.h" />
+    <ClInclude Include="src\breakout\texture.h" />
     <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Input.h" />

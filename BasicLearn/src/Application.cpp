@@ -72,6 +72,8 @@ GLFWwindow* Window::window = NULL;
 
 const char* glsl_version = "#version 130";
 
+#ifndef BREAKOUT
+
 int main()
 {
 	glfwInit();
@@ -191,6 +193,9 @@ int main()
 
 	return 0;
 }
+
+#endif // !BreakOutGame
+
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 {

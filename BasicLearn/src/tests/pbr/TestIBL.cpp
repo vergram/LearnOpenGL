@@ -13,6 +13,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <ft2build.h>
+#include FT_FREETYPE_H  
+
 #include <iostream>
 #include <random>
 
@@ -155,6 +158,14 @@ namespace test{
 		m_PBRShader->SetUniform1i("brdfLUT", 7);
 
 		glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+
+		FT_Library ft;
+		if (FT_Init_FreeType(&ft))
+			std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+
+		FT_Face face;
+		if (FT_New_Face(ft, "res/fonts/arial.ttf", 0, &face))
+			std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
 	}
 
 	void TestIBL::OnRender()
