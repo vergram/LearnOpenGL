@@ -2,6 +2,8 @@
 
 #include <glad/glad.h>
 
+#include "game_level.h"
+
 namespace BreakOut {
 
 	enum GameState
@@ -34,6 +36,9 @@ namespace BreakOut {
 		GameState m_State;
 		GLboolean m_Keys[1024];
 		GLuint m_Width, m_Height;
+
+		std::vector<GameLevel> m_Levels;
+		unsigned int m_CurrentLevel;
 	};
 
 }

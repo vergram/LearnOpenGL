@@ -157,6 +157,8 @@
     <ClCompile Include="..\..\..\..\openglLibs\src\glad.c" />
     <ClCompile Include="..\BasicLearn\src\vendor\stb_image\stb_image.cpp" />
     <ClCompile Include="breakout\src\game.cpp" />
+    <ClCompile Include="breakout\src\game_level.cpp" />
+    <ClCompile Include="breakout\src\game_object.cpp" />
     <ClCompile Include="breakout\src\main.cpp" />
     <ClCompile Include="breakout\src\Renderer.cpp" />
     <ClCompile Include="breakout\src\resource_manager.cpp" />
@@ -166,6 +168,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakout\src\game.h" />
+    <ClInclude Include="breakout\src\game_level.h" />
+    <ClInclude Include="breakout\src\game_object.h" />
     <ClInclude Include="breakout\src\Renderer.h" />
     <ClInclude Include="breakout\src\resource_manager.h" />
     <ClInclude Include="breakout\src\shader.h" />
