@@ -13,6 +13,13 @@ namespace BreakOut {
 		GAME_WIN
 	};
 
+	enum Direction
+	{
+		UP = 0, RIGHT, DOWN, LEFT
+	};
+
+	typedef std::tuple<bool, Direction, glm::vec2> Collision;
+	
 	class Game
 	{
 	public:
@@ -21,6 +28,9 @@ namespace BreakOut {
 		virtual ~Game();
 
 		void Init();
+		void DoCollisions();
+		void ResetLevel();
+		void ResetPlayer();
 
 		void ProcessInput(GLfloat deltaTime);
 		void OnUpdate(GLfloat deltaTime);
