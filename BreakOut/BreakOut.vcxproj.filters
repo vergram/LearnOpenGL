@@ -51,6 +51,12 @@
     <ClCompile Include="breakout\src\ball_object_collisions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="breakout\src\particle_generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="breakout\src\post_processor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="breakout\src\game.h">
@@ -80,9 +86,17 @@
     <ClInclude Include="breakout\src\ball_object_collisions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="breakout\src\particle_generator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="breakout\src\post_processor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="breakout\res\shader\BasicSprite.shader" />
+    <None Include="breakout\res\shader\ParticleShader.shader" />
+    <None Include="breakout\res\shader\PostProcessing.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="breakout\res\image\awesomeface.png">

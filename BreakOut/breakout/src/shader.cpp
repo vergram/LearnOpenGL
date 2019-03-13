@@ -64,6 +64,11 @@ namespace BreakOut {
 		GLCall(glUniform2f(GetUniformLocation(name), v0, v1));
 	}
 
+	void Shader::SetUniform2f(const std::string & name, glm::vec2 vec2)
+	{
+		GLCall(glUniform2f(GetUniformLocation(name), vec2.x, vec2.y));
+	}
+
 	void Shader::SetUniform3f(const std::string & name, glm::vec3 vec3)
 	{
 		GLCall(glUniform3f(GetUniformLocation(name), vec3.x, vec3.y, vec3.z));
@@ -72,6 +77,11 @@ namespace BreakOut {
 	void Shader::SetUniform4f(const std::string & name, float v0, float v1, float v2, float v3)
 	{
 		GLCall(glUniform4f(GetUniformLocation(name), v0, v1, v2, v3));
+	}
+
+	void Shader::SetUniform4f(const std::string & name, glm::vec4 vec4)
+	{
+		GLCall(glUniform4f(GetUniformLocation(name), vec4.r, vec4.g, vec4.b, vec4.a));
 	}
 
 	void Shader::SetUniform3f(const std::string & name, float v0, float v1, float v2)

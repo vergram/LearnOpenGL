@@ -34,9 +34,11 @@ namespace BreakOut {
 		void SetUniform1i(const std::string& name, int value);
 		void SetUniform1f(const std::string& name, float value);
 		void SetUniform2f(const std::string& name, float v0, float v1);
+		void SetUniform2f(const std::string& name, glm::vec2 vec2);
 		void SetUniform3f(const std::string& name, float v0, float v1, float v2);
 		void SetUniform3f(const std::string& name, glm::vec3 vec3);
 		void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+		void SetUniform4f(const std::string& name, glm::vec4 vec4);
 		void SetUniformMatrix4fv(const std::string& name, const glm::mat4& trans);
 
 	private:

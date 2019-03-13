@@ -3,6 +3,8 @@
 #include "resource_manager.h"
 #include "SpriteRenderer.h"
 #include "ball_object_collisions.h"
+#include "particle_generator.h"
+#include "post_processor.h"
 
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
@@ -13,15 +15,19 @@
 
 namespace BreakOut {
 
+	BallObject* Ball;
+	GameObject* Player;
+	SpriteRenderer* Renderer;
+	ParticleGenerator* Particles;
+	PostProcessor* Effects;
+
+	float ShakeTime = 0.0f;
+
 	const glm::vec2 INITIAL_BALL_VELOCITY(100.0f, -350.0f);
 	const float BALL_RADIUS = 12.5f;
-	BallObject *Ball;
 
 	const glm::vec2 PLAYER_SIZE(100, 20);
 	const float PLAYER_VELOCITY(500.0f);
-	GameObject * Player;
-
-	SpriteRenderer * Renderer;
 
 	Game::Game(GLuint width, GLuint height)
 		:m_State(GAME_ACTIVE),
@@ -31,19 +37,17 @@ namespace BreakOut {
 	{}
 
 	Game::~Game()
-	{}
+	{
+		delete Ball;
+		delete Player;
+		delete Renderer;
+		delete Particles;
+		delete Effects;
+	}
 
 	void Game::Init()
 	{
 		glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(m_Width), static_cast<float>(m_Height), 0.0f, -1.0f, 1.0f);
-
-		// shader set up
-		ResourceManager::LoadShader("breakout/res/shader/BasicSprite.shader", "sprite");
-		Shader& shader = ResourceManager::GetShader("sprite");
-		shader.Bind();
-		shader.SetUniform1i("image", 0);
-		shader.SetUniformMatrix4fv("projection", projection);
-		Renderer = new SpriteRenderer(shader);
 
 		// load Textures
 		ResourceManager::LoadTexture("breakout/res/image/awesomeface.png", "ball");
@@ -51,6 +55,30 @@ namespace BreakOut {
 		ResourceManager::LoadTexture("breakout/res/image/block_solid.png", "block_solid");
 		ResourceManager::LoadTexture("breakout/res/image/background.jpg" , "background");
 		ResourceManager::LoadTexture("breakout/res/image/paddle.png"     , "player");
+		ResourceManager::LoadTexture("breakout/res/image/particle.png"   , "particle");
+
+		// load shaders
+		ResourceManager::LoadShader("breakout/res/shader/BasicSprite.shader", "sprite");
+		ResourceManager::LoadShader("breakout/res/shader/ParticleShader.shader", "particle");
+		ResourceManager::LoadShader("breakout/res/shader/PostProcessing.shader", "effect");
+
+		// shader set up
+		Shader& shader = ResourceManager::GetShader("sprite");
+		shader.Bind();
+		shader.SetUniform1i("image", 0);
+		shader.SetUniformMatrix4fv("projection", projection);
+		Renderer = new SpriteRenderer(shader);
+
+		// particle
+		Shader& particleShader = ResourceManager::GetShader("particle");
+		particleShader.Bind();
+		particleShader.SetUniform1i("sprite", 0);
+		particleShader.SetUniformMatrix4fv("projection", projection);
+		Particles = new ParticleGenerator(particleShader, ResourceManager::GetTexture("particle"), 200);
+
+		// Effect
+		Shader& effect = ResourceManager::GetShader("effect");
+		Effects = new PostProcessor(effect, m_Width, m_Height);
 
 		// load levels
 		GameLevel one;   one.Load("breakout/res/levels/1", m_Width, m_Height * 0.5f);
@@ -110,6 +138,13 @@ namespace BreakOut {
 	{
 		Ball->Move(deltaTime, m_Width);
 		DoCollisions();
+		Particles->Update(deltaTime, *Ball, 2, glm::vec2(Ball->m_Raduis / 2.0f));
+		if (ShakeTime > 0.0f)
+		{
+			ShakeTime -= deltaTime;
+			if (ShakeTime <= 0.0f)
+				Effects->Shake = false;
+		}
 
 		if (Ball->Position.y >= m_Height)
 		{
@@ -122,14 +157,15 @@ namespace BreakOut {
 	{
 		if (m_State == GAME_ACTIVE)
 		{
-			Renderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0, 0), glm::vec2(m_Width, m_Height), 0.0f, 
-				glm::vec3(1.0f));
+			Effects->BeginRender();
+				Renderer->DrawSprite(ResourceManager::GetTexture("background"), glm::vec2(0, 0), glm::vec2(m_Width, m_Height), 0.0f, glm::vec3(1.0f));
+				m_Levels[m_CurrentLevel].Draw(*Renderer);
+				Player->Draw(*Renderer);
+				Ball->Draw(*Renderer);
+				Particles->Draw();
+			Effects->EndRender();
 
-			m_Levels[m_CurrentLevel].Draw(*Renderer);
-
-			Player->Draw(*Renderer);
-
-			Ball->Draw(*Renderer);
+			Effects->Render(glfwGetTime());
 		}
 	}
 
@@ -149,6 +185,11 @@ namespace BreakOut {
 				{
 					if (!box.IsSolid)
 						box.Destroyed = true;
+					else
+					{
+						ShakeTime = 0.05f;
+						Effects->Shake = true;
+					}
 					Direction dir = std::get<1>(collision);
 					glm::vec2 difference = std::get<2>(collision);
 					if (dir == LEFT || dir == RIGHT)             // horizontial collision
