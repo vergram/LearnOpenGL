@@ -17,7 +17,7 @@ void main()
 	if (chaos)
 	{
 		float strength = 0.3;
-		TexCoords = vec2(vertex.z * sin(time) * strength, vertex.w * cos(time) * strength);
+		TexCoords = vec2(vertex.z + sin(time) * strength, vertex.w + cos(time) * strength);
 	}
 	else if (confuse)
 	{
@@ -34,7 +34,6 @@ void main()
 		gl_Position.x += cos(time * 10.0) * strength;
 		gl_Position.y += sin(time * 15.0) * strength;
 	}
-
 }
 
 
@@ -77,7 +76,7 @@ void main()
 	}
 	else if (confuse)
 	{
-		color = vec4(texture(scene, TexCoords).rgb, 1.0);
+		color = vec4(1.0 - texture(scene, TexCoords).rgb, 1.0);
 	}
 
 	else if (shake)

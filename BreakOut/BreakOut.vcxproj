@@ -176,6 +176,7 @@
     <ClInclude Include="breakout\src\game_object.h" />
     <ClInclude Include="breakout\src\particle_generator.h" />
     <ClInclude Include="breakout\src\post_processor.h" />
+    <ClInclude Include="breakout\src\power_up.h" />
     <ClInclude Include="breakout\src\Renderer.h" />
     <ClInclude Include="breakout\src\resource_manager.h" />
     <ClInclude Include="breakout\src\shader.h" />

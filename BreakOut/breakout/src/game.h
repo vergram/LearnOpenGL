@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 
 #include "game_level.h"
+#include "power_up.h"
 
 namespace BreakOut {
 
@@ -49,6 +50,11 @@ namespace BreakOut {
 
 		std::vector<GameLevel> m_Levels;
 		unsigned int m_CurrentLevel;
+
+		std::vector<PowerUp> m_PowerUps;
+
+		void SpawnPowerUps(GameObject& block);
+		void UpdatePowerUps(float deltaTime);
 	};
 
 }

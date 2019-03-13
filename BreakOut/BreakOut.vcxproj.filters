@@ -92,6 +92,9 @@
     <ClInclude Include="breakout\src\post_processor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="breakout\src\power_up.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="breakout\res\shader\BasicSprite.shader" />
